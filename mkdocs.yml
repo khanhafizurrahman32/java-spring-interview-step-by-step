@@ -1,0 +1,69 @@
+site_name: Java & Spring Boot, Step by Step
+site_description: A free interview handbook for Java, the JVM and Spring Boot. Every topic starts with the mental model, shows where people get it wrong, and ends with practice MCQs.
+repo_url: https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step
+repo_name: java-spring-interview-step-by-step
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - search.highlight
+    - content.code.copy
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      toggle:
+        icon: material/weather-night
+        name: Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Light mode
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+nav:
+  - Home: index.md
+  - Start here: start-here.md
+  - Java:
+      - Core language traps: java/01-core-language.md
+      - Collections internals: java/02-collections-internals.md
+      - Concurrency: java/03-concurrency.md
+      - Streams & functional: java/04-streams.md
+      - Modern Java (8 to 21+): java/05-modern-java.md
+  - JVM:
+      - Memory & class loading: jvm/01-memory.md
+      - Garbage collection: jvm/02-garbage-collection.md
+      - JIT, tools & troubleshooting: jvm/03-performance-troubleshooting.md
+  - Spring:
+      - IoC, DI & bean lifecycle: spring/01-ioc-di.md
+      - Spring Boot internals: spring/02-boot-internals.md
+      - Proxies & AOP: spring/03-proxies-aop.md
+      - Transactions: spring/04-transactions.md
+      - JPA & Hibernate pitfalls: spring/05-jpa-pitfalls.md
+      - Spring Security: spring/06-security.md
+      - Web, validation & testing: spring/07-web-testing.md
+  - Practice:
+      - Mixed mock test (40 MCQs): practice/mock-test.md
+      - One-page cheat sheet: practice/cheat-sheet.md
