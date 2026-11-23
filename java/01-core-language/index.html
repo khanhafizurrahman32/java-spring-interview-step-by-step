@@ -1,0 +1,1642 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A free interview handbook for Java, the JVM and Spring Boot. Every topic starts with the mental model, shows where people get it wrong, and ends with practice MCQs.">
+      
+      
+      
+      
+        <link rel="prev" href="../../start-here/">
+      
+      
+        <link rel="next" href="../02-collections-internals/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.39">
+    
+    
+      
+        <title>Core language traps - Java & Spring Boot, Step by Step</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#core-language-traps" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-header__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Java & Spring Boot, Step by Step
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Core language traps
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-nav__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Java & Spring Boot, Step by Step
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../start-here/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Start here
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Java
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Java
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Core language traps
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Core language traps
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model-references-are-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model: references are values
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#equals-and-hashcode-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      equals and hashCode contract
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#strings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Strings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wrapper-caching-and-autoboxing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Wrapper caching and autoboxing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#numbers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Numbers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overloading-vs-overriding" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overloading vs overriding
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exceptions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keywords-people-mix-up" class="md-nav__link">
+    <span class="md-ellipsis">
+      Keywords people mix up
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-you-should-be-able-to-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code you should be able to write
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-collections-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Collections internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-concurrency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Concurrency
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-streams/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Streams & functional
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-modern-java/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modern Java (8 to 21+)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    JVM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            JVM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/01-memory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Memory & class loading
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/02-garbage-collection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Garbage collection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/03-performance-troubleshooting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JIT, tools & troubleshooting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Spring
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Spring
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/01-ioc-di/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IoC, DI & bean lifecycle
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/02-boot-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Boot internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/03-proxies-aop/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Proxies & AOP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/04-transactions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Transactions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/05-jpa-pitfalls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JPA & Hibernate pitfalls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/06-security/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Security
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/07-web-testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Web, validation & testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Practice
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Practice
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/mock-test/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mixed mock test (40 MCQs)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/cheat-sheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    One-page cheat sheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model-references-are-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model: references are values
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#equals-and-hashcode-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      equals and hashCode contract
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#strings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Strings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wrapper-caching-and-autoboxing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Wrapper caching and autoboxing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#numbers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Numbers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overloading-vs-overriding" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overloading vs overriding
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exceptions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keywords-people-mix-up" class="md-nav__link">
+    <span class="md-ellipsis">
+      Keywords people mix up
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-you-should-be-able-to-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code you should be able to write
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="core-language-traps">Core language traps<a class="headerlink" href="#core-language-traps" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>TL;DR</strong> Java passes <strong>everything by value</strong>; for objects, the value that gets copied is the <em>reference</em> (think "the address of the object"), not the object itself. <code>==</code> asks "are these the same object in memory?", while <code>equals</code> asks "do these two objects mean the same thing?". If you override <code>equals</code> you <strong>must</strong> also override <code>hashCode</code>, because hash-based collections use <code>hashCode</code> to decide where to look before they ever call <code>equals</code>. Most "what does this print?" MCQs are built from about ten traps on this page.</p>
+</blockquote>
+<h2 id="mental-model-references-are-values">Mental model: references are values<a class="headerlink" href="#mental-model-references-are-values" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart LR
+    subgraph Stack["Stack (method frame)"]
+        a["a → ref#1"]
+        b["b → ref#1 (copy of a's value)"]
+    end
+    subgraph Heap
+        o1["ref#1: Person{name='Ana'}"]
+        o2["ref#2: Person{name='Bo'}"]
+    end
+    a --&gt; o1
+    b --&gt; o1</code></pre>
+<p>A variable of an object type does not hold the object. It holds a <strong>reference</strong>: a small value that tells the JVM where the object lives on the heap. In the diagram, <code>a</code> and <code>b</code> are two separate variables on the stack, but both contain the same reference (<code>ref#1</code>), so both point at the same <code>Person</code>.</p>
+<p>When you pass <code>a</code> to a method, Java copies that reference value into the method's parameter. That gives two consequences you must keep apart:</p>
+<ul>
+<li><strong>Mutating through the copy is visible to the caller.</strong> The copy points to the same object, so <code>p.name = "Zed"</code> changes the one shared object.</li>
+<li><strong>Reassigning the copy is invisible to the caller.</strong> <code>p = new Person("Q")</code> only changes what the method's local parameter points to. The caller's variable still holds the old reference.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">rename</span><span class="p">(</span><span class="n">Person</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Zed"</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">      </span><span class="c1">// caller sees "Zed": same object was modified</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">replace</span><span class="p">(</span><span class="n">Person</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Person</span><span class="p">(</span><span class="s">"Q"</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// caller sees no change: only the local copy was redirected</span>
+</code></pre></div>
+<p>If Java were truly pass-by-reference (like C++ <code>Person&amp;</code>), <code>replace</code> would change the caller's variable too. It does not, which is the proof that Java is pass-by-value.</p>
+<h2 id="deep-dive">Deep dive<a class="headerlink" href="#deep-dive" title="Permanent link">&para;</a></h2>
+<h3 id="equals-and-hashcode-contract"><code>equals</code> and <code>hashCode</code> contract<a class="headerlink" href="#equals-and-hashcode-contract" title="Permanent link">&para;</a></h3>
+<p><strong>Why both methods exist.</strong> <code>HashMap</code>, <code>HashSet</code>, <code>ConcurrentHashMap</code> and friends find an entry in two steps:</p>
+<ol>
+<li>Call <code>key.hashCode()</code> and use it to pick a <strong>bucket</strong> (a slot in an internal array). This is fast: one arithmetic step instead of comparing against every entry.</li>
+<li>Inside that bucket, walk the few entries there and call <code>equals</code> on each to find the exact match.</li>
+</ol>
+<p>So <code>hashCode</code> is a quick "which drawer should I look in?" and <code>equals</code> is the careful "is this really the item?". The rules below follow directly from that two-step lookup.</p>
+<p><strong>Rule 1: If <code>a.equals(b)</code> is <code>true</code>, then <code>a.hashCode() == b.hashCode()</code> must be <code>true</code>.</strong>
+If two equal objects had different hash codes, step 1 would send the lookup to a <em>different drawer</em> from the one where the entry was stored. Step 2 would never even see the stored entry, so <code>map.get(equalKey)</code> returns <code>null</code> even though an equal key is in the map.</p>
+<p><strong>Rule 2 (the reverse): equal hash codes do <em>not</em> have to mean equal objects.</strong> Two different objects are allowed to share a hash code. This is called a <strong>collision</strong>, and it is legal for three reasons:</p>
+<ul>
+<li><strong>It is mathematically unavoidable.</strong> <code>hashCode()</code> returns an <code>int</code>, which has only about 4.3 billion possible values (2³²). The number of possible distinct objects is far larger: there are infinitely many possible <code>String</code>s, and even a class with two <code>long</code> fields has 2¹²⁸ possible states. By the <em>pigeonhole principle</em> (more items than boxes means some box holds two items), many different objects must share a hash code. A rule demanding "different objects ⇒ different hash codes" would be impossible to satisfy.</li>
+<li><strong>Collisions are already handled by step 2.</strong> When two unequal keys land in the same bucket, the map simply stores both there and uses <code>equals</code> to tell them apart. A collision costs a little speed (one extra <code>equals</code> call), never correctness.</li>
+<li><strong>Real examples exist in the JDK.</strong> <code>"Aa".hashCode()</code> and <code>"BB".hashCode()</code> are both <code>2112</code>, yet <code>"Aa".equals("BB")</code> is <code>false</code>. Both strings can sit in the same <code>HashSet</code> without any problem.</li>
+</ul>
+<p>The only thing collisions hurt is performance: if <em>many</em> keys share a hash code, one bucket gets crowded and lookups slow down (Java 8+ turns a crowded bucket into a red-black tree so the worst case is <code>O(log n)</code> instead of <code>O(n)</code>; see <a href="../02-collections-internals/">Collections internals</a>). That is why a <em>good</em> <code>hashCode</code> spreads values out, but a <em>correct</em> one only has to obey Rule 1. Even <code>return 42;</code> is a legal (terribly slow) <code>hashCode</code>.</p>
+<p><strong>Rule 3: <code>equals</code> must behave like real equality.</strong> The Javadoc lists five properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Meaning</th>
+<th>What breaks if you violate it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reflexive</td>
+<td><code>x.equals(x)</code> is <code>true</code></td>
+<td>A set could fail to find an object you just added.</td>
+</tr>
+<tr>
+<td>Symmetric</td>
+<td><code>x.equals(y)</code> ⇔ <code>y.equals(x)</code></td>
+<td><code>list.contains(x)</code> and <code>list.contains(y)</code> disagree depending on which side calls <code>equals</code>. Typical cause: a subclass that adds a field and compares it only one way.</td>
+</tr>
+<tr>
+<td>Transitive</td>
+<td><code>x.equals(y)</code> and <code>y.equals(z)</code> ⇒ <code>x.equals(z)</code></td>
+<td>Sorting/deduplication gives order-dependent results.</td>
+</tr>
+<tr>
+<td>Consistent</td>
+<td>Repeated calls give the same answer while the objects are unchanged</td>
+<td>Lookups succeed sometimes and fail other times.</td>
+</tr>
+<tr>
+<td>Non-null</td>
+<td><code>x.equals(null)</code> is <code>false</code> (never throws)</td>
+<td>Code that compares against a possibly-null value crashes with <code>NullPointerException</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>What "silently misbehave" looks like.</strong> If you override <code>equals</code> but forget <code>hashCode</code>, each object keeps the default identity-based hash code from <code>Object</code>, so two "equal" objects almost always get different hash codes:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">class</span> <span class="nc">Key</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">id</span><span class="p">;</span><span class="w"> </span><span class="n">Key</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">id</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nd">@Override</span><span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">equals</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">o</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="k">instanceof</span><span class="w"> </span><span class="n">Key</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">k</span><span class="p">.</span><span class="na">id</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="n">id</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="c1">// hashCode NOT overridden</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">}</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">Map</span><span class="o">&lt;</span><span class="n">Key</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HashMap</span><span class="o">&lt;&gt;</span><span class="p">();</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">m</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Key</span><span class="p">(</span><span class="s">"A"</span><span class="p">),</span><span class="w"> </span><span class="s">"found"</span><span class="p">);</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">m</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Key</span><span class="p">(</span><span class="s">"A"</span><span class="p">));</span><span class="w">   </span><span class="c1">// null — the second Key hashes to a different bucket</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="k">new</span><span class="w"> </span><span class="n">HashSet</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="n">List</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Key</span><span class="p">(</span><span class="s">"A"</span><span class="p">),</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Key</span><span class="p">(</span><span class="s">"A"</span><span class="p">))).</span><span class="na">size</span><span class="p">();</span><span class="w"> </span><span class="c1">// 2 — duplicates not detected</span>
+</code></pre></div>
+<p>No exception is thrown; you just get wrong answers, which is why this bug is so dangerous.</p>
+<p><strong>Mutable keys are dangerous.</strong> A <code>HashMap</code> computes the key's hash once, at <code>put</code> time, and files the entry in that bucket. If you later change a field that <code>hashCode</code> uses, the object's hash changes, but the map does not move the entry. Now <code>get(key)</code> computes the <em>new</em> hash, looks in the <em>new</em> bucket, and finds nothing. The entry is "stranded": it still exists (it shows up when you iterate), but you cannot look it up or remove it by key. The fix is to use immutable keys (<code>String</code>, <code>Integer</code>, records with immutable fields) or never mutate a key while it is in a map or set.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">record</span> <span class="nc">Money</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">currency</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">minorUnits</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w">  </span><span class="c1">// records generate equals/hashCode from all components, so the contract is kept for you</span>
+</code></pre></div>
+<p>A record's generated <code>equals</code> compares every component, and its generated <code>hashCode</code> is computed from the same components, so Rules 1–3 hold automatically. Records are also shallowly immutable, which avoids the mutable-key problem as long as the components themselves are immutable.</p>
+<h3 id="strings">Strings<a class="headerlink" href="#strings" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>The string pool.</strong> Every string <em>literal</em> in your code (<code>"hi"</code>) is stored once in a JVM-wide table called the <strong>string pool</strong>, and every occurrence of the same literal refers to that one object. This saves memory because programs repeat the same literals constantly. Since Java 7 the pool lives on the normal heap (before that it was in PermGen, a fixed-size area that could run out), so pooled strings can be garbage-collected like anything else.</li>
+<li><strong><code>new String("hi")</code> always creates a new object</strong>, even though the literal <code>"hi"</code> inside it is pooled. You end up with two objects: the pooled literal and a fresh copy. That is why <code>"hi" == new String("hi")</code> is <code>false</code>. <strong><code>intern()</code></strong> looks the string up in the pool and returns the pooled instance (adding it first if absent), so <code>s.intern() == "hi"</code> is <code>true</code> whenever <code>s.equals("hi")</code>.</li>
+<li><strong>Constant folding.</strong> If every part of a <code>+</code> expression is a <em>compile-time constant</em> (a literal, or a <code>final</code> variable initialized with a literal), the compiler joins them itself and puts the result in the pool. So <code>"a" + "b"</code> becomes the literal <code>"ab"</code> in the <code>.class</code> file, and <code>"a" + "b" == "ab"</code> is <code>true</code>. If any part is a normal variable, its value is only known at runtime, so the concatenation runs at runtime and produces a <strong>new, unpooled</strong> object, making <code>==</code> <code>false</code>.</li>
+<li><strong>Strings are immutable</strong>: no method changes a <code>String</code> in place; methods like <code>toUpperCase()</code> return a new one. Benefits: a string can be shared between threads with no locking because nobody can change it; it is safe as a <code>HashMap</code> key because its hash can never change (the mutable-key problem above cannot happen); and <code>String</code> caches its hash code in a field after the first call, so repeated <code>hashCode()</code> calls are free.</li>
+<li><strong>Building strings in a loop.</strong> Because strings are immutable, <code>s += x</code> inside a loop creates a new string (and copies all previous characters) on every iteration, which is <code>O(n²)</code> work overall. <code>StringBuilder</code> keeps one growable buffer and appends into it, which is <code>O(n)</code>. <code>StringBuffer</code> does the same but every method is <code>synchronized</code>; that locking is wasted cost in the usual case where only one thread builds the string, so it survives only in legacy code.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">String</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"hi"</span><span class="p">;</span><span class="w">                       </span><span class="c1">// pooled literal</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">String</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="s">"hi"</span><span class="p">);</span><span class="w">           </span><span class="c1">// new heap object with the same characters</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">s1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">s2</span><span class="p">);</span><span class="w">          </span><span class="c1">// false: two different objects</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">s1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">s2</span><span class="p">.</span><span class="na">intern</span><span class="p">());</span><span class="w"> </span><span class="c1">// true: intern() returns the pooled "hi", which is s1</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"a"</span><span class="p">;</span><span class="w">                   </span><span class="c1">// final + literal initializer = compile-time constant</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">"b"</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"ab"</span><span class="p">);</span><span class="w">   </span><span class="c1">// true: compiler folds x + "b" into the pooled literal "ab"</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">String</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"a"</span><span class="p">;</span><span class="w">                         </span><span class="c1">// not final, so not a compile-time constant</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">"b"</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"ab"</span><span class="p">);</span><span class="w">   </span><span class="c1">// false: concatenated at runtime into a new object</span>
+</code></pre></div>
+<p>Rule of thumb: <strong>always compare strings with <code>equals</code></strong>. <code>==</code> on strings is only ever asked in interviews to test whether you know the pool exists.</p>
+<h3 id="wrapper-caching-and-autoboxing">Wrapper caching and autoboxing<a class="headerlink" href="#wrapper-caching-and-autoboxing" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Autoboxing</strong> is the compiler silently converting a primitive into its wrapper object: <code>Integer a = 127;</code> compiles to <code>Integer a = Integer.valueOf(127);</code>. <code>Integer.valueOf</code> keeps a pre-built array of <code>Integer</code> objects for <strong>-128 to 127</strong> (small numbers are used constantly, so sharing them saves allocations) and returns the cached object for those values. Outside that range it creates a new object every time. So <code>Integer a = 127, b = 127; a == b</code> is <code>true</code> (both are the same cached object) but with <code>128</code> it is <code>false</code> (two separate objects). <code>==</code> on wrappers compares <em>identity</em>, never the number. Use <code>equals</code>, or unbox to <code>int</code> first. (The upper bound can be raised with <code>-XX:AutoBoxCacheMax</code>, which is another reason never to rely on it.)</li>
+<li><strong>Other wrappers:</strong> <code>Boolean</code> (both values, <code>TRUE</code> and <code>FALSE</code>), <code>Byte</code> (all 256 values), <code>Character</code> (0–127), <code>Short</code> and <code>Long</code> (-128 to 127) also cache. <code>Float</code> and <code>Double</code> do not cache, because there is no small, commonly-used set of floating-point values worth sharing.</li>
+<li><strong>Unboxing <code>null</code> throws <code>NullPointerException</code>.</strong> Unboxing is the reverse conversion: <code>int n = map.get("missing");</code> compiles to <code>int n = map.get("missing").intValue();</code>. When the key is missing, <code>get</code> returns <code>null</code>, and calling <code>.intValue()</code> on <code>null</code> throws. The crash appears on a line with no visible method call, which is why it confuses people. Use <code>getOrDefault("missing", 0)</code> or keep the value as <code>Integer</code> and null-check it.</li>
+</ul>
+<h3 id="numbers">Numbers<a class="headerlink" href="#numbers" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong><code>0.1 + 0.2 == 0.3</code> is <code>false</code>.</strong> <code>double</code> stores numbers in binary, and most decimal fractions (like 0.1) have no exact binary representation, just as 1/3 has no exact decimal one. Each value is rounded slightly, the rounding errors add up, and the sum comes out as <code>0.30000000000000004</code>. For money you need exact decimal arithmetic, so use <code>BigDecimal</code>. Build it from a <strong>String</strong>: <code>new BigDecimal("0.1")</code> is exactly 0.1. <code>new BigDecimal(0.1)</code> takes the already-rounded <code>double</code> and faithfully preserves its error, giving <code>0.1000000000000000055511151231257827...</code>. (<code>BigDecimal.valueOf(0.1)</code> is also fine; it goes through <code>Double.toString</code>, which yields <code>"0.1"</code>.)</li>
+<li><strong><code>BigDecimal.equals</code> compares scale.</strong> A <code>BigDecimal</code> is an unscaled integer plus a <em>scale</em> (number of digits after the point): <code>2.0</code> is <code>20</code> with scale 1, <code>2.00</code> is <code>200</code> with scale 2. <code>equals</code> treats them as different because they carry different precision information. <code>compareTo</code> compares only the numeric value, so <code>a.compareTo(b) == 0</code> is the correct "same amount?" test. This also means a <code>HashSet&lt;BigDecimal&gt;</code> can contain both <code>2.0</code> and <code>2.00</code>, while a <code>TreeSet</code> (which uses <code>compareTo</code>) keeps only one.</li>
+<li><strong>Integer overflow wraps silently.</strong> <code>int</code> is 32-bit two's complement, so <code>Integer.MAX_VALUE + 1</code> becomes <code>Integer.MIN_VALUE</code> with no error. <code>Math.abs(Integer.MIN_VALUE)</code> is still negative because +2,147,483,648 does not fit in an <code>int</code> (the max is 2,147,483,647), so it wraps back to itself. When overflow must be an error (money, counters, array sizes), use <code>Math.addExact</code>, <code>multiplyExact</code>, <code>toIntExact</code>, which throw <code>ArithmeticException</code> instead of wrapping.</li>
+<li><strong>Integer division truncates toward zero</strong> (it drops the fractional part, it does not round down): <code>-7 / 2</code> is <code>-3.5</code> truncated to <code>-3</code>, not <code>-4</code>. The remainder takes the sign of the left operand so that <code>(a / b) * b + (a % b) == a</code> always holds: <code>-3 * 2 + (-1) == -7</code>, hence <code>-7 % 2 == -1</code>. This is why <code>n % 2 == 1</code> is a broken odd-number test for negative numbers; use <code>n % 2 != 0</code>. If you need floor behaviour use <code>Math.floorDiv</code> / <code>Math.floorMod</code>.</li>
+</ul>
+<h3 id="overloading-vs-overriding">Overloading vs overriding<a class="headerlink" href="#overloading-vs-overriding" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Overloading</strong> means several methods with the same name but different parameter lists in the same class. The compiler picks one <strong>at compile time</strong>, using the <em>declared</em> (static) types of the arguments. <strong>Overriding</strong> means a subclass replaces an inherited instance method with the same signature. The JVM picks the implementation <strong>at runtime</strong> from the actual object's class (<em>dynamic dispatch</em>). So <code>Object o = "hi"; print(o);</code> calls <code>print(Object)</code> even if <code>print(String)</code> exists, because the compiler only sees <code>Object</code>.</li>
+<li><strong>Static methods are hidden, not overridden.</strong> Static methods belong to the class, not to an object, so there is no object to dispatch on. If <code>Child</code> declares a static method with the same signature as <code>Parent</code>, <code>Parent p = new Child(); p.staticMethod()</code> calls <code>Parent</code>'s version, because the compiler decides from the declared type <code>Parent</code>. (<code>@Override</code> on a static method is a compile error, which is a quick way to prove it.)</li>
+<li><strong>Fields are never polymorphic.</strong> Only instance methods use dynamic dispatch. If both parent and child declare a field <code>name</code>, <code>parentRef.name</code> reads the parent's field because field access is also resolved from the declared type. This is called <em>field hiding</em> and is a reason to keep fields private and expose them through methods.</li>
+<li><strong><code>null</code> as an argument.</strong> <code>null</code> fits any reference type, so several overloads may apply. The compiler picks the <strong>most specific</strong> one: a method whose parameter type is a subtype of the others' (<code>String</code> is a subtype of <code>Object</code>, so <code>m(String)</code> beats <code>m(Object)</code>). If two candidates are unrelated (<code>String</code> and <code>Integer</code>, neither a subtype of the other), there is no single most specific method, and the call is a <strong>compile error</strong> ("reference to m is ambiguous"). You fix it with a cast: <code>m((String) null)</code>.</li>
+</ul>
+<h3 id="generics">Generics<a class="headerlink" href="#generics" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Type erasure.</strong> Generic type arguments exist only for the compiler. After checking types, the compiler <em>erases</em> them: <code>List&lt;String&gt;</code> and <code>List&lt;Integer&gt;</code> both become plain <code>List</code> in the bytecode, with casts inserted where you read elements. Java did this so code compiled before generics (Java 5) could keep working with new generic libraries. Consequences, each because the runtime does not know <code>T</code>:<ul>
+<li>You <strong>cannot overload</strong> <code>f(List&lt;String&gt;)</code> and <code>f(List&lt;Integer&gt;)</code>: after erasure both are <code>f(List)</code>, a duplicate signature.</li>
+<li>You <strong>cannot write <code>new T()</code></strong>: the runtime does not know which class to instantiate. Pass a <code>Supplier&lt;T&gt;</code> or <code>Class&lt;T&gt;</code> instead.</li>
+<li>You <strong>cannot use <code>instanceof List&lt;String&gt;</code></strong>: at runtime the object is just a <code>List</code>, so the check could not be performed. (<code>instanceof List&lt;?&gt;</code> is allowed.)</li>
+</ul>
+</li>
+<li><strong>Generics are invariant: <code>List&lt;String&gt;</code> is not a <code>List&lt;Object&gt;</code>.</strong> If it were, you could do <code>List&lt;Object&gt; objs = strings; objs.add(42);</code> and a number would sneak into a list of strings. Forbidding the assignment at compile time prevents that. <strong>Arrays are covariant</strong> (<code>String[]</code> <em>is</em> an <code>Object[]</code>), an older design choice, so Java must check every array store at runtime instead: <code>Object[] arr = new String[1]; arr[0] = 1;</code> compiles but throws <code>ArrayStoreException</code>, because the array remembers at runtime that it is really a <code>String[]</code>.</li>
+<li><strong>PECS: Producer Extends, Consumer Super.</strong> Wildcards let one method accept a family of generic types:<ul>
+<li><code>List&lt;? extends Number&gt;</code> means "a list of <em>some</em> subtype of <code>Number</code>" (could be <code>List&lt;Integer&gt;</code>, could be <code>List&lt;Double&gt;</code>). <strong>Reading</strong> is safe: whatever comes out is at least a <code>Number</code>. <strong>Adding</strong> is unsafe: the compiler cannot know whether the real list holds <code>Integer</code>s or <code>Double</code>s, so it rejects every <code>add</code> except <code>add(null)</code>. The list <em>produces</em> values for you.</li>
+<li><code>List&lt;? super Integer&gt;</code> means "a list of <code>Integer</code> or some supertype" (<code>List&lt;Integer&gt;</code>, <code>List&lt;Number&gt;</code>, <code>List&lt;Object&gt;</code>). <strong>Adding an <code>Integer</code></strong> is safe, because every one of those lists can hold an <code>Integer</code>. <strong>Reading</strong> gives you only <code>Object</code>, since you do not know which supertype it is. The list <em>consumes</em> values you give it.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kd">static</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;?</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Number</span><span class="o">&gt;</span><span class="w"> </span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">   </span><span class="c1">// accepts List&lt;Integer&gt;, List&lt;Double&gt;, ...; we only read</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">xs</span><span class="p">.</span><span class="na">stream</span><span class="p">().</span><span class="na">mapToDouble</span><span class="p">(</span><span class="n">Number</span><span class="p">::</span><span class="n">doubleValue</span><span class="p">).</span><span class="na">sum</span><span class="p">();</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="p">}</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">fill</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;?</span><span class="w"> </span><span class="kd">super</span><span class="w"> </span><span class="n">Integer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">     </span><span class="c1">// accepts List&lt;Integer&gt;, List&lt;Number&gt;, List&lt;Object&gt;; we only write</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="n">out</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">}</span>
+</code></pre></div>
+<p><code>Collections.copy(List&lt;? super T&gt; dest, List&lt;? extends T&gt; src)</code> in the JDK is the textbook example: it reads from <code>src</code> (producer) and writes to <code>dest</code> (consumer).</p>
+<h3 id="exceptions">Exceptions<a class="headerlink" href="#exceptions" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Checked vs unchecked.</strong> <em>Checked</em> exceptions are subclasses of <code>Exception</code> that are not subclasses of <code>RuntimeException</code> (for example <code>IOException</code>, <code>SQLException</code>). The compiler forces you to either catch them or declare them with <code>throws</code>, because they represent failures a caller can reasonably expect and recover from (a file is missing, the network dropped). <em>Unchecked</em> exceptions are <code>RuntimeException</code> and its subclasses (<code>NullPointerException</code>, <code>IllegalArgumentException</code>) plus <code>Error</code> (<code>OutOfMemoryError</code>). The compiler does not force handling: runtime exceptions usually signal programming bugs, and errors signal JVM problems you normally cannot fix in code. Spring, by default, rolls a transaction back only for unchecked exceptions, which is why this distinction matters in practice (see <a href="../../spring/04-transactions/">Transactions</a>).</li>
+<li><strong><code>finally</code> runs even after <code>return</code>.</strong> When the <code>try</code> block executes <code>return x</code>, the JVM evaluates <code>x</code>, stores the result, runs <code>finally</code>, and only then returns the stored result. A <code>return</code> inside <code>finally</code> replaces that stored result, so it <strong>overrides</strong> the try's return value. Worse, if the <code>try</code> threw an exception, a <code>return</code> in <code>finally</code> discards the exception entirely: the caller sees a normal return and never learns something failed. That is why you should never return (or throw) from <code>finally</code>.</li>
+<li><strong>When <code>finally</code> does not run.</strong> <code>finally</code> is implemented by the JVM executing the block on the way out of <code>try</code>. If the JVM itself stops (<code>System.exit()</code>, <code>Runtime.halt()</code>, <code>kill -9</code>, power loss, a fatal JVM crash), there is no "way out" left to run it. Code that must survive such events (for example committing data) needs durable storage, not <code>finally</code>.</li>
+<li><strong>try-with-resources.</strong> Any object implementing <code>AutoCloseable</code> declared in <code>try (...)</code> is closed automatically when the block ends, whether normally or by exception. Resources are closed in <strong>reverse</strong> declaration order, because later resources often depend on earlier ones (a <code>PreparedStatement</code> was created from a <code>Connection</code>, so the statement must be closed before the connection). If both the body and <code>close()</code> throw, the <strong>body's</strong> exception is the one thrown, because it describes the real failure; the <code>close()</code> exception is attached to it as a <strong>suppressed</strong> exception, retrievable via <code>getSuppressed()</code>, so no information is lost. (The old manual <code>try/finally { close(); }</code> pattern did the opposite: an exception from <code>close()</code> replaced the original.)</li>
+<li><strong>Catch order.</strong> <code>catch</code> clauses are checked top to bottom, and the first match wins. If you catch <code>Exception</code> before <code>IOException</code>, the <code>IOException</code> clause could never run, so the compiler reports it as an error ("exception has already been caught"). Put the most specific types first.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kd">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">f</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">       </span><span class="c1">// 1 is computed and saved as the pending return value</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">   </span><span class="c1">// replaces the pending value: f() returns 2 (and would swallow any exception)</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="keywords-people-mix-up">Keywords people mix up<a class="headerlink" href="#keywords-people-mix-up" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>final</code></td>
+<td>On a <strong>variable</strong>: it can be assigned only once. On a <strong>method</strong>: subclasses cannot override it. On a <strong>class</strong>: nobody can extend it (<code>String</code> is final so nobody can create a mutable subclass of it). Note that <code>final</code> protects the <em>variable</em>, not the object: a <code>final List&lt;String&gt;</code> cannot be pointed at another list, but you can still call <code>add</code> on it. For an unmodifiable list use <code>List.of(...)</code> or <code>List.copyOf(...)</code>.</td>
+</tr>
+<tr>
+<td><code>finally</code></td>
+<td>A block after <code>try</code>/<code>catch</code> that runs whether the <code>try</code> finished normally, returned early, or threw. Used for cleanup (release locks, close resources).</td>
+</tr>
+<tr>
+<td><code>finalize()</code></td>
+<td>A method the garbage collector used to call before reclaiming an object. It is deprecated for removal (since Java 9, marked for removal in 18) because it runs at an unpredictable time or never, slows GC, and can accidentally resurrect objects. Use <code>try-with-resources</code> for deterministic cleanup, or <code>java.lang.ref.Cleaner</code> as a safety net.</td>
+</tr>
+<tr>
+<td><code>static</code></td>
+<td>The member belongs to the class itself, with one copy shared by all instances, rather than one per object. A <strong>static nested class</strong> is just a class scoped inside another and holds no hidden link to an outer object. A non-static <strong>inner class</strong> silently stores a reference to the outer instance that created it (that is how it can read the outer object's fields). If the inner object lives long (a listener, a cached callback), it keeps the whole outer object alive, which is a common memory leak. Prefer static nested classes unless you really need the outer instance.</td>
+</tr>
+<tr>
+<td><code>transient</code></td>
+<td>Tells Java serialization (<code>ObjectOutputStream</code>) to skip this field, typically for derived values, caches, or secrets like passwords. After deserialization the field holds its default value (<code>null</code>, <code>0</code>, <code>false</code>). It has no effect on JSON libraries like Jackson unless they are configured to honour it.</td>
+</tr>
+<tr>
+<td><code>volatile</code></td>
+<td>Guarantees that a write by one thread is immediately visible to reads by other threads, and stops the compiler/CPU from reordering accesses around it. It does <strong>not</strong> make compound actions like <code>count++</code> atomic. See <a href="../03-concurrency/">Concurrency</a>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="code-you-should-be-able-to-write">Code you should be able to write<a class="headerlink" href="#code-you-should-be-able-to-write" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Point</span><span class="w"> </span><span class="p">{</span><span class="w">                          </span><span class="c1">// final: no subclass can break equals symmetry or mutate state</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">;</span><span class="w">                          </span><span class="c1">// private final: set once in the constructor, never changed</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">Point</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="na">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="na">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="nd">@Override</span><span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">equals</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">o</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">o</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w">                  </span><span class="c1">// fast path: same object is always equal (reflexive)</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="k">instanceof</span><span class="w"> </span><span class="n">Point</span><span class="w"> </span><span class="n">p</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span><span class="w">   </span><span class="c1">// also handles o == null, since null instanceof X is false</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="na">x</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="na">y</span><span class="p">;</span><span class="w">                 </span><span class="c1">// compare exactly the fields that define identity</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">    </span><span class="nd">@Override</span><span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">hashCode</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Objects</span><span class="p">.</span><span class="na">hash</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// uses the SAME fields as equals, so Rule 1 holds</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="p">}</span>
+</code></pre></div>
+<p>The key discipline: <strong><code>hashCode</code> must use only fields that <code>equals</code> also uses.</strong> It may use fewer (that only causes more collisions), but never a field that <code>equals</code> ignores, or two equal objects could get different hash codes.</p>
+<p><strong>Immutable class checklist</strong> and why each item is needed:</p>
+<ul>
+<li><strong><code>final</code> class</strong>: otherwise a subclass could add mutable state or override methods to change behaviour.</li>
+<li><strong><code>private final</code> fields</strong>: <code>private</code> stops outside code from writing them; <code>final</code> stops even the class's own methods from reassigning them after construction, and gives safe publication to other threads (see the Java Memory Model in <a href="../03-concurrency/">Concurrency</a>).</li>
+<li><strong>No setters</strong>: nothing can change state after construction.</li>
+<li><strong>Defensive copies of mutable inputs and outputs</strong>: if the constructor stores a <code>List</code> the caller passed in, the caller can still modify that list afterwards and change your "immutable" object. Copy it on the way in (<code>this.items = List.copyOf(items);</code>). If a getter returns an internal mutable object, the caller could modify it, so return an unmodifiable view or copy.</li>
+</ul>
+<h2 id="traps">Traps<a class="headerlink" href="#traps" title="Permanent link">&para;</a></h2>
+<ul>
+<li>"Java passes objects by reference." <strong>False.</strong> Java copies the reference value into the parameter. You can mutate the shared object, but reassigning the parameter never affects the caller's variable.</li>
+<li>"If hash codes are equal, the objects are equal." <strong>False.</strong> Collisions are legal and unavoidable (<code>"Aa"</code> and <code>"BB"</code> share <code>2112</code>). The guarantee only goes the other way: equal objects ⇒ equal hash codes.</li>
+<li>"<code>finally</code> always runs." <strong>Almost</strong>: it runs on normal completion, <code>return</code>, <code>break</code>, <code>continue</code> and exceptions, but not after <code>System.exit</code>, <code>Runtime.halt</code>, a killed process or a JVM crash.</li>
+<li>"<code>Integer a = 1000, b = 1000; a == b</code> is true." <strong>False.</strong> 1000 is outside the -128..127 cache, so autoboxing creates two separate objects and <code>==</code> compares their identities.</li>
+<li>"<code>final List&lt;String&gt; xs</code> cannot change." The <strong>reference</strong> cannot be reassigned; the list's <strong>contents</strong> can still be changed with <code>add</code>/<code>remove</code>. Use <code>List.of</code>/<code>List.copyOf</code> for an unmodifiable list.</li>
+</ul>
+<h2 id="say-it-out-loud">Say it out loud<a class="headerlink" href="#say-it-out-loud" title="Permanent link">&para;</a></h2>
+<p><strong>"Why must hashCode change when equals changes?"</strong>
+Hash-based collections first pick a bucket using <code>hashCode</code>, then compare with <code>equals</code> only inside that bucket. If two equal objects had different hash codes, they would be filed in different buckets, so a lookup with one would never even reach the other, and <code>get</code> would return <code>null</code> even though <code>equals</code> would say they match. The reverse is not required because a hash code is just a 32-bit shortcut: there are far more possible objects than <code>int</code> values, so collisions must happen, and the collection resolves them with <code>equals</code>.</p>
+<p><strong>"Why are Strings immutable?"</strong>
+Four reasons. Security: class names, file paths and URLs are validated and then used, and they cannot be changed between the check and the use. Thread safety: an object that never changes can be shared between threads without locks. Hashing: a string's hash code can never change, so it is a safe map key, and <code>String</code> caches the hash after the first computation. Memory: immutability is what makes the string pool safe, because many variables can share one pooled object without one of them changing it under the others.</p>
+<h2 id="practice-mcqs">Practice MCQs<a class="headerlink" href="#practice-mcqs" title="Permanent link">&para;</a></h2>
+<p><strong>Q1.</strong> What does this print?
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">Integer</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">128</span><span class="p">;</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">Integer</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">((</span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">" "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">d</span><span class="p">));</span>
+</code></pre></div></p>
+<ul>
+<li>A) <code>true true</code></li>
+<li>B) <code>false true</code></li>
+<li>C) <code>false false</code></li>
+<li>D) <code>true false</code></li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Autoboxing calls <code>Integer.valueOf</code>, which returns a shared cached object for -128..127. <code>c</code> and <code>d</code> are both the cached <code>100</code>, so <code>==</code> (identity) is <code>true</code>. <code>128</code> is outside the cache, so <code>a</code> and <code>b</code> are two separate objects and <code>==</code> is <code>false</code>. Using <code>a.equals(b)</code> would give <code>true</code>.</p>
+</details>
+<p><strong>Q2.</strong> What does <code>f()</code> return?
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kd">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">f</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div></p>
+<ul>
+<li>A) 1</li>
+<li>B) 5</li>
+<li>C) Compile error</li>
+<li>D) Undefined</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>A.</strong> At <code>return x</code>, the JVM copies the current value (1) into a hidden return slot, then runs <code>finally</code>. Assigning <code>x = 5</code> changes the local variable, not the already-saved return value, so the method returns 1. Only a <code>return</code> statement inside <code>finally</code> would replace the saved value. (If <code>x</code> were a mutable object and <code>finally</code> mutated it, the caller <em>would</em> see the change, because the saved value is a reference to that same object.)</p>
+</details>
+<p><strong>Q3.</strong> Which declaration lets you <strong>add</strong> an <code>Integer</code> to the list?</p>
+<ul>
+<li>A) <code>List&lt;? extends Number&gt;</code></li>
+<li>B) <code>List&lt;? super Integer&gt;</code></li>
+<li>C) <code>List&lt;? extends Integer&gt;</code></li>
+<li>D) <code>List&lt;?&gt;</code></li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> <code>? super Integer</code> means the real list is <code>List&lt;Integer&gt;</code>, <code>List&lt;Number&gt;</code> or <code>List&lt;Object&gt;</code>, and all of those can safely hold an <code>Integer</code> ("Consumer Super"). With A or C the real list might be, say, a <code>List&lt;Double&gt;</code> or some narrower type, so the compiler cannot prove adding an <code>Integer</code> is safe and only allows <code>null</code>. D (<code>?</code>) means "unknown type", which has the same restriction.</p>
+</details>
+<p><strong>Q4.</strong> <code>new BigDecimal("2.0").equals(new BigDecimal("2.00"))</code> returns:</p>
+<ul>
+<li>A) <code>true</code></li>
+<li>B) <code>false</code></li>
+<li>C) Throws <code>ArithmeticException</code></li>
+<li>D) Depends on the rounding mode</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> <code>BigDecimal.equals</code> compares both the value <strong>and the scale</strong> (digits after the decimal point): <code>2.0</code> has scale 1 and <code>2.00</code> has scale 2, so they are not <code>equals</code>. <code>compareTo</code> ignores scale and returns 0 for these, so use <code>a.compareTo(b) == 0</code> when you mean "same number". No rounding happens in either comparison, so D is wrong.</p>
+</details>
+<p><strong>Q5.</strong> Two overloads exist: <code>void m(Object o)</code> and <code>void m(String s)</code>. What does <code>m(null)</code> call?</p>
+<ul>
+<li>A) <code>m(Object)</code></li>
+<li>B) <code>m(String)</code></li>
+<li>C) Compile error: ambiguous</li>
+<li>D) <code>NullPointerException</code></li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> <code>null</code> matches both, so the compiler chooses the most specific one. <code>String</code> is a subtype of <code>Object</code>, so <code>m(String)</code> is more specific and wins. If the overloads were <code>m(String)</code> and <code>m(Integer)</code>, neither is a subtype of the other, so there is no single most specific candidate and the call is a compile error. No NPE happens because nothing is dereferenced at the call site.</p>
+</details>
+<p><strong>Q6.</strong> Why does this fail to compile?
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kt">void</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+</code></pre></div></p>
+<ul>
+<li>A) Methods cannot take generic parameters</li>
+<li>B) Both methods have the same erasure</li>
+<li>C) <code>List</code> is an interface</li>
+<li>D) It compiles fine</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Type erasure removes <code>&lt;String&gt;</code> and <code>&lt;Integer&gt;</code> during compilation, so both methods become <code>process(List)</code> in bytecode. A class cannot have two methods with the same name and the same erased parameter types ("name clash: have the same erasure"). Rename one method or take a different parameter type.</p>
+</details>
+<p><strong>Q7.</strong> A try-with-resources body throws <code>IOException("body")</code>, and <code>close()</code> throws <code>IOException("close")</code>. What is thrown?</p>
+<ul>
+<li>A) <code>close</code>, with <code>body</code> suppressed</li>
+<li>B) <code>body</code>, with <code>close</code> suppressed</li>
+<li>C) Both are lost</li>
+<li>D) A new <code>MultipleException</code></li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> The body's exception describes the real failure, so it propagates; the exception from <code>close()</code> is attached to it with <code>addSuppressed</code> and can be read with <code>e.getSuppressed()</code>. Option A describes the behaviour of the old manual <code>try/finally</code> pattern, which is exactly the problem try-with-resources was designed to fix. <code>MultipleException</code> does not exist.</p>
+</details>
+<p><strong>Q8.</strong> Which statement about a <code>static</code> method in a subclass with the same signature as the parent is true?</p>
+<ul>
+<li>A) It overrides the parent method</li>
+<li>B) It hides the parent method; the call depends on the reference type</li>
+<li>C) It is a compile error</li>
+<li>D) It is called via dynamic dispatch</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Static methods belong to the class, not an object, so there is no object for dynamic dispatch to inspect. The compiler binds the call from the declared type: <code>Parent p = new Child(); p.s()</code> calls <code>Parent.s()</code>. This is called hiding. It compiles fine (C is wrong), but adding <code>@Override</code> to it would be a compile error.</p>
+</details>
+<h2 id="related">Related<a class="headerlink" href="#related" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../02-collections-internals/">Collections internals</a>: how <code>HashMap</code> uses <code>hashCode</code> to choose a bucket and <code>equals</code> to search inside it, and what happens when buckets get crowded.</li>
+<li><a href="../05-modern-java/">Modern Java</a>: records generate correct <code>equals</code>/<code>hashCode</code>/<code>toString</code> for you.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../start-here/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Start here">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Start here
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../02-collections-internals/" class="md-footer__link md-footer__link--next" aria-label="Next: Collections internals">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Collections internals
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+    
+  </body>
+</html>

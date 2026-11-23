@@ -1,0 +1,1581 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A free interview handbook for Java, the JVM and Spring Boot. Every topic starts with the mental model, shows where people get it wrong, and ends with practice MCQs.">
+      
+      
+      
+      
+        <link rel="prev" href="../04-transactions/">
+      
+      
+        <link rel="next" href="../06-security/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.39">
+    
+    
+      
+        <title>JPA & Hibernate pitfalls - Java & Spring Boot, Step by Step</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#jpa-hibernate-pitfalls" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-header__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Java & Spring Boot, Step by Step
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              JPA & Hibernate pitfalls
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-nav__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Java & Spring Boot, Step by Step
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../start-here/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Start here
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Java
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Java
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/01-core-language/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core language traps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/02-collections-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Collections internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/03-concurrency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Concurrency
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/04-streams/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Streams & functional
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/05-modern-java/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modern Java (8 to 21+)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    JVM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            JVM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/01-memory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Memory & class loading
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/02-garbage-collection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Garbage collection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/03-performance-troubleshooting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JIT, tools & troubleshooting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Spring
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Spring
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-ioc-di/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IoC, DI & bean lifecycle
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-boot-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Boot internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-proxies-aop/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Proxies & AOP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-transactions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Transactions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    JPA & Hibernate pitfalls
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    JPA & Hibernate pitfalls
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model-entity-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model: entity states
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-fetch-types-memorise" class="md-nav__link">
+    <span class="md-ellipsis">
+      Default fetch types (memorise)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-n1-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      The N+1 problem
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fetch-join-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fetch-join pitfalls
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lazyinitializationexception" class="md-nav__link">
+    <span class="md-ellipsis">
+      LazyInitializationException
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save-semantics-in-spring-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      save() semantics in Spring Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id-generation-and-batching" class="md-nav__link">
+    <span class="md-ellipsis">
+      ID generation and batching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bulk-operations-bypass-the-persistence-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bulk operations bypass the persistence context
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relationships" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationships
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#equalshashcode-for-entities" class="md-nav__link">
+    <span class="md-ellipsis">
+      equals/hashCode for entities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concurrency-lost-updates" class="md-nav__link">
+    <span class="md-ellipsis">
+      Concurrency: lost updates
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-security/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Security
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-web-testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Web, validation & testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Practice
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Practice
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/mock-test/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mixed mock test (40 MCQs)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/cheat-sheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    One-page cheat sheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model-entity-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model: entity states
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-fetch-types-memorise" class="md-nav__link">
+    <span class="md-ellipsis">
+      Default fetch types (memorise)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-n1-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      The N+1 problem
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fetch-join-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fetch-join pitfalls
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lazyinitializationexception" class="md-nav__link">
+    <span class="md-ellipsis">
+      LazyInitializationException
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save-semantics-in-spring-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      save() semantics in Spring Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id-generation-and-batching" class="md-nav__link">
+    <span class="md-ellipsis">
+      ID generation and batching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bulk-operations-bypass-the-persistence-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bulk operations bypass the persistence context
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relationships" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationships
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#equalshashcode-for-entities" class="md-nav__link">
+    <span class="md-ellipsis">
+      equals/hashCode for entities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concurrency-lost-updates" class="md-nav__link">
+    <span class="md-ellipsis">
+      Concurrency: lost updates
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="jpa-hibernate-pitfalls">JPA &amp; Hibernate pitfalls<a class="headerlink" href="#jpa-hibernate-pitfalls" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>TL;DR</strong> <strong>JPA</strong> is the standard Java API for mapping objects to database tables (ORM), and <strong>Hibernate</strong> is the implementation Spring Boot uses. JPA manages entities through a <strong>persistence context</strong>: a per-transaction workspace that remembers every entity it has loaded (the <em>first-level cache</em>) and automatically writes changes back at the end (<em>dirty checking</em>). Most production problems come from <strong>N+1 queries</strong>, <strong>lazy loading outside a transaction</strong>, the <strong>EAGER default on <code>@ManyToOne</code></strong>, <strong>IDENTITY ids disabling batch inserts</strong>, and <strong>lost updates</strong> without <code>@Version</code>. Fetch what you need explicitly, per use case.</p>
+</blockquote>
+<h2 id="mental-model-entity-states">Mental model: entity states<a class="headerlink" href="#mental-model-entity-states" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>stateDiagram-v2
+    [*] --&gt; Transient: new Order()
+    Transient --&gt; Managed: persist() / save()
+    Managed --&gt; Detached: transaction ends / clear() / detach()
+    Detached --&gt; Managed: merge() returns a NEW managed copy
+    Managed --&gt; Removed: remove()
+    Removed --&gt; [*]: commit (DELETE)
+    Managed --&gt; Managed: field change → dirty checking → UPDATE at flush</code></pre>
+<p>An entity object is always in one of four states relative to a persistence context:</p>
+<ul>
+<li><strong>Transient</strong>: a plain object you just created with <code>new</code>. JPA knows nothing about it; it has no database row yet.</li>
+<li><strong>Managed</strong>: the persistence context is tracking it, because you persisted it or loaded it in the current transaction. Its changes will be saved automatically.</li>
+<li><strong>Detached</strong>: it <em>was</em> managed, but the persistence context has closed (the transaction ended) or explicitly let it go (<code>clear()</code>, <code>detach()</code>). It still holds data and an id, but changes to it are no longer tracked, and unloaded lazy associations can no longer be loaded.</li>
+<li><strong>Removed</strong>: scheduled for deletion; the <code>DELETE</code> runs at flush/commit.</li>
+</ul>
+<p>Inside a transaction, a <strong>managed</strong> entity is tracked: change a field and Hibernate issues an <code>UPDATE</code> at <strong>flush</strong> time (when it sends pending changes to the database, at the latest at commit), <strong>without</strong> you calling <code>save()</code>. This works by <strong>dirty checking</strong>: when Hibernate loads an entity it keeps a snapshot of its original values, and at flush it compares each managed entity with its snapshot and generates <code>UPDATE</code>s for the ones that changed.</p>
+<p>Load the same id twice in one persistence context and you get the <strong>same Java instance</strong> (the first-level cache): the second <code>findById</code> doesn't even hit the database. This guarantees there is only one in-memory version of each row per transaction, so two parts of your code can't hold conflicting copies.</p>
+<h2 id="deep-dive">Deep dive<a class="headerlink" href="#deep-dive" title="Permanent link">&para;</a></h2>
+<h3 id="default-fetch-types-memorise">Default fetch types (memorise)<a class="headerlink" href="#default-fetch-types-memorise" title="Permanent link">&para;</a></h3>
+<p>When you load an entity, its associations can be loaded right away (<strong>EAGER</strong>) or only when you first access them (<strong>LAZY</strong>). A lazy association is a placeholder <strong>proxy</strong> (or, for collections, a wrapper) that runs a query the first time you touch it.</p>
+<table>
+<thead>
+<tr>
+<th>Relationship</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>@ManyToOne</code></td>
+<td><strong>EAGER</strong></td>
+</tr>
+<tr>
+<td><code>@OneToOne</code></td>
+<td><strong>EAGER</strong></td>
+</tr>
+<tr>
+<td><code>@OneToMany</code></td>
+<td>LAZY</td>
+</tr>
+<tr>
+<td><code>@ManyToMany</code></td>
+<td>LAZY</td>
+</tr>
+</tbody>
+</table>
+<p>The rule of thumb behind the defaults: an association pointing to <strong>one</strong> entity is EAGER, an association pointing to <strong>many</strong> is LAZY. The JPA spec chose this, not Hibernate, and it's widely considered the wrong default for the <code>*ToOne</code> cases.</p>
+<p><strong>Make everything LAZY</strong> (<code>@ManyToOne(fetch = FetchType.LAZY)</code>) and fetch explicitly per query. EAGER is a property of the <em>mapping</em>, so it applies <strong>everywhere</strong> the entity is loaded, by every query, and <strong>can't be switched off for an individual query</strong>. Loading 100 orders with an EAGER <code>customer</code> (when the query doesn't join it) triggers up to 100 extra queries for customers, even on screens that never show the customer: a surprise N+1. LAZY lets each use case decide what it needs.</p>
+<h3 id="the-n1-problem">The N+1 problem<a class="headerlink" href="#the-n1-problem" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">List</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="w"> </span><span class="n">orders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">orderRepo</span><span class="p">.</span><span class="na">findAll</span><span class="p">();</span><span class="w">              </span><span class="c1">// 1 query: SELECT * FROM orders  → say 100 rows</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Order</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">orders</span><span class="p">)</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="na">getCustomer</span><span class="p">().</span><span class="na">getName</span><span class="p">();</span><span class="w">      </span><span class="c1">// +N queries: each lazy customer proxy runs SELECT ... WHERE id = ?</span>
+</code></pre></div>
+<p>You run <strong>1</strong> query to get the list, then <strong>N</strong> more, one per row, to load an association: 101 round trips instead of 1 or 2. Each query is fast, so it looks fine with 10 rows in development and becomes a disaster with 10,000 rows in production, because latency grows with the data.</p>
+<p>Fixes:</p>
+<table>
+<thead>
+<tr>
+<th>Fix</th>
+<th>Example</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JOIN FETCH</td>
+<td><code>select o from Order o join fetch o.customer</code></td>
+<td>Loads orders <em>and</em> their customers in <strong>one SQL join</strong> and fills in the associations. Per-query and explicit: only this query pays for the join.</td>
+</tr>
+<tr>
+<td><code>@EntityGraph</code></td>
+<td><code>@EntityGraph(attributePaths = "customer") List&lt;Order&gt; findByStatus(...)</code></td>
+<td>Declares "also fetch these associations" on a repository method. Works with Spring Data <strong>derived queries</strong> (method-name queries), where you can't write JPQL.</td>
+</tr>
+<tr>
+<td>Batch fetching</td>
+<td><code>spring.jpa.properties.hibernate.default_batch_fetch_size=50</code></td>
+<td>When one lazy proxy is initialised, Hibernate loads up to 50 pending proxies of the same type at once with <code>WHERE id IN (?, ?, ...)</code>. N queries become about N/50. It needs no code changes, which makes it a good <strong>global safety net</strong>.</td>
+</tr>
+<tr>
+<td>DTO projection</td>
+<td><code>select new com.acme.OrderView(o.id, c.name) from Order o join o.customer c</code></td>
+<td>Selects only the columns needed, directly into a plain object (a class or record). <strong>Best for read-only screens</strong>: no entities, so no persistence-context tracking, no dirty checking, and no lazy-loading surprises later.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Detect it</strong>: enable SQL logging in development (<code>spring.jpa.show-sql=true</code> or the <code>org.hibernate.SQL</code> logger) and look for repeated identical queries, or turn on <code>hibernate.generate_statistics=true</code> in tests and <strong>assert the query count</strong> for important use cases, so a future change that introduces an N+1 fails the build.</p>
+<h3 id="fetch-join-pitfalls">Fetch-join pitfalls<a class="headerlink" href="#fetch-join-pitfalls" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Pagination + collection fetch join</strong>: joining a <code>@OneToMany</code> collection returns <strong>one SQL row per child</strong>: an order with 5 items appears 5 times. A SQL <code>LIMIT 10</code> would therefore cut off after 10 <em>rows</em>, maybe 2 orders, one of them with half its items. So Hibernate refuses to apply <code>LIMIT</code> in SQL: it fetches <strong>all</strong> matching rows, then paginates <strong>in memory</strong>, logging warning HHH90003004 ("firstResult/maxResults specified with collection fetch; applying in memory"). On a large table that means loading everything into the heap. Fixes: first query just one page of <strong>parent ids</strong> (<code>select o.id from Order o ...</code> with <code>Pageable</code>), then fetch-join those parents with <code>where o.id in (:ids)</code>; or skip the fetch join and rely on batch fetching.</li>
+<li><strong><code>MultipleBagFetchException</code></strong>: a <em>bag</em> is Hibernate's name for an unordered <code>List</code> collection with no index column. Fetch-joining <strong>two bags</strong> at once (e.g. <code>order.items</code> and <code>order.payments</code>, both <code>List</code>) is rejected, because the join produces a <strong>cartesian product</strong> (every item paired with every payment: 10 × 10 = 100 rows per order), and with bags Hibernate cannot tell genuine duplicates from join duplicates. Use <code>Set</code> for one of them, or, better, <strong>fetch them in separate queries</strong>, which also avoids the cartesian explosion even when <code>Set</code> would make it legal.</li>
+</ul>
+<h3 id="lazyinitializationexception">LazyInitializationException<a class="headerlink" href="#lazyinitializationexception" title="Permanent link">&para;</a></h3>
+<p>It happens when you access a lazy association <strong>after</strong> the persistence context has closed, i.e. outside the transaction. The proxy needs a database session to run its query, and the session is gone. Typical places: in a <strong>controller</strong> after the <code>@Transactional</code> service method has returned, or during <strong>JSON serialization</strong> when Jackson walks the entity's getters.</p>
+<p><strong>Fixes</strong>: fetch everything the use case needs <strong>inside</strong> the service transaction (JOIN FETCH, entity graph), or, better, return <strong>DTOs</strong> from the service, so nothing lazy ever leaves the transaction and the API shape is decoupled from the database model. <strong>Don't fix it with EAGER</strong>: that makes the error go away for this screen by loading the association for <em>every</em> query everywhere.</p>
+<p><strong>Open Session in View (OSIV)</strong>: Spring Boot sets <code>spring.jpa.open-in-view=true</code> by default (and logs a warning about it at startup). It opens the persistence context at the start of each web request and keeps it open until the response is written, so lazy loading works in controllers and during serialization. The costs: it <strong>hides</strong> lazy-loading problems (N+1 queries now silently happen during JSON rendering, outside any transaction), and it <strong>holds a database connection for the whole request</strong>, including slow serialization and network writes, which reduces the throughput of the connection pool. Most teams set it to <strong><code>false</code></strong> and fix the fetching properly.</p>
+<h3 id="save-semantics-in-spring-data"><code>save()</code> semantics in Spring Data<a class="headerlink" href="#save-semantics-in-spring-data" title="Permanent link">&para;</a></h3>
+<p>Spring Data's <code>repository.save(entity)</code> decides between two JPA operations:</p>
+<ul>
+<li><strong>New entity</strong> (its id is <code>null</code>, or, if it has a <code>@Version</code> field of a wrapper type, the version is <code>null</code>) → <strong><code>persist</code></strong>: the object itself becomes managed and an <code>INSERT</code> is scheduled.</li>
+<li><strong>Otherwise</strong> → <strong><code>merge</code></strong>: JPA loads the current row (or uses the managed instance if already loaded), <strong>copies your object's state onto a managed instance</strong>, and <strong>returns that managed instance</strong>, which is a <em>different object</em> from the one you passed in. Your original stays detached. So always use the return value: <code>entity = repo.save(entity);</code>. Changes made afterwards to the old reference are not tracked. Note that if you assign ids yourself (e.g. UUIDs set in code), every <code>save</code> of a new entity looks "not new" and takes the slower <code>merge</code> path, with an extra <code>SELECT</code>; implement <code>Persistable&lt;ID&gt;</code> to tell Spring Data when an entity is new.</li>
+<li><strong>Calling <code>save()</code> on an already <em>managed</em> entity is redundant</strong>: dirty checking will write the changes anyway at flush. It does no harm, but it suggests the developer expected <code>save()</code> to be what writes the update.</li>
+</ul>
+<h3 id="id-generation-and-batching">ID generation and batching<a class="headerlink" href="#id-generation-and-batching" title="Permanent link">&para;</a></h3>
+<p><strong>JDBC batching</strong> sends many <code>INSERT</code>s to the database in one network round trip instead of one each, which is often 10× faster for bulk writes. Whether Hibernate can batch depends on how ids are generated:</p>
+<ul>
+<li><strong><code>GenerationType.IDENTITY</code></strong> (an auto-increment column, <code>SERIAL</code> / <code>AUTO_INCREMENT</code>): the database assigns the id only when the row is inserted. But a managed entity <em>must</em> have an id (it's the key in the persistence context), so Hibernate has to execute each <code>INSERT</code> <strong>immediately</strong> at <code>persist()</code> to learn its id. It can't hold inserts back to send them together, so <strong>JDBC batch inserts are disabled</strong> for that entity.</li>
+<li><strong><code>GenerationType.SEQUENCE</code></strong> with an <code>allocationSize</code> (the <em>pooled</em> optimizer): Hibernate asks a database sequence for a <strong>block</strong> of ids, e.g. 50 at once, assigns them in memory without any database access, and can delay and batch the actual inserts. Turn batching on with <code>hibernate.jdbc.batch_size=50</code>, plus <code>hibernate.order_inserts=true</code> and <code>hibernate.order_updates=true</code>, which group statements by table so consecutive statements can share a batch. The <code>allocationSize</code> must match the sequence's <code>INCREMENT BY</code> in the database. (MySQL has no sequences, which is why it typically uses IDENTITY.)</li>
+<li><strong>For bulk loads, flush and <code>clear()</code> the persistence context every batch.</strong> Every entity you persist stays in the persistence context (plus its snapshot for dirty checking) until the transaction ends. Inserting a million rows in one transaction keeps a million entities in memory, and dirty checking gets slower with each one. Every <code>batch_size</code> entities, call <code>entityManager.flush()</code> (send the SQL) and <code>entityManager.clear()</code> (forget the entities).</li>
+</ul>
+<h3 id="bulk-operations-bypass-the-persistence-context">Bulk operations bypass the persistence context<a class="headerlink" href="#bulk-operations-bypass-the-persistence-context" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nd">@Modifying</span><span class="p">(</span><span class="n">clearAutomatically</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w">   </span><span class="c1">// @Modifying: this @Query changes data; clearAutomatically: clear the persistence context afterwards</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nd">@Query</span><span class="p">(</span><span class="s">"update Product p set p.price = p.price * 1.1 where p.category = :c"</span><span class="p">)</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kt">int</span><span class="w"> </span><span class="nf">raisePrices</span><span class="p">(</span><span class="nd">@Param</span><span class="p">(</span><span class="s">"c"</span><span class="p">)</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">c</span><span class="p">);</span><span class="w">  </span><span class="c1">// returns the number of rows updated</span>
+</code></pre></div>
+<p>A JPQL bulk <code>UPDATE</code> or <code>DELETE</code> is translated straight into one SQL statement and executed in the <strong>database</strong>. It doesn't go through the managed entities, so any <code>Product</code> entities <strong>already loaded in memory</strong> in this persistence context still hold the <strong>old</strong> prices: they are <strong>stale</strong>. Worse, if one of them is later modified, its stale values could be written back. <code>clearAutomatically = true</code> clears the persistence context after the update, so later reads fetch fresh data. Bulk statements also skip lifecycle callbacks (<code>@PreUpdate</code>), entity listeners, cascades and optimistic version checks.</p>
+<p>Also: <strong><code>deleteAll()</code> loads every entity and deletes them one by one</strong>. It runs a <code>SELECT</code> of all rows, then one <code>DELETE</code> per entity, so that cascades and lifecycle callbacks run for each. That is very slow for big tables. <strong><code>deleteAllInBatch()</code></strong> issues a single <code>DELETE FROM</code> statement, which is fast, but for exactly that reason <strong>skips cascades and lifecycle callbacks</strong>, so child rows aren't removed by JPA (rely on database <code>ON DELETE CASCADE</code>, or delete the children first).</p>
+<h3 id="relationships">Relationships<a class="headerlink" href="#relationships" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>The owning side</strong> is the side that controls the <strong>foreign key column</strong>. In a bidirectional <code>Order</code>/<code>Customer</code> relationship, the <code>@ManyToOne Customer customer</code> field on <code>Order</code> maps the <code>orders.customer_id</code> column, so it is the owning side. The <code>@OneToMany(mappedBy = "customer") List&lt;Order&gt; orders</code> on <code>Customer</code> is the <strong>inverse</strong> side: <code>mappedBy</code> says "this is just a mirror of the <code>customer</code> field over there". <strong>Only changes on the owning side are persisted.</strong> If you only do <code>customer.getOrders().add(order)</code>, nothing tells Hibernate what to write into <code>customer_id</code>, so the link is <strong>not saved</strong>. (A unidirectional <code>@OneToMany</code> with no <code>mappedBy</code> is itself the owner, usually through a join table, but that mapping is generally less efficient.)</li>
+<li><strong>Keep both sides in sync with helper methods</strong>, so the in-memory object graph and the database always agree, and nobody has to remember to update both sides:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">addItem</span><span class="p">(</span><span class="n">OrderItem</span><span class="w"> </span><span class="n">item</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">items</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">item</span><span class="p">);</span><span class="w"> </span><span class="n">item</span><span class="p">.</span><span class="na">setOrder</span><span class="p">(</span><span class="k">this</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w">      </span><span class="c1">// set the inverse side (list) AND the owning side (FK)</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">removeItem</span><span class="p">(</span><span class="n">OrderItem</span><span class="w"> </span><span class="n">item</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">items</span><span class="p">.</span><span class="na">remove</span><span class="p">(</span><span class="n">item</span><span class="p">);</span><span class="w"> </span><span class="n">item</span><span class="p">.</span><span class="na">setOrder</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><strong><code>cascade = CascadeType.ALL</code> belongs on parent → child</strong> (<code>Order</code> → <code>@OneToMany items</code>): an order <em>owns</em> its items, so persisting, merging or deleting the order should do the same to its items. <strong>Never put it on <code>@ManyToOne</code></strong> (child → parent): <code>Order.customer</code> with <code>CascadeType.REMOVE</code> means deleting one order deletes the customer, and with it potentially the customer's other orders.</li>
+<li><strong><code>orphanRemoval = true</code></strong> deletes a child row when it is <strong>removed from the parent's collection</strong> (<code>order.removeItem(item)</code> issues a <code>DELETE</code> for the item), not just when the parent is deleted. Use it when children can't exist without their parent.</li>
+</ul>
+<h3 id="equalshashcode-for-entities">equals/hashCode for entities<a class="headerlink" href="#equalshashcode-for-entities" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Don't use Lombok <code>@Data</code> on entities.</strong> It generates <code>equals</code>, <code>hashCode</code> and <code>toString</code> from <strong>all fields</strong>, including associations. Calling them then <strong>touches lazy associations</strong>, which triggers extra queries, or a <code>LazyInitializationException</code> outside a transaction. In <strong>bidirectional</strong> relationships, <code>Order.toString()</code> calls <code>Customer.toString()</code>, which prints its orders, which print their customer, and so on: infinite recursion ending in <code>StackOverflowError</code>. Use <code>@Getter</code>/<code>@Setter</code> and write <code>equals</code>/<code>hashCode</code> deliberately.</li>
+<li><strong>Generated ids make naive equality unstable.</strong> A database-generated id is <code>null</code> until the entity is persisted. If <code>hashCode</code> is based on the id, it <strong>changes</strong> when the entity is saved. A <code>HashSet</code> stores an element in a bucket based on the hash code at insertion time, so after saving, <code>set.contains(entity)</code> looks in a different bucket and returns <code>false</code>: the "mutable key" problem from <a href="../../java/01-core-language/">Core language traps</a>. Two safe options:<ul>
+<li>Base <code>equals</code>/<code>hashCode</code> on a <strong>natural or business key</strong> that exists from the start and never changes (an ISBN, an email address, a UUID assigned in the constructor).</li>
+<li>Use an <strong>id-based <code>equals</code></strong> that treats two entities as equal only when both ids are non-null and equal, together with a <strong>constant <code>hashCode</code></strong> (e.g. <code>return getClass().hashCode();</code>). A constant hash code is legal, because equal objects must have equal hash codes but unequal ones may collide, and it never changes when the id is assigned. The cost, all entities of that type sharing one bucket, only matters for very large sets.</li>
+</ul>
+</li>
+</ul>
+<h3 id="concurrency-lost-updates">Concurrency: lost updates<a class="headerlink" href="#concurrency-lost-updates" title="Permanent link">&para;</a></h3>
+<p>A <strong>lost update</strong> happens when two transactions read the same row, both modify it based on what they read, and the second write silently overwrites the first. Two users both load a balance of 100; one adds 50, the other subtracts 30; the final value is 70 or 150 instead of 120.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nd">@Entity</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Account</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nd">@Id</span><span class="w"> </span><span class="n">Long</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nd">@Version</span><span class="w"> </span><span class="n">Long</span><span class="w"> </span><span class="n">version</span><span class="p">;</span><span class="w">     </span><span class="c1">// optimistic locking: Hibernate increments it on every update</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="n">BigDecimal</span><span class="w"> </span><span class="n">balance</span><span class="p">;</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><strong>Optimistic locking (<code>@Version</code>)</strong>: Hibernate includes the version it originally read in every update, <code>UPDATE account SET balance = ?, version = version + 1 WHERE id = ? AND version = ?</code>. If another transaction has updated the row in the meantime, the version no longer matches, <strong>0 rows</strong> are updated, and Hibernate throws, which Spring translates to <code>ObjectOptimisticLockingFailureException</code>. Then you <strong>retry</strong> (re-read and re-apply the change) or report a conflict to the user ("this record was changed by someone else"). It takes no locks, so it is <strong>best for low contention</strong>, where conflicts are rare and retries cheap.</li>
+<li><strong>Pessimistic locking</strong>: <code>@Lock(LockModeType.PESSIMISTIC_WRITE)</code> on a repository method makes Hibernate read with <strong><code>SELECT ... FOR UPDATE</code></strong>, which locks the row in the database until the transaction ends, so any other transaction trying to lock it <strong>waits</strong>. Best for <strong>high-contention hot rows</strong> (a wallet balance updated many times per second, a limited stock counter) where optimistic retries would keep failing. Keep these transactions <strong>short</strong> (other transactions are waiting), and when locking several rows, always acquire them <strong>in a consistent order</strong> (e.g. by id) to avoid deadlocks (see <a href="../../java/03-concurrency/">Concurrency</a>).</li>
+</ul>
+<h2 id="traps">Traps<a class="headerlink" href="#traps" title="Permanent link">&para;</a></h2>
+<ul>
+<li>"<code>@ManyToOne</code> is lazy by default." It's <strong>EAGER</strong> (so is <code>@OneToOne</code>); only the <code>*ToMany</code> associations default to LAZY. Set <code>fetch = LAZY</code> explicitly.</li>
+<li>"You must call <code>save()</code> after changing a managed entity." <strong>Dirty checking</strong> writes changes to managed entities automatically at flush/commit.</li>
+<li>"<code>IDENTITY</code> ids batch fine." Hibernate must execute each insert immediately to get the generated id, so it <strong>disables insert batching</strong> for those entities. Use a pooled SEQUENCE.</li>
+<li>"Fetch join + <code>Pageable</code> paginates in SQL." Not with <strong>collection</strong> fetch joins: Hibernate loads every row and paginates in memory.</li>
+<li>"<code>deleteAll()</code> is one DELETE statement." It <strong>loads all entities and deletes them one by one</strong> (running callbacks and cascades). <code>deleteAllInBatch()</code> is the single statement.</li>
+<li>"Adding to the inverse side's collection persists the relationship." Only the <strong>owning side</strong> (the one mapping the foreign key) is written. Set <code>order.setCustomer(...)</code>.</li>
+</ul>
+<h2 id="say-it-out-loud">Say it out loud<a class="headerlink" href="#say-it-out-loud" title="Permanent link">&para;</a></h2>
+<p><strong>"How do you find and fix N+1 queries?"</strong>
+I catch them in tests, either by logging SQL or by asserting the query count with Hibernate statistics for the important use cases, so a regression fails the build. Then I fix them per use case: a fetch join or an entity graph when I need the entities, a DTO projection for read-only views, and a global <code>default_batch_fetch_size</code> as a safety net that turns any remaining N queries into a few IN queries. I keep all associations lazy, including <code>@ManyToOne</code>, so nothing loads by surprise, and I turn off open-in-view so lazy loading can't silently happen during serialization.</p>
+<p><strong>"Two users update the same account balance at once. How do you prevent a lost update?"</strong>
+For low contention, optimistic locking with a <code>@Version</code> column: the second commit finds the version changed, gets an optimistic locking exception, and I retry or report a conflict. For a hot row like a wallet balance, I'd use a pessimistic <code>SELECT ... FOR UPDATE</code> in a short transaction so writers queue instead of failing, or skip read-modify-write entirely with an atomic SQL update such as <code>UPDATE ... SET balance = balance - :amt WHERE id = :id AND balance &gt;= :amt</code>, which also enforces the no-overdraft rule in one statement.</p>
+<h2 id="practice-mcqs">Practice MCQs<a class="headerlink" href="#practice-mcqs" title="Permanent link">&para;</a></h2>
+<p><strong>Q1.</strong> Default fetch type of <code>@ManyToOne</code>:</p>
+<ul>
+<li>A) LAZY</li>
+<li>B) EAGER</li>
+<li>C) Depends on the database</li>
+<li>D) NONE</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> The JPA specification defaults every <code>*ToOne</code> association (<code>@ManyToOne</code>, <code>@OneToOne</code>) to EAGER and every <code>*ToMany</code> to LAZY. Fetch type is a JPA concept, independent of the database (C), and <code>NONE</code> (D) doesn't exist. Set <code>fetch = FetchType.LAZY</code> explicitly on <code>@ManyToOne</code>.</p>
+</details>
+<p><strong>Q2.</strong> Inside a <code>@Transactional</code> method you load an entity and call <code>setName("x")</code>, without calling <code>save()</code>. At commit:</p>
+<ul>
+<li>A) Nothing is written</li>
+<li>B) An UPDATE is issued by dirty checking</li>
+<li>C) An exception is thrown</li>
+<li>D) An INSERT is issued</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> The loaded entity is managed, so Hibernate kept a snapshot of its original state. At flush (before commit) it compares the entity with the snapshot, sees <code>name</code> changed, and issues an <code>UPDATE</code>. An <code>INSERT</code> (D) is only for new entities. In a <code>readOnly = true</code> transaction, nothing would be flushed.</p>
+</details>
+<p><strong>Q3.</strong> Which id strategy prevents Hibernate from batching inserts?</p>
+<ul>
+<li>A) SEQUENCE</li>
+<li>B) TABLE</li>
+<li>C) IDENTITY</li>
+<li>D) UUID assigned in code</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> With IDENTITY, the id exists only after the row is inserted, and a managed entity needs its id right away, so Hibernate executes each <code>INSERT</code> immediately at <code>persist()</code> and can't group them into a JDBC batch. SEQUENCE (A) and application-assigned UUIDs (D) provide the id before the insert, so inserts can be delayed and batched. TABLE (B) can batch too, but is slow for other reasons (it uses row locks on a table that simulates a sequence).</p>
+</details>
+<p><strong>Q4.</strong> A controller serialises an entity and hits <code>LazyInitializationException</code> with <code>open-in-view=false</code>. Best fix:</p>
+<ul>
+<li>A) Make the association EAGER</li>
+<li>B) Turn <code>open-in-view</code> back on</li>
+<li>C) Fetch the needed data in the service transaction or return a DTO</li>
+<li>D) Catch the exception</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> The data must be loaded while the persistence context is still open, so fetch it explicitly in the service (JOIN FETCH or an entity graph), or map to a DTO there so nothing lazy reaches the web layer. A loads the association in every query everywhere. B hides the problem and holds a database connection for the whole request. D just loses the data.</p>
+</details>
+<p><strong>Q5.</strong> A query fetch-joins a <code>@OneToMany</code> collection and uses <code>Pageable</code>. Hibernate:</p>
+<ul>
+<li>A) Applies LIMIT in SQL correctly</li>
+<li>B) Loads all rows and paginates in memory, with a warning</li>
+<li>C) Throws <code>MultipleBagFetchException</code></li>
+<li>D) Ignores the fetch join</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Joining a collection produces one SQL row per child, so <code>LIMIT</code> on rows wouldn't correspond to a number of parent entities. Hibernate therefore fetches every matching row, paginates in memory and logs warning HHH90003004. Hibernate 6 can be configured to throw instead with <code>hibernate.query.fail_on_pagination_over_collection_fetch=true</code>, which is a good setting for catching it in tests. C only happens when fetching two <code>List</code> collections at once.</p>
+</details>
+<p><strong>Q6.</strong> Two transactions update the same <code>@Version</code>ed entity concurrently. The second to commit gets:</p>
+<ul>
+<li>A) A silent overwrite</li>
+<li>B) <code>ObjectOptimisticLockingFailureException</code></li>
+<li>C) A deadlock</li>
+<li>D) <code>LazyInitializationException</code></li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Both read version 1. The first commit runs <code>UPDATE ... WHERE version = 1</code>, which succeeds and sets version 2. The second commit runs the same statement with <code>version = 1</code>, which matches 0 rows, so Hibernate throws, and Spring translates it to <code>ObjectOptimisticLockingFailureException</code>. A silent overwrite (A) is exactly what <code>@Version</code> prevents. Optimistic locking holds no locks, so no deadlock (C).</p>
+</details>
+<p><strong>Q7.</strong> You only call <code>customer.getOrders().add(order)</code> on a bidirectional relationship where <code>Order.customer</code> is the owning side. After commit:</p>
+<ul>
+<li>A) The foreign key is set</li>
+<li>B) The link is not persisted</li>
+<li>C) Hibernate throws</li>
+<li>D) A join table row is created</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> The <code>orders</code> collection has <code>mappedBy = "customer"</code>, so Hibernate ignores it when writing: the <code>customer_id</code> column is taken only from <code>order.getCustomer()</code>, which is still <code>null</code> (or the old value). No error is raised (C), and there is no join table in a <code>mappedBy</code> mapping (D). Set <code>order.setCustomer(customer)</code> too, ideally through a helper like <code>customer.addOrder(order)</code> that sets both sides.</p>
+</details>
+<p><strong>Q8.</strong> After a <code>@Modifying</code> JPQL bulk update without <code>clearAutomatically</code>, entities already loaded in the same persistence context:</p>
+<ul>
+<li>A) Are refreshed automatically</li>
+<li>B) May hold stale values</li>
+<li>C) Are detached</li>
+<li>D) Are deleted</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> The bulk update runs directly in the database and doesn't touch managed objects in memory, so those keep their old field values. A later <code>findById</code> in the same transaction even returns the cached, stale instance. Use <code>clearAutomatically = true</code> (or call <code>entityManager.clear()</code>/<code>refresh()</code>) so later reads come from the database. Nothing is detached (C) or deleted (D) by the update itself.</p>
+</details>
+<h2 id="related">Related<a class="headerlink" href="#related" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../04-transactions/">Transactions</a>: when the persistence context opens, flushes and closes, and isolation vs locking.</li>
+<li><a href="../02-boot-internals/">Boot internals</a>: <code>spring.jpa.*</code> properties and the open-in-view default.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../04-transactions/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Transactions">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Transactions
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../06-security/" class="md-footer__link md-footer__link--next" aria-label="Next: Spring Security">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Spring Security
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+    
+  </body>
+</html>

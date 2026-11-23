@@ -1,0 +1,1619 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A free interview handbook for Java, the JVM and Spring Boot. Every topic starts with the mental model, shows where people get it wrong, and ends with practice MCQs.">
+      
+      
+      
+      
+        <link rel="prev" href="../06-security/">
+      
+      
+        <link rel="next" href="../../practice/mock-test/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.39">
+    
+    
+      
+        <title>Web, validation & testing - Java & Spring Boot, Step by Step</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#web-validation-testing" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-header__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Java & Spring Boot, Step by Step
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Web, validation & testing
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-nav__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Java & Spring Boot, Step by Step
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../start-here/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Start here
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Java
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Java
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/01-core-language/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core language traps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/02-collections-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Collections internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/03-concurrency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Concurrency
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/04-streams/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Streams & functional
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/05-modern-java/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modern Java (8 to 21+)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    JVM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            JVM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/01-memory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Memory & class loading
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/02-garbage-collection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Garbage collection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/03-performance-troubleshooting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JIT, tools & troubleshooting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Spring
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Spring
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-ioc-di/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IoC, DI & bean lifecycle
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-boot-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Boot internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-proxies-aop/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Proxies & AOP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-transactions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Transactions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-jpa-pitfalls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JPA & Hibernate pitfalls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-security/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Security
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Web, validation & testing
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Web, validation & testing
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model-request-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model: request flow
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#filter-vs-interceptor-vs-aop" class="md-nav__link">
+    <span class="md-ellipsis">
+      Filter vs interceptor vs AOP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#controllers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Controllers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#central-error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Central error handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http-clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP clients
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#which-annotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Which annotation?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#real-databases-with-testcontainers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real databases with Testcontainers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-pyramid-for-a-spring-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing pyramid for a Spring service
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Practice
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Practice
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/mock-test/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mixed mock test (40 MCQs)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/cheat-sheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    One-page cheat sheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model-request-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model: request flow
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#filter-vs-interceptor-vs-aop" class="md-nav__link">
+    <span class="md-ellipsis">
+      Filter vs interceptor vs AOP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#controllers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Controllers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#central-error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Central error handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http-clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP clients
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#which-annotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Which annotation?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#real-databases-with-testcontainers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real databases with Testcontainers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-pyramid-for-a-spring-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing pyramid for a Spring service
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="web-validation-testing">Web, validation &amp; testing<a class="headerlink" href="#web-validation-testing" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>TL;DR</strong> Every Spring MVC request flows <strong>servlet filters → <code>DispatcherServlet</code> → <code>HandlerMapping</code> (which controller method?) → interceptors → controller → message converters (Java object ↔ JSON)</strong>. Handle errors in one central place with <code>@RestControllerAdvice</code> and return the standard <strong><code>ProblemDetail</code></strong> error format. Validate input with <code>@Valid</code> on request DTOs. Test with the narrowest <strong>slice</strong> that covers the behaviour: <code>@WebMvcTest</code> for controllers, <code>@DataJpaTest</code> for repositories, <code>@SpringBootTest</code> + Testcontainers for end-to-end flows.</p>
+</blockquote>
+<h2 id="mental-model-request-flow">Mental model: request flow<a class="headerlink" href="#mental-model-request-flow" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Client
+    participant F as Servlet filters (security, logging)
+    participant DS as DispatcherServlet
+    participant HM as HandlerMapping
+    participant I as HandlerInterceptor
+    participant C as @RestController
+    participant MC as HttpMessageConverter (Jackson)
+    Client-&gt;&gt;F: HTTP request
+    F-&gt;&gt;DS: doFilter
+    DS-&gt;&gt;HM: which handler?
+    DS-&gt;&gt;I: preHandle()
+    DS-&gt;&gt;MC: read JSON body → DTO
+    DS-&gt;&gt;C: invoke method (args resolved, validated)
+    C--&gt;&gt;DS: return value
+    DS-&gt;&gt;MC: write object → JSON
+    DS-&gt;&gt;I: postHandle() / afterCompletion()
+    DS--&gt;&gt;Client: response</code></pre>
+<ol>
+<li><strong>Servlet filters</strong> run first, inside the web server (Tomcat), before any Spring MVC code: Spring Security's filter chain, request logging, compression. A filter can reject the request outright.</li>
+<li>The <strong><code>DispatcherServlet</code></strong> is Spring MVC's single <em>front controller</em>: every request comes through it, and it coordinates the rest.</li>
+<li>It asks the <strong><code>HandlerMapping</code></strong> which controller method (the <em>handler</em>) matches the URL, HTTP method and headers, using your <code>@GetMapping</code>, <code>@PostMapping</code> and similar annotations. No match → 404.</li>
+<li><strong><code>HandlerInterceptor.preHandle()</code></strong> runs for that handler. It can stop the request by returning <code>false</code>.</li>
+<li><strong>Argument resolution</strong>: an <strong><code>HttpMessageConverter</code></strong> (Jackson, for JSON) converts the request body into your DTO for <code>@RequestBody</code>; path variables, query parameters and headers are converted to their types; <code>@Valid</code> arguments are validated.</li>
+<li>Your <strong>controller method</strong> runs and returns a value (a DTO, a <code>ResponseEntity</code>).</li>
+<li>The message converter <strong>serialises</strong> the return value to JSON, choosing the format from the request's <code>Accept</code> header.</li>
+<li><strong><code>postHandle()</code></strong> and <strong><code>afterCompletion()</code></strong> run on the interceptors. <code>afterCompletion</code> runs even when an exception occurred, so it is useful for cleanup and timing.</li>
+<li>The response goes back out through the filters to the client.</li>
+</ol>
+<h2 id="deep-dive">Deep dive<a class="headerlink" href="#deep-dive" title="Permanent link">&para;</a></h2>
+<h3 id="filter-vs-interceptor-vs-aop">Filter vs interceptor vs AOP<a class="headerlink" href="#filter-vs-interceptor-vs-aop" title="Permanent link">&para;</a></h3>
+<p>Three ways to run code "around" request handling, at different levels:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Servlet Filter</th>
+<th>HandlerInterceptor</th>
+<th>AOP aspect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Level</td>
+<td>Servlet container, <strong>before</strong> Spring MVC: it wraps the whole <code>DispatcherServlet</code>.</td>
+<td>Spring MVC, around the <strong>chosen handler</strong>.</td>
+<td><strong>Any Spring bean method</strong>, not just web code.</td>
+</tr>
+<tr>
+<td>Sees</td>
+<td>The raw request and response (it can wrap or replace them, e.g. to cache the body). Doesn't know which controller will handle the request.</td>
+<td>The request <strong>plus which handler matched</strong> (the controller class and method, and its annotations).</td>
+<td>The method's arguments and return value, as Java objects.</td>
+</tr>
+<tr>
+<td>Good for</td>
+<td>Security, CORS, request/response logging, compression, correlation ids: things that apply to <em>every</em> request, including those that never reach a controller.</td>
+<td>Per-handler checks driven by annotations on the controller method, timing per endpoint, locale or tenant resolution.</td>
+<td>Transactions, caching, retries, metrics on <strong>service</strong> methods, independent of HTTP.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="controllers">Controllers<a class="headerlink" href="#controllers" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong><code>@RestController</code> = <code>@Controller</code> + <code>@ResponseBody</code> on every method</strong>: return values are written straight into the response body (as JSON), instead of being treated as the name of a view template to render.</li>
+<li><strong>Return <code>ResponseEntity</code> for full control</strong> over status code and headers: <code>ResponseEntity.created(location).body(dto)</code> returns <strong>201</strong> with a <code>Location</code> header pointing at the new resource. Returning a plain DTO always gives 200 (unless you use <code>@ResponseStatus</code>).</li>
+<li><strong>Use correct status codes</strong>, so clients and tools can react without parsing messages:<ul>
+<li><strong>201 Created</strong> + <code>Location</code> header for successful creates.</li>
+<li><strong>204 No Content</strong> for successful requests with no body (typical for DELETE).</li>
+<li><strong>400 Bad Request</strong> for malformed input or failed validation.</li>
+<li><strong>404 Not Found</strong> when the resource doesn't exist.</li>
+<li><strong>409 Conflict</strong> when the request conflicts with the current state (a duplicate email, an optimistic-locking version mismatch).</li>
+<li><strong>422 Unprocessable Content</strong>: the input is well-formed but semantically invalid. Whether to use 400 or 422 for validation is a team convention; just be consistent.</li>
+</ul>
+</li>
+<li><strong>Remember idempotency</strong>: an operation is <em>idempotent</em> if doing it twice has the same effect as doing it once. GET, PUT ("set the resource to this") and DELETE should be idempotent, so clients and proxies can safely retry them after a timeout. POST ("create a new one") is <strong>not</strong>: retrying a timed-out "create payment" could charge twice. For such operations, have the client send an <strong>idempotency key</strong> header (a unique id per logical operation); the server stores the keys it has processed and returns the original result for a repeat instead of executing again.</li>
+</ul>
+<h3 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">CreateUserRequest</span><span class="p">(</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">        </span><span class="nd">@NotBlank</span><span class="w"> </span><span class="nd">@Size</span><span class="p">(</span><span class="n">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w">   </span><span class="c1">// not null, not only whitespace, at most 100 characters</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nd">@Email</span><span class="w"> </span><span class="nd">@NotBlank</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">email</span><span class="p">,</span><span class="w">            </span><span class="c1">// must look like an email address (and be present: @Email alone accepts null)</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="nd">@Min</span><span class="p">(</span><span class="mi">18</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">age</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nd">@PostMapping</span><span class="p">(</span><span class="s">"/users"</span><span class="p">)</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">ResponseEntity</span><span class="o">&lt;</span><span class="n">UserDto</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="nd">@Valid</span><span class="w"> </span><span class="nd">@RequestBody</span><span class="w"> </span><span class="n">CreateUserRequest</span><span class="w"> </span><span class="n">req</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// @Valid: validate before the method runs</span>
+</code></pre></div>
+<ul>
+<li><strong>It needs <code>spring-boot-starter-validation</code></strong>, which brings Jakarta Bean Validation with Hibernate Validator as the implementation. Without it, the annotations are silently ignored and invalid data passes straight through, a common surprise because <code>spring-boot-starter-web</code> no longer includes it.</li>
+<li><strong>A failed <code>@Valid @RequestBody</code> throws <code>MethodArgumentNotValidException</code> → 400</strong> by default, before your method body runs. The exception lists every field error, which you can turn into a helpful response in your <code>@RestControllerAdvice</code>.</li>
+<li><strong>Nested objects need <code>@Valid</code> on the field to cascade.</strong> Validation only checks the constraints of the object it was asked to validate. If <code>CreateOrderRequest</code> has an <code>Address address</code> field, the address's own <code>@NotBlank</code> constraints are only checked if the field is annotated <code>@Valid Address address</code>. The same applies to collection elements: <code>List&lt;@Valid Item&gt; items</code>.</li>
+<li><strong>Validating <code>@PathVariable</code> / <code>@RequestParam</code></strong> (e.g. <code>@Min(1) @PathVariable long id</code>) works when the controller is annotated <code>@Validated</code>, or, since Spring 6.1, through built-in method validation. Failures appear as a different exception (<code>HandlerMethodValidationException</code>, or <code>ConstraintViolationException</code> on older versions), so handle both.</li>
+<li><strong>Custom rules</strong>: write your own annotation plus a <code>ConstraintValidator</code> (e.g. <code>@ValidIban</code>), or a class-level constraint for cross-field rules ("end date after start date"). <strong>Validation groups</strong> let the same DTO be validated differently in different situations (e.g. <code>id</code> required on update but not on create).</li>
+</ul>
+<h3 id="central-error-handling">Central error handling<a class="headerlink" href="#central-error-handling" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nd">@RestControllerAdvice</span><span class="w">                                            </span><span class="c1">// applies to all controllers; return values are written as the response body</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">class</span> <span class="nc">ApiErrors</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nd">@ExceptionHandler</span><span class="p">(</span><span class="n">OrderNotFoundException</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w">              </span><span class="c1">// called whenever any controller throws this exception</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="n">ProblemDetail</span><span class="w"> </span><span class="nf">notFound</span><span class="p">(</span><span class="n">OrderNotFoundException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="n">ProblemDetail</span><span class="w"> </span><span class="n">pd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProblemDetail</span><span class="p">.</span><span class="na">forStatusAndDetail</span><span class="p">(</span><span class="n">HttpStatus</span><span class="p">.</span><span class="na">NOT_FOUND</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="na">getMessage</span><span class="p">());</span><span class="w"> </span><span class="c1">// status 404 + human-readable detail</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">        </span><span class="n">pd</span><span class="p">.</span><span class="na">setTitle</span><span class="p">(</span><span class="s">"Order not found"</span><span class="p">);</span><span class="w">                          </span><span class="c1">// short summary, the same for every occurrence of this error type</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">        </span><span class="n">pd</span><span class="p">.</span><span class="na">setProperty</span><span class="p">(</span><span class="s">"orderId"</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="na">orderId</span><span class="p">());</span><span class="w">                  </span><span class="c1">// extra machine-readable field for clients</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">pd</span><span class="p">;</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">}</span>
+</code></pre></div>
+<p><code>@RestControllerAdvice</code> gathers exception-to-response mapping in <strong>one class</strong> instead of <code>try/catch</code> in every controller, so every endpoint reports the same error the same way.</p>
+<ul>
+<li><strong><code>ProblemDetail</code></strong> (Spring 6) implements the standard <strong>Problem Details</strong> JSON format, RFC 9457 (formerly 7807), served as <code>application/problem+json</code>: <code>type</code> (a URI identifying the kind of error), <code>title</code>, <code>status</code>, <code>detail</code> (specific to this occurrence), <code>instance</code> (the request path), plus any custom properties. Using a standard means clients and API gateways can parse your errors without custom code.</li>
+<li><strong><code>spring.mvc.problemdetails.enabled=true</code></strong> makes Spring's <strong>built-in</strong> exceptions (validation failures, unsupported media type, missing parameters, 404s for unmapped URLs) produce the same format, so your own and the framework's errors look alike. Alternatively, extend <code>ResponseEntityExceptionHandler</code> in your advice.</li>
+<li><strong>Never leak stack traces or SQL messages to clients.</strong> They reveal internal class names, library versions, table and column names, which helps attackers. Log the details server-side with a correlation id, and return a generic message plus that id. Add a catch-all <code>@ExceptionHandler(Exception.class)</code> that returns a plain 500.</li>
+</ul>
+<h3 id="http-clients">HTTP clients<a class="headerlink" href="#http-clients" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Client</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RestTemplate</code></td>
+<td>Synchronous (blocking). In <strong>maintenance mode</strong>: still supported but receives no new features. Fine in existing code, but not for new code.</td>
+</tr>
+<tr>
+<td><strong><code>RestClient</code></strong> (Spring 6.1+)</td>
+<td>A modern <strong>synchronous</strong> client with a <strong>fluent</strong> API (<code>restClient.get().uri("/users/{id}", id).retrieve().body(User.class)</code>), built on the same infrastructure as <code>RestTemplate</code>. <strong>The default choice for blocking code</strong>, including with virtual threads.</td>
+</tr>
+<tr>
+<td><code>WebClient</code></td>
+<td><strong>Reactive, non-blocking</strong> (from WebFlux). It returns <code>Mono</code>/<code>Flux</code>. Use it in reactive applications or for massive concurrent fan-out. Pulling in WebFlux just for an HTTP client in a blocking app is no longer necessary.</td>
+</tr>
+<tr>
+<td>HTTP interface clients (<code>@HttpExchange</code>)</td>
+<td><strong>Declarative</strong>: you write a Java interface with annotated methods (<code>@GetExchange("/users/{id}") User get(@PathVariable long id);</code>) and Spring generates the implementation, similar to Feign. Backed by <code>RestClient</code> or <code>WebClient</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Always set connect and read timeouts.</strong> Depending on the underlying HTTP library, the defaults can be infinite or very long, so a single slow or hung downstream service can hold your request threads (and any open transactions' connections) indefinitely, until the whole service stops responding. Set a <strong>connect timeout</strong> (how long to wait to establish the TCP connection, usually short, around 1–2 s) and a <strong>read timeout</strong> (how long to wait for response data, based on the downstream's normal latency).</p>
+<h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
+<h3 id="which-annotation">Which annotation?<a class="headerlink" href="#which-annotation" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Annotation</th>
+<th>Loads</th>
+<th>Use for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Plain JUnit + Mockito</td>
+<td>Nothing: no Spring at all. You construct the class with <code>new</code> and pass mocks.</td>
+<td><strong>Most</strong> service logic. These run in milliseconds, which is one more benefit of constructor injection.</td>
+</tr>
+<tr>
+<td><code>@WebMvcTest(UserController.class)</code></td>
+<td><strong>Only the MVC layer</strong>: the controller(s), <code>@RestControllerAdvice</code>, filters, converters, Jackson config, security config. <strong>Not</strong> services or repositories; you must mock them. Provides a <code>MockMvc</code> for sending fake requests without a real server.</td>
+<td>Request mapping, validation, status codes, error responses, JSON shape, security rules on URLs.</td>
+</tr>
+<tr>
+<td><code>@DataJpaTest</code></td>
+<td>JPA repositories, <code>EntityManager</code>, Flyway/Liquibase migrations, and an embedded database by default. Each test <strong>runs in a transaction that rolls back</strong> afterwards.</td>
+<td>Custom queries, entity mappings, constraints.</td>
+</tr>
+<tr>
+<td><code>@JsonTest</code></td>
+<td>Only Jackson configuration (<code>ObjectMapper</code>, <code>@JsonComponent</code>s).</td>
+<td>Serialisation and deserialisation details: date formats, field names, polymorphic types.</td>
+</tr>
+<tr>
+<td><code>@SpringBootTest</code></td>
+<td>The <strong>full</strong> application context, everything. Add <code>webEnvironment = RANDOM_PORT</code> to start a real server on a free port and call it over real HTTP.</td>
+<td>Integration tests of whole flows. The slowest option, so use it sparingly.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>@WebMvcTest</code>, <code>@DataJpaTest</code> and <code>@JsonTest</code> annotations are called <strong>test slices</strong>: each enables only the auto-configuration relevant to one layer, so the context starts fast and a failure points at that layer.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nd">@WebMvcTest</span><span class="p">(</span><span class="n">UserController</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w">                  </span><span class="c1">// MVC slice: only UserController and web infrastructure</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kd">class</span> <span class="nc">UserControllerTest</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nd">@Autowired</span><span class="w"> </span><span class="n">MockMvc</span><span class="w"> </span><span class="n">mvc</span><span class="p">;</span><span class="w">                         </span><span class="c1">// sends requests through the full MVC stack, without a real server</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nd">@MockitoBean</span><span class="w"> </span><span class="n">UserService</span><span class="w"> </span><span class="n">service</span><span class="p">;</span><span class="w">               </span><span class="c1">// Boot 3.4+ (Spring 6.2): a Mockito mock registered as a bean; earlier versions use @MockBean</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nd">@Test</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">rejectsInvalidEmail</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">        </span><span class="n">mvc</span><span class="p">.</span><span class="na">perform</span><span class="p">(</span><span class="n">post</span><span class="p">(</span><span class="s">"/users"</span><span class="p">).</span><span class="na">contentType</span><span class="p">(</span><span class="n">APPLICATION_JSON</span><span class="p">)</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">                </span><span class="p">.</span><span class="na">content</span><span class="p">(</span><span class="s">"""</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="s">                    {"name":"Ana","email":"not-an-email","age":30}</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="s">                    """</span><span class="p">))</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">           </span><span class="p">.</span><span class="na">andExpect</span><span class="p">(</span><span class="n">status</span><span class="p">().</span><span class="na">isBadRequest</span><span class="p">());</span><span class="w">     </span><span class="c1">// validation failed before the controller ran; the service was never called</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="p">}</span>
+</code></pre></div>
+<p>The test proves the URL mapping, JSON parsing, validation annotations and error handling together, without touching a database. If security is configured, <code>@WebMvcTest</code> includes it, so add <code>@WithMockUser</code> (or a JWT request post-processor) to simulate an authenticated user, and <code>.with(csrf())</code> for POSTs in session-based apps.</p>
+<h3 id="real-databases-with-testcontainers">Real databases with Testcontainers<a class="headerlink" href="#real-databases-with-testcontainers" title="Permanent link">&para;</a></h3>
+<p><strong>Testcontainers</strong> is a library that starts real services (PostgreSQL, Kafka, Redis...) in throwaway Docker containers during tests, so you test against the same engine as production.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nd">@SpringBootTest</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nd">@Testcontainers</span><span class="w">                                   </span><span class="c1">// JUnit extension: start/stop the @Container fields around the tests</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kd">class</span> <span class="nc">OrderFlowIT</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nd">@Container</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nd">@ServiceConnection</span><span class="w">                            </span><span class="c1">// Boot 3.1+: points spring.datasource.* at this container automatically</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="kd">static</span><span class="w"> </span><span class="n">PostgreSQLContainer</span><span class="o">&lt;?&gt;</span><span class="w"> </span><span class="n">db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PostgreSQLContainer</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="s">"postgres:16-alpine"</span><span class="p">);</span><span class="w"> </span><span class="c1">// static: one container for all tests in the class</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">}</span>
+</code></pre></div>
+<p>Before <code>@ServiceConnection</code>, you had to copy the container's random port, username and password into Spring properties yourself with <code>@DynamicPropertySource</code>.</p>
+<ul>
+<li><strong><code>@DataJpaTest</code> replaces your datasource with an embedded database</strong> (H2, HSQLDB or Derby, whichever is on the classpath) by default. To test against the real engine, annotate the test with <strong><code>@AutoConfigureTestDatabase(replace = NONE)</code></strong> and provide a Testcontainers database. It matters because <strong>Postgres behaves differently from H2</strong>: SQL dialect and functions, JSON and array types, case sensitivity, locking and isolation behaviour, constraint error messages, and native queries. An H2 test can pass while the same query fails in production.</li>
+<li><strong>Spring caches application contexts between tests</strong> with the same configuration: starting a context takes seconds, so the test framework reuses an already-started one whenever a test class asks for an identical setup. But the cache key includes the <strong>set of mocked beans</strong>, active profiles and properties, so each different combination of <code>@MockitoBean</code>s creates (and starts) a <strong>new context</strong>, and large suites become very slow. Keep test configurations consistent, e.g. by moving shared mocks into a common base class or configuration.</li>
+</ul>
+<h3 id="testing-pyramid-for-a-spring-service">Testing pyramid for a Spring service<a class="headerlink" href="#testing-pyramid-for-a-spring-service" title="Permanent link">&para;</a></h3>
+<p>From bottom (many, fast, cheap) to top (few, slow, expensive):</p>
+<ol>
+<li><strong>Many fast unit tests</strong>: plain JUnit + Mockito for business logic, run in milliseconds, pinpoint failures exactly.</li>
+<li><strong>Some slice tests</strong>: <code>@WebMvcTest</code> for each controller's contract, and <code>@DataJpaTest</code> (with Testcontainers) for repositories with custom queries.</li>
+<li><strong>A few full integration tests</strong> with <code>@SpringBootTest</code> + Testcontainers, covering the main flows end to end through real infrastructure.</li>
+<li><strong>A handful of end-to-end or contract tests</strong> across services, e.g. Spring Cloud Contract or Pact, to check that your API still matches what consumers expect.</li>
+</ol>
+<p>The shape keeps the suite fast while still catching integration problems that unit tests can't see.</p>
+<h2 id="traps">Traps<a class="headerlink" href="#traps" title="Permanent link">&para;</a></h2>
+<ul>
+<li>"<code>@WebMvcTest</code> loads my services." It loads <strong>only the web layer</strong>; services and repositories aren't created, so the context fails to start unless you provide them with <code>@MockitoBean</code>.</li>
+<li>"<code>@SpringBootTest</code> is the default for every test." It starts the <strong>whole</strong> application and is the slowest option. Use plain unit tests or slices unless you really need everything wired together.</li>
+<li>"Interceptors run before security." Spring Security is a <strong>servlet filter</strong>, and filters run <strong>before</strong> the <code>DispatcherServlet</code>, so a request rejected by security never reaches any interceptor or controller.</li>
+<li>"H2 tests prove the Postgres queries work." H2 differs in dialect, types and locking. Use Testcontainers with the real engine for engine-specific SQL.</li>
+<li>"<code>RestTemplate</code> is the recommended new client." It's in maintenance mode. For new blocking code use <strong><code>RestClient</code></strong> (Spring 6.1+), or <code>WebClient</code> for reactive code.</li>
+</ul>
+<h2 id="say-it-out-loud">Say it out loud<a class="headerlink" href="#say-it-out-loud" title="Permanent link">&para;</a></h2>
+<p><strong>"How do you test a Spring Boot service?"</strong>
+Business logic gets plain unit tests with Mockito, because they need no Spring context and run in milliseconds, and constructor injection makes that easy. Controllers get <code>@WebMvcTest</code> with MockMvc to check request mappings, validation, security rules, status codes and the JSON shape of responses and errors. Repositories with custom queries get <code>@DataJpaTest</code> against a real Postgres in Testcontainers, because H2 behaves differently. A few <code>@SpringBootTest</code> tests cover the main flows end to end. And I keep test configurations, especially the set of mocked beans, consistent, so Spring's context cache can reuse contexts and the suite stays fast.</p>
+<h2 id="practice-mcqs">Practice MCQs<a class="headerlink" href="#practice-mcqs" title="Permanent link">&para;</a></h2>
+<p><strong>Q1.</strong> Which runs first for an incoming request?</p>
+<ul>
+<li>A) HandlerInterceptor <code>preHandle</code></li>
+<li>B) Servlet Filter</li>
+<li>C) <code>@ControllerAdvice</code></li>
+<li>D) Controller method</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Filters are run by the servlet container <em>before</em> the request reaches Spring MVC's <code>DispatcherServlet</code>. Interceptors (A) run inside the <code>DispatcherServlet</code>, once a handler has been chosen. The controller (D) comes after them, and <code>@ControllerAdvice</code> exception handlers (C) only run when a handler throws.</p>
+</details>
+<p><strong>Q2.</strong> <code>@WebMvcTest(OrderController.class)</code> and the controller depends on <code>OrderService</code>. Without extra configuration:</p>
+<ul>
+<li>A) The real service is injected</li>
+<li>B) Context fails to start: no <code>OrderService</code> bean</li>
+<li>C) Spring creates a stub automatically</li>
+<li>D) The test is skipped</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> The MVC slice only registers web-layer beans, so there is no <code>OrderService</code> bean to inject into the controller's constructor, and the context fails with <code>NoSuchBeanDefinitionException</code>. Spring never invents stubs (C). Provide one with <code>@MockitoBean OrderService service;</code> (or <code>@MockBean</code> before Boot 3.4), then define its behaviour with Mockito's <code>when(...)</code>.</p>
+</details>
+<p><strong>Q3.</strong> A <code>@Valid @RequestBody</code> DTO fails validation. Default response status:</p>
+<ul>
+<li>A) 200</li>
+<li>B) 400</li>
+<li>C) 422</li>
+<li>D) 500</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Spring throws <code>MethodArgumentNotValidException</code> before the controller method runs, and its default handling maps that to 400 Bad Request. 422 (C) is only returned if you choose to map validation errors to it in your own <code>@RestControllerAdvice</code>. 500 (D) would indicate an unhandled server error.</p>
+</details>
+<p><strong>Q4.</strong> By default, <code>@DataJpaTest</code>:</p>
+<ul>
+<li>A) Uses your production database</li>
+<li>B) Uses an embedded database and rolls back after each test</li>
+<li>C) Loads all controllers</li>
+<li>D) Commits each test</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> It replaces any configured datasource with an embedded in-memory database, unless you set <code>@AutoConfigureTestDatabase(replace = NONE)</code>, and it is meta-annotated <code>@Transactional</code>, so each test's changes are rolled back to keep tests independent. It loads only the JPA layer, not controllers (C). Use <code>@Commit</code> if a test should commit (D).</p>
+</details>
+<p><strong>Q5.</strong> Which is the modern synchronous HTTP client in Spring 6.1+?</p>
+<ul>
+<li>A) <code>RestTemplate</code></li>
+<li>B) <code>RestClient</code></li>
+<li>C) <code>HttpURLConnection</code></li>
+<li>D) <code>WebClient</code> only</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> <code>RestClient</code>, introduced in Spring 6.1, offers a fluent API like <code>WebClient</code> but is blocking, which makes it the natural choice for ordinary (and virtual-thread) code. <code>RestTemplate</code> (A) still works but is in maintenance mode. <code>HttpURLConnection</code> (C) is the low-level JDK API that has nothing to do with Spring. <code>WebClient</code> (D) is reactive and not the only option.</p>
+</details>
+<p><strong>Q6.</strong> A test suite has 40 <code>@SpringBootTest</code> classes, each with a different set of <code>@MockitoBean</code>s. Why is it slow?</p>
+<ul>
+<li>A) JUnit runs tests serially</li>
+<li>B) Each unique configuration creates a new application context instead of reusing the cached one</li>
+<li>C) Mockito is slow</li>
+<li>D) Testcontainers restarts</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Spring's test framework caches a started application context and reuses it for every test class with an identical configuration, and the set of mocked beans is part of that cache key. Forty different mock sets mean up to forty full context startups, each taking seconds. Consolidating mocks into shared configurations lets classes share one cached context. Creating mocks with Mockito (C) is cheap in comparison.</p>
+</details>
+<h2 id="related">Related<a class="headerlink" href="#related" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../06-security/">Security</a>: the security filters that run before the <code>DispatcherServlet</code>, and testing with <code>@WithMockUser</code>.</li>
+<li><a href="../02-boot-internals/">Boot internals</a>: auto-configuration, which test slices enable only partially.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../06-security/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Spring Security">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Spring Security
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../practice/mock-test/" class="md-footer__link md-footer__link--next" aria-label="Next: Mixed mock test (40 MCQs)">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Mixed mock test (40 MCQs)
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+    
+  </body>
+</html>

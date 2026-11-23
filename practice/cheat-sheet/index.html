@@ -1,0 +1,1324 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A free interview handbook for Java, the JVM and Spring Boot. Every topic starts with the mental model, shows where people get it wrong, and ends with practice MCQs.">
+      
+      
+      
+      
+        <link rel="prev" href="../mock-test/">
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.39">
+    
+    
+      
+        <title>One-page cheat sheet - Java & Spring Boot, Step by Step</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#one-page-cheat-sheet" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-header__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Java & Spring Boot, Step by Step
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              One-page cheat sheet
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-nav__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Java & Spring Boot, Step by Step
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../start-here/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Start here
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Java
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Java
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/01-core-language/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core language traps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/02-collections-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Collections internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/03-concurrency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Concurrency
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/04-streams/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Streams & functional
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/05-modern-java/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modern Java (8 to 21+)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    JVM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            JVM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/01-memory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Memory & class loading
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/02-garbage-collection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Garbage collection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/03-performance-troubleshooting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JIT, tools & troubleshooting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Spring
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Spring
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/01-ioc-di/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IoC, DI & bean lifecycle
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/02-boot-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Boot internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/03-proxies-aop/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Proxies & AOP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/04-transactions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Transactions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/05-jpa-pitfalls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JPA & Hibernate pitfalls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/06-security/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Security
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/07-web-testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Web, validation & testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Practice
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Practice
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mock-test/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mixed mock test (40 MCQs)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    One-page cheat sheet
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    One-page cheat sheet
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#java-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      Java core
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#collections" class="md-nav__link">
+    <span class="md-ellipsis">
+      Collections
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concurrency" class="md-nav__link">
+    <span class="md-ellipsis">
+      Concurrency
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Streams
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modern-java" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modern Java
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jvm" class="md-nav__link">
+    <span class="md-ellipsis">
+      JVM
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#spring-core-boot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Spring core &amp; Boot
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proxies-transactions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Proxies &amp; transactions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jpa" class="md-nav__link">
+    <span class="md-ellipsis">
+      JPA
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#web-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Web &amp; testing
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#java-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      Java core
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#collections" class="md-nav__link">
+    <span class="md-ellipsis">
+      Collections
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concurrency" class="md-nav__link">
+    <span class="md-ellipsis">
+      Concurrency
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Streams
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modern-java" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modern Java
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jvm" class="md-nav__link">
+    <span class="md-ellipsis">
+      JVM
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#spring-core-boot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Spring core &amp; Boot
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proxies-transactions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Proxies &amp; transactions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jpa" class="md-nav__link">
+    <span class="md-ellipsis">
+      JPA
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#web-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Web &amp; testing
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="one-page-cheat-sheet">One-page cheat sheet<a class="headerlink" href="#one-page-cheat-sheet" title="Permanent link">&para;</a></h1>
+<p>Read this the night before. Every line is a fact that MCQ distractors are built around, followed by the one-line <em>reason</em> it is true, so you can rebuild the answer instead of memorising it. Each section links to the page with the full explanation.</p>
+<h2 id="java-core">Java core<a class="headerlink" href="#java-core" title="Permanent link">&para;</a></h2>
+<p>Full details: <a href="../../java/01-core-language/">Core language traps</a>.</p>
+<ul>
+<li><strong>Java is pass-by-value; for objects, the reference is what gets copied.</strong> A method can mutate the object you passed, but reassigning its parameter never changes your variable.</li>
+<li><strong><code>equals</code> true ⇒ <code>hashCode</code> equal. Not the reverse.</strong> Hash collections pick the bucket by <code>hashCode</code> and only then compare with <code>equals</code>, so equal objects must land in the same bucket. Unequal objects <em>may</em> share a hash code (a collision) because an <code>int</code> has only ~4.3 billion values but there are infinitely many possible objects (<code>"Aa"</code> and <code>"BB"</code> both hash to 2112), and <code>equals</code> sorts them out inside the bucket.</li>
+<li><strong><code>Integer</code> cache is -128..127</strong>, so <code>==</code> on boxed values in that range compares the same cached object (<code>true</code>), and outside it two different objects (<code>false</code>). Always use <code>equals</code>.</li>
+<li><strong>Money: <code>new BigDecimal("0.1")</code>, compare with <code>compareTo</code>.</strong> The <code>double</code> constructor keeps the binary rounding error, and <code>equals</code> also compares scale (<code>2.0</code> ≠ <code>2.00</code>).</li>
+<li><strong>Compile-time constant concatenation is pooled; runtime concatenation is not.</strong> <code>"a" + "b"</code> (or with a <code>final</code> constant) is joined by the compiler into the pooled literal <code>"ab"</code>; with a normal variable it's joined at runtime into a new object, so <code>==</code> is <code>false</code>.</li>
+<li><strong><code>return</code> in <code>finally</code> overrides the try's return value and swallows any exception. <code>finally</code> is skipped only on <code>System.exit</code>/a crash</strong>, because then the JVM itself stops and nothing runs on the way out.</li>
+<li><strong>try-with-resources closes in reverse order</strong> (later resources depend on earlier ones), <strong>and exceptions from <code>close()</code> become suppressed</strong> on the body's exception, so the real failure isn't hidden.</li>
+<li><strong>Overloading is chosen at compile time</strong> (from declared types). <strong>Overriding is chosen at runtime</strong> (from the actual object). <strong>Static methods are hidden, not overridden</strong>: there's no object to dispatch on.</li>
+<li><strong>Generics are erased</strong> (no <code>new T()</code>, no overloads differing only by type argument), <strong>invariant</strong> (<code>List&lt;String&gt;</code> is not a <code>List&lt;Object&gt;</code>), <strong>PECS</strong> (read from <code>? extends</code>, write to <code>? super</code>). <strong>Arrays are covariant</strong>, so bad stores are only caught at runtime (<code>ArrayStoreException</code>).</li>
+<li><strong><code>list.remove(1)</code> on a <code>List&lt;Integer&gt;</code> removes index 1</strong>, not the value 1: <code>remove(int)</code> matches the <code>int</code> argument exactly, without boxing, so the compiler prefers it over <code>remove(Object)</code>. Use <code>list.remove(Integer.valueOf(1))</code> for the value.</li>
+</ul>
+<h2 id="collections">Collections<a class="headerlink" href="#collections" title="Permanent link">&para;</a></h2>
+<p>Full details: <a href="../../java/02-collections-internals/">Collections internals</a>.</p>
+<ul>
+<li><strong>HashMap: capacity 16, load factor 0.75</strong> (resize after 12 entries), <strong>doubles</strong> on resize, a bucket <strong>treeifies past 8</strong> nodes only if capacity <strong>≥ 64</strong> (otherwise it resizes instead), <strong>untreeifies at 6</strong> (the gap avoids flip-flopping), and allows <strong>one <code>null</code> key</strong>.</li>
+<li><strong>ConcurrentHashMap: CAS on empty buckets + lock on the bucket's first node</strong>, <strong>no nulls</strong> (so <code>get</code> returning <code>null</code> always means "absent"), <strong>weakly consistent</strong> iterators (never throw CME), and use <strong><code>computeIfAbsent</code>/<code>merge</code></strong> because check-then-act across two calls is a race.</li>
+<li><strong>ArrayList starts at 10 and grows 1.5×.</strong> Prefer <strong><code>ArrayDeque</code></strong> over <code>Stack</code> (synchronized legacy) and <code>LinkedList</code> (one node object per element, poor cache locality).</li>
+<li><strong>TreeMap is a red-black tree, O(log n), and decides duplicates by the comparator</strong>, never <code>equals</code>, so a comparator returning 0 makes two items "the same".</li>
+<li><strong>PriorityQueue is a min-heap; its iterator is not sorted.</strong> A heap only orders parents before children; only <code>poll()</code> returns elements in order.</li>
+<li><strong>LRU cache: <code>new LinkedHashMap&lt;&gt;(16, 0.75f, true)</code> + override <code>removeEldestEntry</code>.</strong> <code>true</code> = access order, so the eldest entry is the least recently used.</li>
+<li><strong><code>Arrays.asList</code> is fixed-size</strong> (backed by the array: <code>set</code> works, <code>add</code> throws). <strong><code>List.of</code> is immutable and rejects nulls.</strong> <strong><code>unmodifiableList</code> is a read-only view</strong>: the source can still change.</li>
+</ul>
+<h2 id="concurrency">Concurrency<a class="headerlink" href="#concurrency" title="Permanent link">&para;</a></h2>
+<p>Full details: <a href="../../java/03-concurrency/">Concurrency</a>.</p>
+<ul>
+<li><strong><code>volatile</code> = visibility + ordering, not atomicity.</strong> <code>count++</code> is read-add-write, and another thread can run between the steps.</li>
+<li><strong>Happens-before edges: unlock → later lock of the same monitor, volatile write → later read, <code>start()</code> → thread body, thread body → <code>join()</code> returning, and transitivity.</strong> Without one of these, another thread may see stale values forever.</li>
+<li><strong><code>wait()</code> releases the monitor; <code>sleep()</code> keeps every lock.</strong> Call <code>wait()</code> while holding the monitor (or get <code>IllegalMonitorStateException</code>) and in a <code>while</code> loop, because of spurious wakeups and conditions changing before you reacquire the lock.</li>
+<li><strong>ThreadPoolExecutor order: core threads → queue → extra threads up to max → reject</strong> (default <strong><code>AbortPolicy</code></strong> throws). The queue fills <em>before</em> extra threads are created.</li>
+<li><strong><code>newFixedThreadPool</code> has an unbounded queue</strong> (tasks pile up → OOM). <strong><code>newCachedThreadPool</code> has unbounded threads</strong> (thread explosion). Build <code>ThreadPoolExecutor</code> with a bounded queue instead.</li>
+<li><strong><code>thenApply</code> = map, <code>thenCompose</code> = flatMap</strong> (for functions that return another future). <strong><code>*Async</code> without an executor runs on <code>ForkJoinPool.commonPool()</code></strong>, shared with parallel streams, so don't block there.</li>
+<li><strong><code>CountDownLatch</code> is one-shot; <code>CyclicBarrier</code> resets and is reusable; <code>Semaphore</code> hands out N permits</strong> to limit concurrency.</li>
+<li><strong>Virtual threads (21) are for blocking I/O; don't pool them</strong>, they're cheap. <strong>On 21–23, blocking inside <code>synchronized</code> pins the carrier thread</strong>; use <code>ReentrantLock</code> (fixed in 24).</li>
+<li><strong>Deadlock fix: acquire locks in one global order, or <code>tryLock</code> with a timeout.</strong> Each breaks one of the four necessary conditions (circular wait, hold-and-wait).</li>
+</ul>
+<h2 id="streams">Streams<a class="headerlink" href="#streams" title="Permanent link">&para;</a></h2>
+<p>Full details: <a href="../../java/04-streams/">Streams</a>.</p>
+<ul>
+<li><strong>Lazy until the terminal operation; elements flow through all stages one at a time; a stream can be used once</strong> (then <code>IllegalStateException</code>).</li>
+<li><strong><code>toMap</code> with a duplicate key → <code>IllegalStateException</code></strong> (pass a merge function); <strong>a <code>null</code> value → NPE</strong>, because it uses <code>HashMap.merge</code>.</li>
+<li><strong><code>partitioningBy</code> always has both <code>true</code> and <code>false</code> keys</strong>; <code>groupingBy</code> only has keys that occur.</li>
+<li><strong><code>orElse(x)</code> is eager</strong> (Java evaluates <code>x</code> before the call, even when a value is present); <strong><code>orElseGet(supplier)</code> is lazy</strong>.</li>
+<li><strong><code>Stream.toList()</code> is unmodifiable and allows nulls</strong>; <code>Collectors.toUnmodifiableList()</code> rejects nulls; <code>Collectors.toList()</code> guarantees nothing.</li>
+<li><strong>Parallel streams share the common ForkJoinPool</strong> (~cores − 1 threads); blocking inside them starves <code>CompletableFuture</code>s across the app.</li>
+</ul>
+<h2 id="modern-java">Modern Java<a class="headerlink" href="#modern-java" title="Permanent link">&para;</a></h2>
+<p>Full details: <a href="../../java/05-modern-java/">Modern Java</a>.</p>
+<ul>
+<li><strong>8</strong>: lambdas, streams, <code>Optional</code>, <code>java.time</code> · <strong>9</strong>: modules, <code>List.of</code>, G1 default · <strong>10</strong>: <code>var</code> · <strong>11</strong>: <code>HttpClient</code>, <code>String.strip/isBlank</code> · <strong>16</strong>: records, <code>instanceof</code> patterns · <strong>17</strong>: sealed classes · <strong>21</strong>: <strong>virtual threads, pattern <code>switch</code>, record patterns</strong> · <strong>25</strong>: next LTS (scoped values, instance <code>main</code>). LTS releases are 8, 11, 17, 21, 25.</li>
+<li><strong>Records are final, shallowly immutable</strong> (copy mutable components with <code>List.copyOf</code>), <strong>have accessors named <code>x()</code></strong>, and <strong>can implement interfaces but can't extend a class</strong> (they already extend <code>Record</code>).</li>
+</ul>
+<h2 id="jvm">JVM<a class="headerlink" href="#jvm" title="Permanent link">&para;</a></h2>
+<p>Full details: <a href="../../jvm/01-memory/">Memory</a>, <a href="../../jvm/02-garbage-collection/">GC</a>, <a href="../../jvm/03-performance-troubleshooting/">Troubleshooting</a>.</p>
+<ul>
+<li><strong>Heap = objects; stack = frames with locals and references; Metaspace = class metadata, in native memory since Java 8</strong> (replacing the fixed-size PermGen).</li>
+<li><strong>Class loading: load → verify → prepare (defaults) → resolve → initialise (static initializers run).</strong> <strong>Parent delegation: bootstrap → platform → application</strong>, so user code can't replace <code>java.lang.String</code>.</li>
+<li><strong>Reading a compile-time constant (<code>static final int X = 10</code>) doesn't trigger class initialization</strong>: the value is copied into the caller at compile time.</li>
+<li><strong>OOM messages name the area that ran out: <code>Java heap space</code>, <code>GC overhead limit exceeded</code>, <code>Metaspace</code>, <code>unable to create native thread</code>, <code>Direct buffer memory</code>.</strong> Each points to a different cause.</li>
+<li><strong>GC = reachability from roots, so cycles are collected. Default is G1 (since 9); ZGC for sub-millisecond pauses; CMS was removed in 14.</strong></li>
+<li><strong>In containers, the default max heap is only 25 % of the memory limit</strong> → set <code>-XX:MaxRAMPercentage</code> (often 70–75).</li>
+<li><strong>Soft references are cleared only under memory pressure; weak ones at the next GC; phantom ones are for post-mortem cleanup (<code>Cleaner</code>).</strong></li>
+<li><strong>Tools: <code>jcmd</code> (everything), <code>jstack</code> (match <code>nid</code> = the hex OS thread ID from <code>top -H</code>), heap dump + Eclipse MAT, JFR (low-overhead production profiling), NMT (native memory), JMH (honest benchmarks).</strong></li>
+</ul>
+<h2 id="spring-core-boot">Spring core &amp; Boot<a class="headerlink" href="#spring-core-boot" title="Permanent link">&para;</a></h2>
+<p>Full details: <a href="../../spring/01-ioc-di/">IoC &amp; DI</a>, <a href="../../spring/02-boot-internals/">Boot internals</a>.</p>
+<ul>
+<li><strong>Lifecycle: instantiate → inject → Aware callbacks → BPP before-init → <code>@PostConstruct</code> → BPP after-init (proxies created here) → ready → <code>@PreDestroy</code>.</strong> So <code>@PostConstruct</code> runs on the raw object, with no <code>@Transactional</code>.</li>
+<li><strong>Default scope is singleton: one shared instance, not thread-safe by magic.</strong> A prototype injected into a singleton is created only once; use <code>ObjectProvider</code>.</li>
+<li><strong><code>@Qualifier</code> beats <code>@Primary</code></strong> (a local, explicit request beats the global default). <strong>Constructor injection is preferred</strong> (final fields, testable with <code>new</code>, fails fast).</li>
+<li><strong>Circular references are prohibited by default since Boot 2.6</strong>; constructor cycles never worked at all.</li>
+<li><strong><code>@Configuration</code> (full mode) is CGLIB-subclassed, so calling one <code>@Bean</code> method from another returns the same singleton</strong>; <code>proxyBeanMethods = false</code> creates a new object per call.</li>
+<li><strong><code>@SpringBootApplication</code> = <code>@SpringBootConfiguration</code> + <code>@EnableAutoConfiguration</code> + <code>@ComponentScan</code> of the main class's package and below</strong> (sibling packages are not scanned).</li>
+<li><strong>Auto-configuration backs off via <code>@ConditionalOnMissingBean</code></strong> when you define your own bean. <strong><code>--debug</code> prints the conditions report.</strong></li>
+<li><strong>Property precedence (higher wins): command-line args &gt; Java system properties &gt; OS env vars &gt; config files outside the JAR &gt; config files inside the JAR.</strong> Profile-specific files beat the base file at the same location.</li>
+<li><strong>Actuator exposes only <code>health</code> over HTTP by default</strong>; never expose <code>env</code> or <code>heapdump</code> publicly.</li>
+<li><strong>Boot 3 = Java 17+, <code>jakarta.*</code> instead of <code>javax.*</code>, <code>ProblemDetail</code>, Micrometer Observation</strong> (replacing Sleuth).</li>
+</ul>
+<h2 id="proxies-transactions">Proxies &amp; transactions<a class="headerlink" href="#proxies-transactions" title="Permanent link">&para;</a></h2>
+<p>Full details: <a href="../../spring/03-proxies-aop/">Proxies &amp; AOP</a>, <a href="../../spring/04-transactions/">Transactions</a>.</p>
+<ul>
+<li><strong>Boot uses CGLIB subclass proxies. No advice on self-calls (<code>this.x()</code> skips the proxy), <code>private</code> or <code>final</code> methods (can't be overridden), or objects created with <code>new</code></strong> (never seen by the container).</li>
+<li><strong>Rollback by default only on <code>RuntimeException</code>/<code>Error</code>; a checked exception commits.</strong> Use <code>rollbackFor = Exception.class</code>.</li>
+<li><strong>Default propagation is REQUIRED</strong> (join or start). <strong>REQUIRES_NEW</strong> suspends the outer transaction (needs a second connection; can starve the pool). <strong>NESTED</strong> = savepoint. <strong>MANDATORY</strong> throws without a transaction; <strong>NEVER</strong> throws with one.</li>
+<li><strong>An inner REQUIRED method's runtime exception, caught by the outer method → <code>UnexpectedRollbackException</code> at commit</strong>, because the shared transaction was already marked rollback-only.</li>
+<li><strong><code>Isolation.DEFAULT</code> = the database's default</strong> (PostgreSQL, Oracle, SQL Server: READ COMMITTED; MySQL InnoDB: REPEATABLE READ).</li>
+<li><strong>Transactions are bound to the thread</strong>, so <code>@Async</code> and other threads don't share them.</li>
+<li><strong>Work that must happen only after commit: <code>@TransactionalEventListener</code> (default <code>AFTER_COMMIT</code>), or the transactional outbox</strong> for messages that must never be lost.</li>
+</ul>
+<h2 id="jpa">JPA<a class="headerlink" href="#jpa" title="Permanent link">&para;</a></h2>
+<p>Full details: <a href="../../spring/05-jpa-pitfalls/">JPA pitfalls</a>.</p>
+<ul>
+<li><strong><code>@ManyToOne</code>/<code>@OneToOne</code> are EAGER by default</strong> (the <code>*ToMany</code> ones are LAZY) → make them LAZY, because EAGER can't be turned off per query.</li>
+<li><strong>N+1 fixes: JOIN FETCH, <code>@EntityGraph</code>, <code>default_batch_fetch_size</code> (safety net), DTO projections</strong> (best for read-only views).</li>
+<li><strong>Collection fetch join + paging → Hibernate paginates in memory</strong> (one SQL row per child). <strong>Fetch-joining two <code>List</code>s → <code>MultipleBagFetchException</code></strong> (a cartesian product).</li>
+<li><strong>Managed entities are dirty-checked, so no <code>save()</code> is needed</strong> for updates. <strong><code>merge</code> returns a <em>different</em>, managed instance</strong>: use the return value of <code>save()</code>.</li>
+<li><strong>IDENTITY ids disable insert batching</strong> (Hibernate must insert immediately to learn the id); use a pooled SEQUENCE.</li>
+<li><strong>Bulk JPQL updates bypass the persistence context</strong> (loaded entities go stale; use <code>clearAutomatically</code>). <strong><code>deleteAll()</code> loads and deletes one by one</strong>; <code>deleteAllInBatch()</code> is one statement.</li>
+<li><strong>Only the owning side (the one with the foreign key, without <code>mappedBy</code>) is persisted.</strong> <strong>Never cascade on <code>@ManyToOne</code></strong> (deleting a child would delete the parent).</li>
+<li><strong><code>@Version</code> = optimistic locking</strong> (conflict → exception, retry); <strong><code>PESSIMISTIC_WRITE</code> = <code>SELECT ... FOR UPDATE</code></strong> (others wait).</li>
+<li><strong><code>spring.jpa.open-in-view</code> defaults to true</strong>, which hides lazy-loading problems and holds a connection per request; most teams turn it off.</li>
+</ul>
+<h2 id="security">Security<a class="headerlink" href="#security" title="Permanent link">&para;</a></h2>
+<p>Full details: <a href="../../spring/06-security/">Spring Security</a>.</p>
+<ul>
+<li><strong>Filter chain → <code>AuthenticationManager</code> → <code>AuthenticationProvider</code> → <code>SecurityContext</code> (a <code>ThreadLocal</code>)</strong>, so other threads don't see the user unless it's propagated.</li>
+<li><strong>Configure with a <code>SecurityFilterChain</code> bean</strong> (<code>WebSecurityConfigurerAdapter</code> was removed in 6); <strong>use <code>requestMatchers</code>, and the first matching rule wins</strong>, so specific rules go first.</li>
+<li><strong>401 = not authenticated</strong> (who are you?); <strong>403 = authenticated but not allowed</strong> (or a missing CSRF token, the usual reason for "every POST is 403").</li>
+<li><strong><code>hasRole("ADMIN")</code> checks the authority <code>ROLE_ADMIN</code></strong>; <code>hasAuthority("ADMIN")</code> checks exactly <code>ADMIN</code>.</li>
+<li><strong>Keep CSRF on for cookie/session apps; it's safe to disable for stateless bearer-token APIs</strong>, because browsers never attach the <code>Authorization</code> header automatically.</li>
+<li><strong>Hash passwords with BCrypt via <code>DelegatingPasswordEncoder</code></strong> (slow, salted, upgradable). <strong>Use short-lived JWTs + refresh tokens</strong>, because JWTs can't easily be revoked.</li>
+</ul>
+<h2 id="web-testing">Web &amp; testing<a class="headerlink" href="#web-testing" title="Permanent link">&para;</a></h2>
+<p>Full details: <a href="../../spring/07-web-testing/">Web &amp; testing</a>.</p>
+<ul>
+<li><strong>Request flow: filters → <code>DispatcherServlet</code> → <code>HandlerMapping</code> → interceptor <code>preHandle</code> → controller → message converters.</strong> Security filters run before any interceptor.</li>
+<li><strong>A failed <code>@Valid</code> body → <code>MethodArgumentNotValidException</code> → 400.</strong> Map errors centrally to <strong><code>ProblemDetail</code></strong> (RFC 9457) in a <code>@RestControllerAdvice</code>.</li>
+<li><strong>Use <code>RestClient</code> for new synchronous code; always set connect and read timeouts</strong> so a slow downstream can't hold your threads forever.</li>
+<li><strong><code>@WebMvcTest</code> = web layer only (mock the services); <code>@DataJpaTest</code> = JPA only, embedded DB, rollback per test; <code>@SpringBootTest</code> = everything; Testcontainers + <code>@ServiceConnection</code> for a real database.</strong></li>
+<li><strong><code>@MockitoBean</code> replaces <code>@MockBean</code> (Boot 3.4+). A different set of mocks = a new application context = a slower suite</strong>, because the context cache can't reuse it.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../mock-test/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Mixed mock test (40 MCQs)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Mixed mock test (40 MCQs)
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+    
+  </body>
+</html>

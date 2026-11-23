@@ -1,0 +1,1419 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A free interview handbook for Java, the JVM and Spring Boot. Every topic starts with the mental model, shows where people get it wrong, and ends with practice MCQs.">
+      
+      
+      
+      
+        <link rel="prev" href="../02-garbage-collection/">
+      
+      
+        <link rel="next" href="../../spring/01-ioc-di/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.39">
+    
+    
+      
+        <title>JIT, tools & troubleshooting - Java & Spring Boot, Step by Step</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#jit-tools-troubleshooting" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-header__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Java & Spring Boot, Step by Step
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              JIT, tools & troubleshooting
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-nav__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Java & Spring Boot, Step by Step
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../start-here/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Start here
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Java
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Java
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/01-core-language/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core language traps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/02-collections-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Collections internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/03-concurrency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Concurrency
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/04-streams/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Streams & functional
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/05-modern-java/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modern Java (8 to 21+)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    JVM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            JVM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-memory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Memory & class loading
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-garbage-collection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Garbage collection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    JIT, tools & troubleshooting
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    JIT, tools & troubleshooting
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model-tiered-compilation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model: tiered compilation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-toolbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      The toolbox
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#runbook-1-high-cpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Runbook 1: high CPU
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#runbook-2-memory-keeps-growing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Runbook 2: memory keeps growing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#runbook-3-latency-spikes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Runbook 3: latency spikes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reading-a-thread-dump" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reading a thread dump
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Spring
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Spring
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/01-ioc-di/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IoC, DI & bean lifecycle
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/02-boot-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Boot internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/03-proxies-aop/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Proxies & AOP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/04-transactions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Transactions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/05-jpa-pitfalls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JPA & Hibernate pitfalls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/06-security/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Security
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/07-web-testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Web, validation & testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Practice
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Practice
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/mock-test/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mixed mock test (40 MCQs)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/cheat-sheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    One-page cheat sheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model-tiered-compilation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model: tiered compilation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-toolbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      The toolbox
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#runbook-1-high-cpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Runbook 1: high CPU
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#runbook-2-memory-keeps-growing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Runbook 2: memory keeps growing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#runbook-3-latency-spikes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Runbook 3: latency spikes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reading-a-thread-dump" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reading a thread dump
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="jit-tools-troubleshooting">JIT, tools &amp; troubleshooting<a class="headerlink" href="#jit-tools-troubleshooting" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>TL;DR</strong> The JVM starts by <strong>interpreting</strong> bytecode (executing it one instruction at a time, which is slow), then <strong>JIT-compiles</strong> ("just-in-time") the methods that run often into native machine code: first quickly with the <strong>C1</strong> compiler, then aggressively with <strong>C2</strong>, using statistics gathered while the code ran. That's why Java services "warm up": they get faster after the first few thousand requests. For production problems, learn three runbooks: <strong>high CPU</strong> (thread dumps), <strong>memory growth</strong> (heap dump / Native Memory Tracking), and <strong>latency spikes</strong> (GC logs + Java Flight Recorder). The <code>jcmd</code> command does almost everything.</p>
+</blockquote>
+<h2 id="mental-model-tiered-compilation">Mental model: tiered compilation<a class="headerlink" href="#mental-model-tiered-compilation" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart LR
+    B[Bytecode] --&gt; I["Interpreter (level 0)"]
+    I -- "method gets warm" --&gt; C1["C1 compiler (levels 1–3): fast compile, profiling"]
+    C1 -- "method gets hot" --&gt; C2["C2 compiler (level 4): aggressive optimisation"]
+    C2 -- "assumption broken" --&gt; D[Deoptimise back to interpreter]
+    D --&gt; I</code></pre>
+<p><code>javac</code> does not produce machine code; it produces portable <strong>bytecode</strong>. At runtime the JVM decides how to execute each method:</p>
+<ul>
+<li><strong>Level 0, interpreter</strong>: every method starts here. No compile delay, but slow. The JVM counts invocations and loop iterations for each method.</li>
+<li><strong>Levels 1–3, C1</strong> (the "client" compiler): once a method gets <em>warm</em> (on the order of a few hundred to a couple of thousand calls), C1 compiles it quickly with light optimisation. At level 3 it also inserts <strong>profiling</strong>: which branches are taken, which concrete classes actually show up at each call site.</li>
+<li><strong>Level 4, C2</strong> (the "server" compiler): once a method is <em>hot</em> (on the order of 10,000+ calls), C2 recompiles it slowly but very aggressively, using that profile. Compiled code goes into the <strong>code cache</strong>.</li>
+</ul>
+<p>Running fast code early and great code later is why this is called <em>tiered</em> compilation.</p>
+<p><strong>C2 optimises based on what it has <em>observed</em>, not on what is merely possible:</strong></p>
+<ul>
+<li><strong>Inlining</strong> hot callees: copying a small method's body into its caller removes the call overhead and, more importantly, lets the other optimisations see across method boundaries. It is the single most important optimisation.</li>
+<li><strong>Devirtualisation</strong>: if a call like <code>shape.area()</code> has only ever seen <code>Circle</code> objects, C2 compiles a direct (even inlined) call to <code>Circle.area()</code> guarded by a cheap type check, instead of a slower virtual dispatch.</li>
+<li><strong>Bounds-check elimination</strong>: Java checks every array index; if C2 can prove the loop index always stays in range, it removes the checks.</li>
+<li><strong>Escape analysis</strong>: objects that never leave a method are not allocated on the heap at all (see <a href="../01-memory/">Memory</a>).</li>
+<li><strong>Loop unrolling</strong>: repeating the loop body several times per iteration to reduce loop overhead and enable vector (SIMD) instructions.</li>
+</ul>
+<p>If an assumption breaks (for example a <code>Square</code> shows up at that <code>shape.area()</code> call site, or a new subclass is loaded), the guard fails and the compiled code is <strong>deoptimised</strong>: the JVM discards it, continues in the interpreter, gathers a new profile, and may recompile later. This is invisible to your code except as a temporary slowdown.</p>
+<p>Consequences:</p>
+<ul>
+<li><strong>Warm-up</strong>: the first requests after startup are slow, because the code is still interpreted, classes are still being loaded, and caches and connection pools are still cold. Mitigations: send synthetic warm-up traffic before taking real traffic; use <strong>readiness probes</strong> that only report ready after warm-up, so Kubernetes doesn't route users to a cold pod; or use startup-optimisation technologies such as <strong>CDS</strong> (Class Data Sharing: a pre-parsed archive of classes loaded at startup), <strong>GraalVM native image</strong> (compiles the whole app ahead of time into a native executable: instant startup, but no runtime JIT profiling), or the <strong>Project Leyden</strong> AOT cache features arriving in newer JDKs.</li>
+<li><strong>Micro-benchmarks lie</strong> unless you use <strong>JMH</strong> (the Java Microbenchmark Harness). A naive <code>System.nanoTime()</code> loop measures the interpreter instead of compiled code, or measures nothing at all, because C2 noticed the result is never used and deleted the computation (<em>dead-code elimination</em>), or is skewed by profile pollution from an earlier test in the same JVM. JMH runs warm-up iterations, consumes results with a <code>Blackhole</code> so they can't be eliminated, and <strong>forks</strong> a fresh JVM per benchmark.</li>
+<li><strong>Megamorphic call sites are harder to inline.</strong> A call site that has seen 1 receiver type is <em>monomorphic</em> (easy to inline), 2 is <em>bimorphic</em> (inlined with two guards), and 3 or more is <em>megamorphic</em>: C2 typically falls back to a regular virtual call and can't inline through it. That is why very generic code in a hot path (a visitor over many types, a heavily polymorphic interface) can be slower than expected.</li>
+</ul>
+<h2 id="the-toolbox">The toolbox<a class="headerlink" href="#the-toolbox" title="Permanent link">&para;</a></h2>
+<p>All of these ship with the JDK (not the bare JRE) except where noted. <code>&lt;pid&gt;</code> is the Java process ID.</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>jps</code></td>
+<td>Lists running Java processes with their PIDs and main class, to find the <code>&lt;pid&gt;</code> for the other tools.</td>
+</tr>
+<tr>
+<td><code>jcmd &lt;pid&gt; help</code></td>
+<td>The Swiss-army knife: one command for thread dumps, heap dumps, GC info, JVM flags, JFR recordings and Native Memory Tracking. <code>help</code> lists everything that process supports. Prefer it over the older single-purpose tools.</td>
+</tr>
+<tr>
+<td><code>jstack &lt;pid&gt;</code> / <code>jcmd &lt;pid&gt; Thread.print</code></td>
+<td><strong>Thread dump</strong>: the current stack trace and state of every thread. Cheap and safe to take repeatedly. The first tool for high CPU, hangs and deadlocks.</td>
+</tr>
+<tr>
+<td><code>jmap -dump:live,format=b,file=heap.hprof &lt;pid&gt;</code> / <code>jcmd &lt;pid&gt; GC.heap_dump heap.hprof</code></td>
+<td><strong>Heap dump</strong>: a snapshot of every object on the heap and who references whom. <code>live</code> triggers a full GC first, so only reachable objects are written. The tool for memory leaks.</td>
+</tr>
+<tr>
+<td><code>jstat -gcutil &lt;pid&gt; 1000</code></td>
+<td>Prints GC statistics every 1000 ms: how full Eden, survivor, old and Metaspace are (%), plus GC counts and total GC time. A quick live view without restarting with GC logs.</td>
+</tr>
+<tr>
+<td><code>jcmd &lt;pid&gt; JFR.start duration=60s filename=rec.jfr</code></td>
+<td><strong>Java Flight Recorder</strong>: a profiler built into the JVM with about 1–2 % overhead, so it is safe in production. It records CPU samples, allocations, locks, I/O, GC and thread events.</td>
+</tr>
+<tr>
+<td>JDK Mission Control (JMC)</td>
+<td>A desktop app (separate download) for analysing JFR recordings: hot methods, allocation pressure, lock contention, GC pauses.</td>
+</tr>
+<tr>
+<td>Eclipse MAT / VisualVM</td>
+<td>Analyse heap dumps. Eclipse MAT's <strong>dominator tree</strong> shows which objects keep the most memory alive, and its <strong>leak suspects</strong> report automates the first pass.</td>
+</tr>
+<tr>
+<td>async-profiler</td>
+<td>An open-source, very low-overhead profiler (separate download) that produces <strong>flame graphs</strong> of CPU time, allocations or lock waits, including native and kernel frames that JFR can miss.</td>
+</tr>
+<tr>
+<td><code>jcmd &lt;pid&gt; VM.native_memory summary</code></td>
+<td>Breaks down <strong>native</strong> memory by area (heap, class/Metaspace, threads, code, GC, internal). It only works if the JVM was started with <code>-XX:NativeMemoryTracking=summary</code> (about 5–10 % overhead).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="runbook-1-high-cpu">Runbook 1: high CPU<a class="headerlink" href="#runbook-1-high-cpu" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+    A[CPU at 100%] --&gt; B["top -H -p PID: find hottest thread IDs"]
+    B --&gt; C["Convert TID to hex: printf '%x' TID"]
+    C --&gt; D["jstack PID: find thread with nid=0x..."]
+    D --&gt; E{What is it?}
+    E -- "GC threads" --&gt; F[Memory pressure: check GC logs and heap]
+    E -- "App thread in a loop" --&gt; G[Infinite loop, regex backtracking, hot path]
+    E -- "Many threads spinning" --&gt; H[Busy-wait or CAS contention]</code></pre>
+<ol>
+<li><strong><code>top -H -p &lt;pid&gt;</code></strong>: the <code>-H</code> flag shows individual <strong>threads</strong> instead of processes, so you see which threads inside the JVM are burning CPU, by their OS thread ID (TID, decimal).</li>
+<li><strong>Convert the TID to hexadecimal</strong> with <code>printf '%x\n' 12058</code> (→ <code>2f1a</code>), because thread dumps print the OS thread ID in hex as <code>nid=0x2f1a</code> ("native ID").</li>
+<li><strong>Find that <code>nid</code> in the thread dump</strong> to see the thread's name and what it is executing.</li>
+<li><strong>Interpret what you find</strong>:<ul>
+<li><strong>GC threads</strong> (named like <code>GC Thread#0</code>, <code>G1 Conc#0</code>): the JVM is spending its CPU collecting garbage. The real problem is memory pressure: a nearly full heap or a very high allocation rate. Go to the GC logs and Runbook 2.</li>
+<li><strong>An application thread in a loop</strong>: a genuine infinite loop, <strong>catastrophic regex backtracking</strong> (a pattern like <code>(a+)+$</code> on certain input takes exponential time), or just a legitimately hot code path that needs optimising.</li>
+<li><strong>Many threads spinning</strong>: busy-wait loops (<code>while (!flag) {}</code>) or heavy CAS retry contention on one atomic variable.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Take 3 thread dumps about 5 seconds apart.</strong> A single dump is a snapshot and can be misleading: a thread might just happen to be in a normal method at that instant. A thread that sits in the <strong>same frame across all three</strong> is almost certainly your culprit.</p>
+<h2 id="runbook-2-memory-keeps-growing">Runbook 2: memory keeps growing<a class="headerlink" href="#runbook-2-memory-keeps-growing" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Confirm with GC logs</strong>: look at how much of the <strong>old generation is still used <em>right after</em> each full or mixed GC</strong>, which is your <em>live</em> data. If that baseline keeps rising over hours, objects are accumulating that never become unreachable: a <strong>leak</strong>. If it drops back to the same level after each collection, the heap is just absorbing load, and that's normal behaviour (heap usage <em>before</em> GC always looks like a saw-tooth).</li>
+<li><strong>Take a heap dump</strong>, ideally automatically at the moment of failure with <code>-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=...</code>, or manually with <code>jcmd &lt;pid&gt; GC.heap_dump</code> while memory is high. Two dumps taken an hour apart can be compared to see what grew.</li>
+<li><strong>Open it in Eclipse MAT</strong> and use the <strong>dominator tree</strong>, which ranks objects by <strong>retained size</strong>: the memory that would be freed if that object were collected (its own size plus everything only it keeps alive). Pick the biggest, then use <strong>"path to GC roots"</strong> to see <em>why</em> it is still reachable: which static field, thread or cache holds it.</li>
+<li><strong>Typical finds</strong>: a static <code>Map</code> used as a cache that only grows, an unbounded cache without eviction, <code>ThreadLocal</code> values in pooled threads, listeners that were never unregistered, HTTP session state piling up (see <a href="../01-memory/">Memory</a> for the full list).</li>
+<li><strong>If the heap is stable but the <em>process</em> keeps growing</strong> (high RSS in <code>top</code>, or the container gets OOM-killed), the growth is outside the heap: use Native Memory Tracking, and check thread count, direct buffers and Metaspace.</li>
+</ol>
+<p><strong>Warning:</strong> taking a heap dump <strong>pauses the JVM</strong> for seconds to minutes (it must stop all threads to write a consistent snapshot), and the file can be <strong>as large as the heap</strong>, possibly filling the disk. It also contains everything in memory, including passwords, tokens and customer data, so handle it as sensitive. Do it on one instance that you have first taken out of the load balancer.</p>
+<h2 id="runbook-3-latency-spikes">Runbook 3: latency spikes<a class="headerlink" href="#runbook-3-latency-spikes" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Correlate spikes with GC pause times</strong> in the GC logs: if the slow requests line up with long stop-the-world pauses, the fix is in GC tuning or allocation (see <a href="../02-garbage-collection/">Garbage collection</a>).</li>
+<li><strong>Check thread dumps</strong> for threads in <strong>BLOCKED</strong> state on the same lock (<strong>lock contention</strong>: requests are queueing behind one <code>synchronized</code> block) or threads stuck waiting for a database <strong>connection</strong> in <code>HikariPool.getConnection</code> (the connection pool is too small, or queries hold connections too long).</li>
+<li><strong>Record JFR for a few minutes</strong> under load: it shows hot methods, lock contention with the exact monitors involved, file and socket I/O wait times, and allocation pressure, all with timestamps you can match against the spikes.</li>
+<li><strong>Look outside the JVM</strong>:<ul>
+<li><strong>CPU throttling in containers</strong>: if the pod has a CPU <em>limit</em>, the kernel's cgroup quota can pause the whole process for the rest of a 100 ms period once its share is used up. Multi-threaded bursts (including GC threads) hit this easily, producing spikes that look like GC but aren't. Check <code>nr_throttled</code> in the cgroup <code>cpu.stat</code>.</li>
+<li><strong>Noisy neighbours</strong> on the same host competing for CPU, memory bandwidth or disk.</li>
+<li><strong>Slow downstream calls</strong>: the database, another service, DNS resolution.</li>
+</ul>
+</li>
+</ol>
+<h2 id="reading-a-thread-dump">Reading a thread dump<a class="headerlink" href="#reading-a-thread-dump" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>"http-nio-8080-exec-7" #42 daemon prio=5 os_prio=0 tid=0x... nid=0x2f1a waiting for monitor entry
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>   java.lang.Thread.State: BLOCKED (on object monitor)
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    at com.app.Cache.get(Cache.java:31)
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    - waiting to lock &lt;0x000000076b1c2a30&gt; (a java.util.HashMap)
+</code></pre></div>
+<p>Piece by piece:</p>
+<ul>
+<li><code>"http-nio-8080-exec-7"</code>: the thread's <strong>name</strong>, here a Tomcat request-handling thread on port 8080. Naming your own executors' threads makes dumps far easier to read.</li>
+<li><code>#42</code>: the JVM's own thread number. <code>daemon</code>: a daemon thread does not keep the JVM alive on its own. <code>prio</code>: Java and OS priority.</li>
+<li><code>tid=0x...</code>: the address of the JVM's internal thread structure. Not useful for matching with <code>top</code>.</li>
+<li><strong><code>nid=0x2f1a</code></strong>: the <strong>native (OS) thread ID in hex</strong>. This is what you match against <code>top -H</code>.</li>
+<li><code>java.lang.Thread.State: BLOCKED (on object monitor)</code>: it is waiting to enter a <code>synchronized</code> block (see thread states in <a href="../../java/03-concurrency/">Concurrency</a>).</li>
+<li><code>at com.app.Cache.get(Cache.java:31)</code>: the top of its stack, i.e. where it is right now.</li>
+<li><code>- waiting to lock &lt;0x...76b1c2a30&gt; (a java.util.HashMap)</code>: it wants the monitor of a specific <code>HashMap</code> object. Search the dump for <strong><code>- locked &lt;0x...76b1c2a30&gt;</code></strong> to find the thread that currently holds it, and see what <em>that</em> thread is doing.</li>
+</ul>
+<p>Patterns to recognise:</p>
+<ul>
+<li><strong>Many threads BLOCKED on the same lock address</strong> → lock contention; one thread holds the lock while the others queue. Shrink the critical section, use a concurrent data structure, or avoid the shared lock.</li>
+<li><strong>Many threads WAITING or TIMED_WAITING in <code>HikariPool.getConnection</code></strong> → every database connection is in use and requests are queueing for one: the pool is exhausted, either because it is too small for the load or, more often, because slow queries or long transactions hold connections too long.</li>
+<li><strong><code>jstack</code> reports deadlocks explicitly</strong> at the end of the dump ("Found one Java-level deadlock:"), listing each thread, the lock it holds and the lock it waits for.</li>
+</ul>
+<h2 id="traps">Traps<a class="headerlink" href="#traps" title="Permanent link">&para;</a></h2>
+<ul>
+<li>"Java is slow because it's interpreted." Only cold code is interpreted. Hot code is JIT-compiled to machine code optimised with real runtime profiles, which can sometimes beat ahead-of-time compiled code.</li>
+<li>"Measure with <code>System.nanoTime()</code> around a loop." That measures warm-up, interpreter speed or dead-code elimination instead of steady-state performance. Use <strong>JMH</strong>.</li>
+<li>"A heap dump is free." It <strong>pauses</strong> the JVM while writing, can be as large as the heap, and contains sensitive data.</li>
+<li>"If the heap is fine, memory is fine." The process also uses native memory: thread stacks, Metaspace, direct buffers, code cache, GC structures. Check it with Native Memory Tracking.</li>
+</ul>
+<h2 id="say-it-out-loud">Say it out loud<a class="headerlink" href="#say-it-out-loud" title="Permanent link">&para;</a></h2>
+<p><strong>"Production CPU is pegged. What do you do?"</strong>
+First I find which threads are hot with <code>top -H</code> on the Java process, convert their thread IDs to hex, and match them against the <code>nid</code> values in three thread dumps taken a few seconds apart. If the hot threads are GC threads, the real problem is memory pressure, so I move to the GC logs and possibly a heap dump. If it's application code, a thread stuck in the same frame across the dumps shows me the loop or hot path, such as a runaway regex. For less obvious cases, like CPU spread across many threads, I record JFR or an async-profiler flame graph to see where time is actually spent.</p>
+<h2 id="practice-mcqs">Practice MCQs<a class="headerlink" href="#practice-mcqs" title="Permanent link">&para;</a></h2>
+<p><strong>Q1.</strong> Which tool would you use for low-overhead continuous profiling in production?</p>
+<ul>
+<li>A) <code>jmap -histo</code></li>
+<li>B) Java Flight Recorder</li>
+<li>C) <code>System.out</code> timing</li>
+<li>D) Debugger with breakpoints</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> JFR is built into the JVM and designed for production: about 1–2 % overhead, recording CPU samples, allocations, locks, I/O and GC events continuously. A gives a one-off class histogram (and <code>-histo:live</code> forces a full GC). C needs code changes and distorts timing. D stops threads, which is unacceptable in production.</p>
+</details>
+<p><strong>Q2.</strong> Why do Java services often have slow first requests?</p>
+<ul>
+<li>A) GC runs at startup</li>
+<li>B) Code is interpreted until the JIT compiles hot methods</li>
+<li>C) Metaspace is empty</li>
+<li>D) Thread stacks are allocated lazily</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Every method starts in the interpreter, and only after enough calls does C1, and later C2, compile it to optimised machine code. Class loading, lazy initialisation of beans and caches, and opening pool connections add to the early slowness. Hence warm-up traffic and readiness probes.</p>
+</details>
+<p><strong>Q3.</strong> <code>top -H</code> shows thread ID 12058 using 99% CPU. To find it in <code>jstack</code> output you look for:</p>
+<ul>
+<li>A) <code>tid=12058</code></li>
+<li>B) <code>nid=0x2f1a</code></li>
+<li>C) <code>#12058</code></li>
+<li>D) The thread name</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> <code>top -H</code> shows the OS thread ID in decimal, and the thread dump shows the same ID in hexadecimal as <code>nid</code> (native ID): 12058 decimal = 0x2f1a. A is wrong because <code>tid</code> is the address of the JVM's internal thread structure. C is the JVM's own thread counter, unrelated to the OS ID. D is only found <em>after</em> matching the nid.</p>
+</details>
+<p><strong>Q4.</strong> Old-gen usage after each full GC keeps rising over hours until OOM. This indicates:</p>
+<ul>
+<li>A) Normal load variation</li>
+<li>B) A memory leak (reachable objects accumulating)</li>
+<li>C) JIT deoptimisation</li>
+<li>D) Too many CPU cores</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Usage right after a full GC is the amount of <em>live</em> (reachable) data. If that floor keeps rising, objects are being kept alive that are never released, which is the definition of a Java memory leak. Normal load variation (A) makes usage go up and down but returns to a stable floor after collection. Take a heap dump and look at the dominator tree.</p>
+</details>
+<p><strong>Q5.</strong> Many threads are WAITING inside <code>HikariPool.getConnection</code>. The most likely cause:</p>
+<ul>
+<li>A) GC pauses</li>
+<li>B) The DB connection pool is exhausted or queries are slow</li>
+<li>C) A deadlock in <code>HashMap</code></li>
+<li>D) Metaspace exhaustion</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Threads wait in <code>getConnection</code> only when every connection in the pool is currently borrowed. Either the pool is too small for the concurrency, or, more commonly, connections are held too long by slow queries, long transactions, or remote calls made while a transaction is open. Check database query times and the pool's active/idle metrics. GC pauses (A) would freeze all threads, not park them in one place.</p>
+</details>
+<h2 id="related">Related<a class="headerlink" href="#related" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../02-garbage-collection/">Garbage collection</a>: reading GC logs and choosing a collector.</li>
+<li><a href="../../java/03-concurrency/">Concurrency</a>: thread states (BLOCKED vs WAITING) and deadlock conditions.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../02-garbage-collection/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Garbage collection">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Garbage collection
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../spring/01-ioc-di/" class="md-footer__link md-footer__link--next" aria-label="Next: IoC, DI &amp; bean lifecycle">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                IoC, DI & bean lifecycle
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+    
+  </body>
+</html>

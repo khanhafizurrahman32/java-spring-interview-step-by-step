@@ -1,0 +1,1429 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A free interview handbook for Java, the JVM and Spring Boot. Every topic starts with the mental model, shows where people get it wrong, and ends with practice MCQs.">
+      
+      
+      
+      
+        <link rel="prev" href="../02-boot-internals/">
+      
+      
+        <link rel="next" href="../04-transactions/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.39">
+    
+    
+      
+        <title>Proxies & AOP - Java & Spring Boot, Step by Step</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#proxies-aop" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-header__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Java & Spring Boot, Step by Step
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Proxies & AOP
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-nav__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Java & Spring Boot, Step by Step
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../start-here/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Start here
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Java
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Java
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/01-core-language/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core language traps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/02-collections-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Collections internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/03-concurrency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Concurrency
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/04-streams/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Streams & functional
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/05-modern-java/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modern Java (8 to 21+)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    JVM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            JVM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/01-memory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Memory & class loading
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/02-garbage-collection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Garbage collection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/03-performance-troubleshooting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JIT, tools & troubleshooting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Spring
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Spring
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-ioc-di/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IoC, DI & bean lifecycle
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-boot-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Boot internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Proxies & AOP
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Proxies & AOP
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jdk-dynamic-proxy-vs-cglib" class="md-nav__link">
+    <span class="md-ellipsis">
+      JDK dynamic proxy vs CGLIB
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-self-invocation-problem-and-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      The self-invocation problem and fixes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spring-aop-vocabulary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Spring AOP vocabulary
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#which-annotations-are-proxy-based" class="md-nav__link">
+    <span class="md-ellipsis">
+      Which annotations are proxy-based?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-transactions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Transactions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-jpa-pitfalls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JPA & Hibernate pitfalls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-security/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Security
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-web-testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Web, validation & testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Practice
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Practice
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/mock-test/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mixed mock test (40 MCQs)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/cheat-sheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    One-page cheat sheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jdk-dynamic-proxy-vs-cglib" class="md-nav__link">
+    <span class="md-ellipsis">
+      JDK dynamic proxy vs CGLIB
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-self-invocation-problem-and-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      The self-invocation problem and fixes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spring-aop-vocabulary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Spring AOP vocabulary
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#which-annotations-are-proxy-based" class="md-nav__link">
+    <span class="md-ellipsis">
+      Which annotations are proxy-based?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="proxies-aop">Proxies &amp; AOP<a class="headerlink" href="#proxies-aop" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>TL;DR</strong> <code>@Transactional</code>, <code>@Async</code>, <code>@Cacheable</code>, <code>@Retryable</code> and <code>@PreAuthorize</code> all work the same way: Spring wraps your bean in a <strong>proxy</strong>, a generated object that stands in front of your real object, intercepts each call, and runs extra logic before and after the real method. A call only gets that extra logic if it <strong>goes through the proxy</strong>. Calls from inside the same class (<code>this.method()</code>), <code>private</code> methods and <code>final</code> methods <strong>bypass</strong> it. This one idea answers a huge share of Spring MCQs.</p>
+</blockquote>
+<h2 id="mental-model">Mental model<a class="headerlink" href="#mental-model" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>sequenceDiagram
+    participant C as Controller
+    participant P as Proxy (CGLIB subclass)
+    participant T as Target OrderService
+    C-&gt;&gt;P: placeOrder()
+    P-&gt;&gt;P: begin transaction / check security / start timer
+    P-&gt;&gt;T: placeOrder()
+    T-&gt;&gt;T: this.audit()  ← internal call, no proxy, no advice
+    T--&gt;&gt;P: return
+    P-&gt;&gt;P: commit or rollback
+    P--&gt;&gt;C: return</code></pre>
+<p>When another bean injects <code>OrderService</code>, it does not get your <code>OrderService</code> object. It gets the <strong>proxy</strong>, which looks like an <code>OrderService</code> (same type, same methods) and holds a reference to your real object, the <strong>target</strong>. When the controller calls <code>placeOrder()</code>:</p>
+<ol>
+<li>The call lands on the <strong>proxy</strong>, which runs its "before" logic: begin a transaction, check a permission, start a timer.</li>
+<li>The proxy calls <code>placeOrder()</code> on the <strong>target</strong>, your actual code.</li>
+<li>Inside the target, <code>this</code> refers to the <strong>target itself, not the proxy</strong>. So when <code>placeOrder()</code> calls <code>this.audit()</code>, that is a plain Java method call on the same object, and the proxy never sees it. Any <code>@Transactional</code>, <code>@Async</code> or <code>@Cacheable</code> on <code>audit()</code> is ignored.</li>
+<li>When the target returns (or throws), control comes back to the proxy, which runs its "after" logic: commit or roll back, record the timing.</li>
+</ol>
+<p>The proxy can only intercept calls that <strong>pass through it from outside</strong>. Everything else in this page follows from that.</p>
+<h2 id="deep-dive">Deep dive<a class="headerlink" href="#deep-dive" title="Permanent link">&para;</a></h2>
+<h3 id="jdk-dynamic-proxy-vs-cglib">JDK dynamic proxy vs CGLIB<a class="headerlink" href="#jdk-dynamic-proxy-vs-cglib" title="Permanent link">&para;</a></h3>
+<p>Spring can create a proxy in two ways:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>JDK dynamic proxy</th>
+<th>CGLIB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>How</td>
+<td>The JDK (<code>java.lang.reflect.Proxy</code>) generates a new class at runtime that <strong>implements the same interfaces</strong> as your bean. Every interface method call is forwarded to a handler, which runs the advice and then calls the target.</td>
+<td>The CGLIB library generates a <strong>subclass</strong> of your bean class at runtime and <strong>overrides</strong> its methods; each override runs the advice and then calls the target.</td>
+</tr>
+<tr>
+<td>Requires</td>
+<td>The bean must implement at least one <strong>interface</strong>.</td>
+<td>The class must be <strong>non-final</strong> (so it can be subclassed).</td>
+</tr>
+<tr>
+<td>Can't intercept</td>
+<td>Methods that aren't declared on an interface: the proxy simply doesn't have them.</td>
+<td><strong><code>final</code> methods</strong> (can't be overridden) and <strong><code>private</code> methods</strong> (not visible to the subclass). <strong><code>final</code> classes can't be proxied at all.</strong> Static methods aren't intercepted by either kind.</td>
+</tr>
+<tr>
+<td>Spring Boot default</td>
+<td>No</td>
+<td><strong>Yes</strong> (<code>spring.aop.proxy-target-class=true</code> since Boot 2.0)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why Boot defaults to CGLIB.</strong> A JDK proxy <em>is</em> an instance of the interface but <strong>not</strong> of your concrete class. So if <code>OrderServiceImpl implements OrderService</code> is proxied with a JDK proxy, injecting <code>OrderService</code> works, but injecting <code>OrderServiceImpl</code> fails with "bean is not of required type / is a JDK proxy". A CGLIB proxy is a subclass, so it is an instance of both, and injection by interface or by class always works. Boot defaults to CGLIB to avoid that surprise.</p>
+<p><strong><code>final</code> methods are a silent trap.</strong> The class is still proxied (only the class needs to be non-final), but CGLIB can't override the <code>final</code> method, so a call to it runs the <strong>inherited</strong> method body directly <strong>on the proxy object itself</strong> instead of on the target. Two bad things follow: no advice runs (no transaction, no security check) and there's no warning. Worse, the proxy object was created without running your constructor and its fields were never injected (they belong to the target), so if the method reads a field, you get <code>null</code> and often a <code>NullPointerException</code>. (Kotlin classes and methods are <code>final</code> by default, which is why the <code>kotlin-spring</code> compiler plugin automatically makes classes annotated with Spring annotations <code>open</code>.)</p>
+<h3 id="the-self-invocation-problem-and-fixes">The self-invocation problem and fixes<a class="headerlink" href="#the-self-invocation-problem-and-fixes" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nd">@Service</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ReportService</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">generateAll</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ids</span><span class="p">)</span><span class="w"> </span><span class="n">generate</span><span class="p">(</span><span class="n">id</span><span class="p">);</span><span class="w">       </span><span class="c1">// really this.generate(id): `this` is the target, so the proxy is bypassed</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nd">@Transactional</span><span class="p">(</span><span class="n">propagation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Propagation</span><span class="p">.</span><span class="na">REQUIRES_NEW</span><span class="p">)</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">generate</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span><span class="w">      </span><span class="c1">// REQUIRES_NEW is silently ignored here: no new transaction per report</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">}</span>
+</code></pre></div>
+<p>The intent was one independent transaction per report, so one failing report wouldn't roll back the others. But <code>generateAll()</code> calls <code>generate()</code> on <code>this</code>, and the annotation is only honoured by the proxy. Every report therefore runs in whatever transaction <code>generateAll</code> has (or none), and there's no error to tell you.</p>
+<p>Fixes, from best to worst:</p>
+<ol>
+<li><strong>Move the method to another bean</strong> and call it through injection: <code>reportGenerator.generate(id)</code>. The call now crosses a proxy. This is the cleanest, because it is plain Spring with no tricks, and it often improves the design (each class gets one job).</li>
+<li><strong>Use programmatic control</strong>: inject a <code>TransactionTemplate</code> and wrap the work yourself, <code>txTemplate.execute(status -&gt; { ... })</code>. There's no proxy involved, so self-invocation doesn't matter, and the transaction boundary is visible in the code. (Configure it with <code>setPropagationBehavior(PROPAGATION_REQUIRES_NEW)</code> for this example.)</li>
+<li><strong>Inject the proxy of yourself</strong>: a <code>@Lazy</code> self-reference (<code>@Lazy @Autowired ReportService self;</code> then <code>self.generate(id)</code>) or an <code>ObjectProvider&lt;ReportService&gt;</code>. It works, because <code>self</code> is the proxy, but it's confusing to read, and <code>@Lazy</code> is needed to avoid a circular-reference startup error.</li>
+<li><strong><code>AopContext.currentProxy()</code></strong>, after enabling <code>@EnableAspectJAutoProxy(exposeProxy = true)</code>: <code>((ReportService) AopContext.currentProxy()).generate(id)</code>. It works, but couples your business code to Spring AOP internals, and it only works inside an advised call.</li>
+<li><strong>Switch to AspectJ compile-time or load-time weaving</strong>. Instead of wrapping the object in a proxy, AspectJ inserts the advice <strong>directly into your class's bytecode</strong>, so every call, including <code>this.generate()</code>, is advised. That needs an extra build plugin or a Java agent at startup, which is heavy machinery for this problem.</li>
+</ol>
+<h3 id="spring-aop-vocabulary">Spring AOP vocabulary<a class="headerlink" href="#spring-aop-vocabulary" title="Permanent link">&para;</a></h3>
+<p><strong>AOP (aspect-oriented programming)</strong> is a way to add <em>cross-cutting</em> behaviour, logic needed in many places like logging, timing, transactions or security, without copying it into every method. You write it once in an <em>aspect</em> and declare <em>where</em> it applies.</p>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Aspect</td>
+<td>A class holding cross-cutting logic, annotated <code>@Aspect</code> (and registered as a bean, e.g. with <code>@Component</code>).</td>
+</tr>
+<tr>
+<td>Join point</td>
+<td>A point during execution where an aspect <em>could</em> run. In Spring AOP it is always <strong>a method execution on a Spring bean</strong>. Full AspectJ also supports constructor calls, field reads and writes, and more.</td>
+</tr>
+<tr>
+<td>Pointcut</td>
+<td>An expression that <strong>selects</strong> join points, e.g. <code>execution(* com.acme..service..*(..))</code> ("any method, any return type, in any class under a <code>service</code> package below <code>com.acme</code>, any arguments") or <code>@annotation(com.acme.Audited)</code> ("any method annotated <code>@Audited</code>").</td>
+</tr>
+<tr>
+<td>Advice</td>
+<td>The code that runs at the selected join points, and <em>when</em>: <code>@Before</code> (before the method), <code>@AfterReturning</code> (after a normal return, with access to the result), <code>@AfterThrowing</code> (after an exception), <code>@After</code> (after either, like <code>finally</code>), <code>@Around</code> (wraps the whole call; you decide if and when to call the method).</td>
+</tr>
+<tr>
+<td>Weaving</td>
+<td>Linking aspects to their targets. Spring AOP does it <strong>at runtime, with proxies</strong>. AspectJ weaves at compile time or class-load time by modifying bytecode.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nd">@Aspect</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nd">@Component</span><span class="w">                                              </span><span class="c1">// the aspect must itself be a Spring bean to be picked up</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TimingAspect</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nd">@Around</span><span class="p">(</span><span class="s">"execution(* com.acme..service..*(..))"</span><span class="p">)</span><span class="w">   </span><span class="c1">// pointcut: every method in any ..service.. package under com.acme</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">time</span><span class="p">(</span><span class="n">ProceedingJoinPoint</span><span class="w"> </span><span class="n">pjp</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Throwable</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">        </span><span class="kt">long</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">System</span><span class="p">.</span><span class="na">nanoTime</span><span class="p">();</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">pjp</span><span class="p">.</span><span class="na">proceed</span><span class="p">();</span><span class="w">                       </span><span class="c1">// call the real method (and any inner advice); forget this and the method never runs</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span><span class="w">                                     </span><span class="c1">// finally: log the time on success AND on exception</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">            </span><span class="n">log</span><span class="p">.</span><span class="na">info</span><span class="p">(</span><span class="s">"{} took {} µs"</span><span class="p">,</span><span class="w"> </span><span class="n">pjp</span><span class="p">.</span><span class="na">getSignature</span><span class="p">(),</span><span class="w"> </span><span class="p">(</span><span class="n">System</span><span class="p">.</span><span class="na">nanoTime</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><strong><code>@Around</code> is the most powerful advice</strong>: it can change the arguments (<code>pjp.proceed(newArgs)</code>), replace the return value, skip the call entirely (caching), call it several times (retrying) or translate exceptions. Because <em>you</em> decide whether the method runs, <strong>forgetting <code>proceed()</code> silently skips the target</strong>: the caller receives whatever the advice returns (often <code>null</code>). Use the simplest advice type that does the job.</li>
+<li><strong>Spring AOP only advises Spring-managed beans.</strong> Proxies are created by the container while it creates beans, so an object you create yourself with <code>new OrderService()</code> is a plain object, and no annotation on it does anything.</li>
+<li><strong>Multiple aspects on one method</strong>: control their nesting with <code>@Order</code> on the aspect classes. A <strong>lower value means outer</strong>: it runs first on the way in and last on the way out. For example, a security aspect with a lower order than a transaction aspect checks permissions before a transaction is even opened.</li>
+<li><strong>Spring AOP vs AspectJ</strong>: AspectJ can advise constructors, field access, <code>private</code> and <code>static</code> methods and self-calls, and objects not managed by Spring, because it changes the bytecode itself. The cost is a weaving step (a compiler plugin or a <code>-javaagent</code>). Spring AOP covers the common case, public methods called between beans, with no build changes.</li>
+</ul>
+<h3 id="which-annotations-are-proxy-based">Which annotations are proxy-based?<a class="headerlink" href="#which-annotations-are-proxy-based" title="Permanent link">&para;</a></h3>
+<p>All of these share the same limitations: the method must be called <strong>from another bean</strong> (through the proxy), must be overridable (not <code>private</code>, <code>final</code> or <code>static</code>), and the object must be a <strong>Spring-managed bean</strong>:</p>
+<p><code>@Transactional</code>, <code>@Async</code>, <code>@Cacheable</code> / <code>@CachePut</code> / <code>@CacheEvict</code>, <code>@Retryable</code>, <code>@PreAuthorize</code> / <code>@PostAuthorize</code> / <code>@Secured</code>, <code>@Validated</code> method validation, <code>@Timed</code> / <code>@Observed</code>.</p>
+<p>Historically these required <strong>public</strong> methods. Since Spring Framework 6, class-based (CGLIB) proxies also handle <code>protected</code> and package-private methods for <code>@Transactional</code>, but making such methods public remains the safe convention, and <code>private</code> methods are never intercepted.</p>
+<h2 id="traps">Traps<a class="headerlink" href="#traps" title="Permanent link">&para;</a></h2>
+<ul>
+<li>"A <code>@Transactional</code> private method is transactional." <strong>Never.</strong> A private method can't be overridden by the CGLIB subclass or declared on an interface, so no proxy can intercept it, and the annotation is silently ignored.</li>
+<li>"Calling a <code>@Cacheable</code> method from the same class uses the cache." It <strong>bypasses the proxy</strong>, so the method runs every time and nothing is cached.</li>
+<li>"Spring AOP can intercept field access." Spring AOP intercepts <strong>only method executions</strong> on beans. Field access needs AspectJ.</li>
+<li>"Spring Boot uses JDK proxies when an interface exists." Plain Spring did, but <strong>Boot defaults to CGLIB</strong> (<code>spring.aop.proxy-target-class=true</code>) even when interfaces exist.</li>
+<li>"<code>@Async</code> on a method called internally runs asynchronously." It runs <strong>synchronously, on the caller's thread</strong>, because the proxy that would hand it to an executor is bypassed.</li>
+</ul>
+<h2 id="say-it-out-loud">Say it out loud<a class="headerlink" href="#say-it-out-loud" title="Permanent link">&para;</a></h2>
+<p><strong>"Why didn't my @Transactional / @Async / @Cacheable work?"</strong>
+Those features are implemented by a proxy that Spring puts in front of the bean, so they only apply when a call actually crosses that proxy. The usual culprits are self-invocation, meaning one method calling another method of the same class through <code>this</code>; a private or final method, which the CGLIB subclass can't override; or an object created with <code>new</code> instead of being a Spring bean, which never gets a proxy at all. The fix I'd reach for first is moving the annotated method into a separate bean and injecting it, and for the transactional case specifically, using <code>TransactionTemplate</code> to make the boundary explicit.</p>
+<h2 id="practice-mcqs">Practice MCQs<a class="headerlink" href="#practice-mcqs" title="Permanent link">&para;</a></h2>
+<p><strong>Q1.</strong> Method <code>a()</code> in a bean calls <code>this.b()</code>, and <code>b()</code> is annotated <code>@Async</code>. <code>b()</code> runs:</p>
+<ul>
+<li>A) On a separate thread</li>
+<li>B) On the caller's thread, synchronously</li>
+<li>C) Never</li>
+<li>D) Throws <code>IllegalStateException</code></li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> <code>@Async</code> works by the proxy submitting the call to an executor. <code>this.b()</code> is a plain call on the target object, so the proxy never sees it, and <code>b()</code> runs immediately on the same thread, as an ordinary method. No error is raised (C and D are wrong), which is exactly why the bug is easy to miss.</p>
+</details>
+<p><strong>Q2.</strong> Spring Boot's default proxying strategy is:</p>
+<ul>
+<li>A) JDK dynamic proxies always</li>
+<li>B) CGLIB class-based proxies</li>
+<li>C) AspectJ compile-time weaving</li>
+<li>D) No proxies</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Since Boot 2.0, <code>spring.aop.proxy-target-class</code> defaults to <code>true</code>, so Boot generates CGLIB subclasses even for beans that implement interfaces, which means injection by concrete class also works. JDK proxies (A) are used only if you set that property to <code>false</code> and the bean has interfaces. AspectJ weaving (C) must be set up explicitly.</p>
+</details>
+<p><strong>Q3.</strong> A CGLIB-proxied bean has a <code>public final</code> method annotated <code>@Transactional</code>. What happens when another bean calls it?</p>
+<ul>
+<li>A) Runs in a transaction</li>
+<li>B) Runs without a transaction (the method can't be overridden by the proxy)</li>
+<li>C) Startup fails</li>
+<li>D) A JDK proxy is used instead</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> CGLIB works by overriding methods, and a <code>final</code> method can't be overridden, so the call runs the original method body directly on the proxy instance, with no transaction and no warning. Because the proxy instance's own fields were never injected, the method may also hit a <code>NullPointerException</code> if it uses a field. Spring does not fail at startup (C), and it doesn't switch proxy type per method (D).</p>
+</details>
+<p><strong>Q4.</strong> In an <code>@Around</code> advice you forget to call <code>pjp.proceed()</code>. The target method:</p>
+<ul>
+<li>A) Still runs</li>
+<li>B) Never runs, and the advice's return value is used</li>
+<li>C) Runs twice</li>
+<li>D) Throws <code>AopInvocationException</code> always</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> With <code>@Around</code>, the advice <em>replaces</em> the call, and the target only runs if the advice calls <code>proceed()</code>. Without it, the caller simply gets whatever the advice returned. D only happens in one specific case: if the target method returns a primitive (such as <code>int</code>) and the advice returns <code>null</code>, Spring can't convert <code>null</code> to a primitive and throws <code>AopInvocationException</code>.</p>
+</details>
+<p><strong>Q5.</strong> Which can Spring AOP <strong>not</strong> intercept?</p>
+<ul>
+<li>A) A public method on a <code>@Service</code> called from a controller</li>
+<li>B) A method on an object created with <code>new</code></li>
+<li>C) A method matched by an <code>execution(...)</code> pointcut</li>
+<li>D) A public method on a <code>@Repository</code></li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Proxies are created by the Spring container while it creates beans. An object you construct yourself with <code>new</code> never passes through the container, so it is just a plain object with no proxy, and no aspect or annotation applies to it. A, C and D are all ordinary method executions on Spring beans called through their proxies.</p>
+</details>
+<p><strong>Q6.</strong> The cleanest fix for a self-invoked <code>@Transactional(propagation = REQUIRES_NEW)</code> method:</p>
+<ul>
+<li>A) Make it <code>private</code></li>
+<li>B) Move it to a separate bean and inject that bean</li>
+<li>C) Mark the class <code>final</code></li>
+<li>D) Add <code>@Primary</code></li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Once the method lives in another bean, the caller invokes it through that bean's proxy, so <code>REQUIRES_NEW</code> actually opens a new transaction. A and C make things worse: private methods and final classes can't be proxied at all. D only affects which bean is injected when several candidates exist; it has nothing to do with proxies.</p>
+</details>
+<h2 id="related">Related<a class="headerlink" href="#related" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../04-transactions/">Transactions</a>: how the transactional proxy decides to commit or roll back, and the propagation modes.</li>
+<li><a href="../01-ioc-di/">IoC &amp; DI</a>: the lifecycle step where proxies are created, and why <code>@PostConstruct</code> runs before them.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../02-boot-internals/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Spring Boot internals">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Spring Boot internals
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../04-transactions/" class="md-footer__link md-footer__link--next" aria-label="Next: Transactions">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Transactions
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+    
+  </body>
+</html>

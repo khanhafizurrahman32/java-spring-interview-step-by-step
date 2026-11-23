@@ -1,0 +1,1617 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A free interview handbook for Java, the JVM and Spring Boot. Every topic starts with the mental model, shows where people get it wrong, and ends with practice MCQs.">
+      
+      
+      
+      
+        <link rel="prev" href="../03-proxies-aop/">
+      
+      
+        <link rel="next" href="../05-jpa-pitfalls/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.39">
+    
+    
+      
+        <title>Transactions - Java & Spring Boot, Step by Step</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#transactions" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-header__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Java & Spring Boot, Step by Step
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Transactions
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-nav__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Java & Spring Boot, Step by Step
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../start-here/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Start here
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Java
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Java
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/01-core-language/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core language traps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/02-collections-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Collections internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/03-concurrency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Concurrency
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/04-streams/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Streams & functional
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/05-modern-java/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modern Java (8 to 21+)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    JVM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            JVM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/01-memory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Memory & class loading
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/02-garbage-collection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Garbage collection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/03-performance-troubleshooting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JIT, tools & troubleshooting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Spring
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Spring
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-ioc-di/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IoC, DI & bean lifecycle
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-boot-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Boot internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-proxies-aop/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Proxies & AOP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Transactions
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Transactions
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rollback-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rollback rules
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#propagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Propagation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-unexpectedrollbackexception-trap" class="md-nav__link">
+    <span class="md-ellipsis">
+      The UnexpectedRollbackException trap
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isolation-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      Isolation levels
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#readonly-timeout-and-where-to-put-the-annotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      readOnly, timeout, and where to put the annotation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keep-transactions-short" class="md-nav__link">
+    <span class="md-ellipsis">
+      Keep transactions short
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#programmatic-transactions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Programmatic transactions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tests
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-jpa-pitfalls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JPA & Hibernate pitfalls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-security/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Security
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-web-testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Web, validation & testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Practice
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Practice
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/mock-test/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mixed mock test (40 MCQs)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/cheat-sheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    One-page cheat sheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rollback-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rollback rules
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#propagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Propagation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-unexpectedrollbackexception-trap" class="md-nav__link">
+    <span class="md-ellipsis">
+      The UnexpectedRollbackException trap
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isolation-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      Isolation levels
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#readonly-timeout-and-where-to-put-the-annotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      readOnly, timeout, and where to put the annotation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keep-transactions-short" class="md-nav__link">
+    <span class="md-ellipsis">
+      Keep transactions short
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#programmatic-transactions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Programmatic transactions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tests
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="transactions">Transactions<a class="headerlink" href="#transactions" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>TL;DR</strong> A <strong>transaction</strong> groups several database operations so they either all succeed (<strong>commit</strong>) or all disappear as if they never happened (<strong>rollback</strong>). In Spring, <code>@Transactional</code> is applied by a <strong>proxy</strong> (see <a href="../03-proxies-aop/">Proxies &amp; AOP</a>), the transaction is bound to the <strong>current thread</strong>, and by default it <strong>rolls back only on unchecked exceptions</strong> (<code>RuntimeException</code> and <code>Error</code>); checked exceptions commit. Default propagation is <strong>REQUIRED</strong>: join the transaction that's already running, or start one if there is none. The classic traps: self-invocation, checked exceptions committing, swallowed exceptions, and <code>UnexpectedRollbackException</code>.</p>
+</blockquote>
+<h2 id="mental-model">Mental model<a class="headerlink" href="#mental-model" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>sequenceDiagram
+    participant C as Caller
+    participant P as Transaction proxy
+    participant TM as PlatformTransactionManager
+    participant S as Service method
+    C-&gt;&gt;P: transfer()
+    P-&gt;&gt;TM: getTransaction(definition)
+    TM--&gt;&gt;P: bind connection to current thread
+    P-&gt;&gt;S: transfer()
+    alt returns normally, or throws checked exception
+        P-&gt;&gt;TM: commit()
+    else throws RuntimeException / Error
+        P-&gt;&gt;TM: rollback()
+    end
+    P--&gt;&gt;C: result / exception</code></pre>
+<ol>
+<li>The caller invokes <code>transfer()</code> on the <strong>proxy</strong>, not directly on your service.</li>
+<li>The proxy asks the <strong><code>PlatformTransactionManager</code></strong> (the component that knows how to start and end transactions for your technology, e.g. <code>JpaTransactionManager</code> or <code>DataSourceTransactionManager</code>) for a transaction matching the annotation's settings (propagation, isolation, timeout, read-only).</li>
+<li>The transaction manager takes a connection from the pool, turns off auto-commit, and <strong>binds the connection to the current thread</strong>. Every repository or <code>JdbcTemplate</code> call made on this thread during the method automatically uses that same connection, which is how separate repository calls end up in one transaction without passing anything around.</li>
+<li>Your method runs.</li>
+<li>If it <strong>returns normally</strong> or throws a <strong>checked</strong> exception, the proxy commits. If it throws a <code>RuntimeException</code> or <code>Error</code>, the proxy rolls back. Then the exception (if any) continues to the caller.</li>
+</ol>
+<p>Because the transaction (and its connection) is stored in a <strong><code>ThreadLocal</code></strong>, i.e. attached to one thread, code running on <strong>another thread</strong> (<code>@Async</code> methods, <code>CompletableFuture.supplyAsync</code>, parallel streams, your own executors) does <strong>not</strong> see it. That code gets no transaction, or its own separate one, and its writes commit or fail independently of the caller.</p>
+<h2 id="deep-dive">Deep dive<a class="headerlink" href="#deep-dive" title="Permanent link">&para;</a></h2>
+<h3 id="rollback-rules">Rollback rules<a class="headerlink" href="#rollback-rules" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Thrown from the method</th>
+<th>Default outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RuntimeException</code> (unchecked)</td>
+<td><strong>Rollback.</strong> Unchecked exceptions usually mean a bug or an unexpected failure, so the data may be inconsistent.</td>
+</tr>
+<tr>
+<td><code>Error</code></td>
+<td><strong>Rollback.</strong> <code>OutOfMemoryError</code> and the like mean the JVM is in trouble.</td>
+</tr>
+<tr>
+<td>Checked <code>Exception</code> (e.g. <code>IOException</code>, <code>SQLException</code> thrown directly)</td>
+<td><strong>Commit.</strong> Spring follows the old EJB convention that checked exceptions are expected <em>business</em> outcomes the caller should handle, not failures of the unit of work. This surprises almost everyone.</td>
+</tr>
+<tr>
+<td>Exception caught inside the method and not rethrown</td>
+<td><strong>Commit.</strong> The proxy only sees what leaves the method, and if you swallow the exception, as far as it knows everything succeeded.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nd">@Transactional</span><span class="p">(</span><span class="n">rollbackFor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Exception</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w">          </span><span class="c1">// roll back on checked exceptions too (a common team-wide convention)</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">importFile</span><span class="p">(</span><span class="n">Path</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">IOException</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nd">@Transactional</span><span class="p">(</span><span class="n">noRollbackFor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DuplicateEmailException</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"> </span><span class="c1">// this runtime exception is an expected outcome: keep the other changes</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="n">User</span><span class="w"> </span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p>Note that Spring's own data-access exceptions (<code>DataAccessException</code> and its subclasses) are unchecked, so failures from repositories and <code>JdbcTemplate</code> roll back by default.</p>
+<h3 id="propagation">Propagation<a class="headerlink" href="#propagation" title="Permanent link">&para;</a></h3>
+<p><strong>Propagation</strong> answers the question: "when a transactional method is called, and a transaction may <em>already</em> be running on this thread, what should happen?"</p>
+<table>
+<thead>
+<tr>
+<th>Propagation</th>
+<th>Existing transaction</th>
+<th>No transaction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>REQUIRED</strong> (default)</td>
+<td><strong>Join it</strong>: the method's work becomes part of the caller's transaction and commits or rolls back with it.</td>
+<td>Start a new one.</td>
+</tr>
+<tr>
+<td><strong>REQUIRES_NEW</strong></td>
+<td><strong>Suspend</strong> it (park it, still open, on the side) and start a completely independent one, which commits or rolls back on its own. Then resume the outer one.</td>
+<td>Start a new one.</td>
+</tr>
+<tr>
+<td><strong>NESTED</strong></td>
+<td>Create a <strong>savepoint</strong> inside the existing transaction. If the inner method fails, only its work is undone (back to the savepoint) and the outer transaction can carry on; if the outer one rolls back later, the inner work is undone too.</td>
+<td>Start a new one.</td>
+</tr>
+<tr>
+<td>SUPPORTS</td>
+<td>Join it.</td>
+<td>Run without a transaction. ("I don't care either way.")</td>
+</tr>
+<tr>
+<td>NOT_SUPPORTED</td>
+<td>Suspend it and run without a transaction.</td>
+<td>Run without a transaction.</td>
+</tr>
+<tr>
+<td>MANDATORY</td>
+<td>Join it.</td>
+<td><strong>Throw</strong> <code>IllegalTransactionStateException</code>: this method must only be called from inside a transaction.</td>
+</tr>
+<tr>
+<td>NEVER</td>
+<td><strong>Throw</strong>: this method must never run inside a transaction.</td>
+<td>Run without a transaction.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>REQUIRES_NEW commits independently of the outer transaction.</strong> That's what you want for audit logs or failure records that must be kept even when the business operation fails and rolls back. But while the outer transaction is suspended, it still <strong>holds its database connection</strong>, and the inner transaction needs a <strong>second connection</strong>. With a small pool and many concurrent requests this can <strong>deadlock the pool</strong>: say the pool has 10 connections and 10 requests each hold one in their outer transaction, all now waiting for a second connection that will never be freed. Size the pool for it, or avoid REQUIRES_NEW on hot paths.</p>
+<p><strong>NESTED</strong> relies on JDBC <strong>savepoints</strong> (markers inside a transaction you can roll back to). It works with <code>DataSourceTransactionManager</code> (plain JDBC, <code>JdbcTemplate</code>), but <code>JpaTransactionManager</code> supports it only for JDBC access, not for JPA operations, because Hibernate's in-memory persistence context can't be rolled back to a savepoint.</p>
+<h3 id="the-unexpectedrollbackexception-trap">The <code>UnexpectedRollbackException</code> trap<a class="headerlink" href="#the-unexpectedrollbackexception-trap" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nd">@Transactional</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">outer</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="n">inner</span><span class="p">.</span><span class="na">save</span><span class="p">();</span><span class="w">          </span><span class="c1">// inner is ANOTHER bean, @Transactional REQUIRED: joins outer's transaction; throws RuntimeException</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">RuntimeException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">        </span><span class="n">log</span><span class="p">.</span><span class="na">warn</span><span class="p">(</span><span class="s">"ignored"</span><span class="p">);</span><span class="w">   </span><span class="c1">// we "handle" it...</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">}</span><span class="w">   </span><span class="c1">// ...but commit fails: UnexpectedRollbackException</span>
+</code></pre></div>
+<p>What happens, step by step:</p>
+<ol>
+<li><code>inner.save()</code> goes through <code>inner</code>'s transactional proxy and <strong>joins</strong> the existing transaction (REQUIRED). There is only one physical transaction.</li>
+<li><code>save()</code> throws a <code>RuntimeException</code>. <code>inner</code>'s proxy follows the rollback rules, but it didn't start the transaction, so it can't roll it back by itself. Instead it <strong>marks the shared transaction rollback-only</strong>: "this transaction is poisoned; it must not commit".</li>
+<li><code>outer()</code> catches the exception and returns normally, so its proxy tries to <strong>commit</strong>.</li>
+<li>The transaction manager sees the rollback-only flag, rolls back <strong>everything</strong> (including <code>outer</code>'s own successful changes), and throws <code>UnexpectedRollbackException</code> to tell the caller "you asked for a commit, but I rolled back", since silently rolling back would hide data loss.</li>
+</ol>
+<p>Catching the exception in <code>outer()</code> does not undo the rollback-only mark. Fixes:</p>
+<ul>
+<li>If the inner work really should be <strong>independent</strong> (its failure shouldn't affect the outer work), make the inner method <code>REQUIRES_NEW</code>, so its failure rolls back only its own transaction.</li>
+<li>If it shouldn't be independent, <strong>don't swallow the exception</strong>: let it propagate, so the whole operation fails cleanly.</li>
+<li>If the inner method only <em>might</em> fail and that's normal, check the condition before calling it, instead of using exceptions for control flow.</li>
+</ul>
+<p>(If <code>save()</code> were a method of the <em>same</em> class, called via <code>this</code>, there would be no inner proxy, no rollback-only mark, and <code>outer</code> would commit; that's the self-invocation case from <a href="../03-proxies-aop/">Proxies &amp; AOP</a>.)</p>
+<h3 id="isolation-levels">Isolation levels<a class="headerlink" href="#isolation-levels" title="Permanent link">&para;</a></h3>
+<p><strong>Isolation</strong> controls how much concurrent transactions can see of each other's uncommitted or freshly committed changes. The anomalies:</p>
+<ul>
+<li><strong>Dirty read</strong>: you read data another transaction has written but <strong>not yet committed</strong>, and it may still roll back, so you saw data that never existed.</li>
+<li><strong>Non-repeatable read</strong>: you read the same row twice in one transaction and get <strong>different values</strong>, because another transaction updated and committed it in between.</li>
+<li><strong>Phantom read</strong>: you run the same <em>query</em> twice (e.g. <code>WHERE status = 'NEW'</code>) and get <strong>a different set of rows</strong>, because another transaction inserted or deleted matching rows in between.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Dirty read</th>
+<th>Non-repeatable read</th>
+<th>Phantom read</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>READ_UNCOMMITTED</td>
+<td>possible</td>
+<td>possible</td>
+<td>possible</td>
+</tr>
+<tr>
+<td><strong>READ_COMMITTED</strong></td>
+<td>prevented</td>
+<td>possible</td>
+<td>possible</td>
+</tr>
+<tr>
+<td>REPEATABLE_READ</td>
+<td>prevented</td>
+<td>prevented</td>
+<td>possible (by the SQL standard)</td>
+</tr>
+<tr>
+<td>SERIALIZABLE</td>
+<td>prevented</td>
+<td>prevented</td>
+<td>prevented</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong><code>Isolation.DEFAULT</code></strong> (what you get without setting it) means "use the <strong>database's</strong> default": <strong>PostgreSQL, Oracle and SQL Server use READ COMMITTED</strong>; MySQL InnoDB uses REPEATABLE READ. Real databases often do better than the standard's minimum: PostgreSQL's REPEATABLE READ is snapshot isolation and also prevents phantoms. Check your database's documentation, not just the table.</li>
+<li><strong>Higher isolation means fewer anomalies but more cost</strong>: more locking (waiting) or, in snapshot-based databases, more <strong>serialization failures</strong>, transactions aborted with an error that you must <strong>retry</strong>. Use the lowest level that keeps your data correct.</li>
+<li><strong>Lost updates</strong> are the anomaly that bites most applications: two transactions both read a balance of 100, both add 10, and both write 110, so one update is lost. READ COMMITTED does not prevent this. It is usually solved not by raising isolation but with <strong>optimistic locking</strong> (a <code>@Version</code> column; the second writer gets an exception and retries) or <strong>pessimistic locking</strong> (<code>SELECT ... FOR UPDATE</code> locks the row so the second reader waits). See <a href="../05-jpa-pitfalls/">JPA pitfalls</a>. An atomic SQL update (<code>UPDATE account SET balance = balance + 10</code>) also avoids it.</li>
+</ul>
+<h3 id="readonly-timeout-and-where-to-put-the-annotation">readOnly, timeout, and where to put the annotation<a class="headerlink" href="#readonly-timeout-and-where-to-put-the-annotation" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong><code>@Transactional(readOnly = true)</code></strong>: with Hibernate, Spring sets the session's <strong>flush mode to manual</strong> and marks it read-only. Hibernate then doesn't keep a snapshot copy of each loaded entity for <strong>dirty checking</strong> (comparing entities to their original state at commit to find changes), and doesn't flush at the end, which saves memory and CPU on large reads. Some setups also use it to <strong>route the query to a read replica</strong> (via a routing <code>DataSource</code>). It is a <strong>performance hint, not a security guarantee</strong>: a native <code>UPDATE</code> query in a read-only transaction may still execute, depending on the driver and database.</li>
+<li><strong><code>timeout = 5</code></strong> (in seconds): if the transaction runs longer, it is marked for rollback and the next statement fails, which protects the database from runaway transactions that hold locks.</li>
+<li><strong>Put <code>@Transactional</code> on <em>service</em> methods</strong> that represent one business unit of work ("place order" = save order + reserve stock + record payment), not on controllers (too broad: the transaction would span JSON serialization and the whole web layer) or repositories (too narrow: each call would commit separately, so a failure halfway leaves partial data). An annotation on the <strong>class</strong> applies to all its public methods; an annotation on a <strong>method</strong> overrides the class-level settings for that method.</li>
+<li><strong>Private methods are never transactional</strong>, because no proxy can intercept them. With class-based (CGLIB) proxies, Spring 6 also handles protected and package-private methods, but keep transactional entry points public to stay clear.</li>
+<li><strong>Spring Data JPA repositories are already transactional</strong>: the default implementation (<code>SimpleJpaRepository</code>) is annotated <code>readOnly = true</code> for read methods, and its write methods (<code>save</code>, <code>delete</code>) are annotated with a normal read-write transaction. If a service method already has a transaction, repository calls simply join it (REQUIRED).</li>
+</ul>
+<h3 id="keep-transactions-short">Keep transactions short<a class="headerlink" href="#keep-transactions-short" title="Permanent link">&para;</a></h3>
+<p>Don't call <strong>remote services</strong>, send <strong>emails</strong>, or publish <strong>messages</strong> to a broker inside a transaction:</p>
+<ul>
+<li><strong>It exhausts the pool.</strong> The transaction holds a database connection for its whole duration. If it waits 2 seconds on an HTTP call, that connection is idle but unavailable for 2 seconds, and under load all connections end up waiting on remote calls while other requests queue (see the HikariCP pattern in <a href="../../jvm/03-performance-troubleshooting/">JIT &amp; troubleshooting</a>). Long transactions also hold row locks longer.</li>
+<li><strong>Side effects can't be rolled back.</strong> If you send the confirmation email and the transaction then rolls back (a constraint violation at commit, say), the customer has an email for an order that doesn't exist. You can't unsend it. The reverse problem exists too: commit succeeds but the message publish failed.</li>
+</ul>
+<p>Instead, use <strong><code>@TransactionalEventListener</code></strong> (default phase <code>AFTER_COMMIT</code>) to act only <strong>after</strong> a successful commit, or the <strong>transactional outbox</strong> pattern for messaging that must be reliable: in the same transaction, insert the message into an <code>outbox</code> table, so the business data and the message commit or roll back together, and a separate process reads the table and publishes to the broker.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nd">@Transactional</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">placeOrder</span><span class="p">(</span><span class="n">Order</span><span class="w"> </span><span class="n">o</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="n">orders</span><span class="p">.</span><span class="na">save</span><span class="p">(</span><span class="n">o</span><span class="p">);</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="n">events</span><span class="p">.</span><span class="na">publishEvent</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">OrderPlaced</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="na">id</span><span class="p">()));</span><span class="w">     </span><span class="c1">// held back by Spring; delivered only if the commit succeeds</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">}</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="nd">@TransactionalEventListener</span><span class="w">                           </span><span class="c1">// phase = AFTER_COMMIT by default</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="kt">void</span><span class="w"> </span><span class="nf">onPlaced</span><span class="p">(</span><span class="n">OrderPlaced</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">mailer</span><span class="p">.</span><span class="na">sendConfirmation</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="na">orderId</span><span class="p">());</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// runs after commit; skipped entirely on rollback</span>
+</code></pre></div>
+<p>Two details worth knowing. If the event is published with <strong>no transaction active</strong>, the listener is <strong>not called at all</strong> unless you set <code>fallbackExecution = true</code>. And an <code>AFTER_COMMIT</code> listener that itself needs to write to the database must use a <strong>new</strong> transaction (<code>@Transactional(propagation = REQUIRES_NEW)</code> on the listener), because the original one has already committed.</p>
+<p>Also note this is not fully reliable: if the app crashes right after commit, the email is never sent. When that matters, use the outbox.</p>
+<h3 id="programmatic-transactions">Programmatic transactions<a class="headerlink" href="#programmatic-transactions" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">transactionTemplate</span><span class="p">.</span><span class="na">executeWithoutResult</span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">   </span><span class="c1">// begins a transaction, runs the lambda, then commits</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="n">repo</span><span class="p">.</span><span class="na">save</span><span class="p">(</span><span class="n">entity</span><span class="p">);</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">invalid</span><span class="p">)</span><span class="w"> </span><span class="n">status</span><span class="p">.</span><span class="na">setRollbackOnly</span><span class="p">();</span><span class="w">             </span><span class="c1">// ask for rollback without throwing an exception</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">});</span><span class="w">                                                     </span><span class="c1">// an exception thrown from the lambda also rolls back</span>
+</code></pre></div>
+<p><code>TransactionTemplate</code> gives you the same transaction management as <code>@Transactional</code>, but with explicit, visible boundaries in code. Useful for:</p>
+<ul>
+<li><strong>Self-invocation</strong> cases, where an annotation on a method of the same class wouldn't be applied.</li>
+<li><strong>Loops where each item needs its own transaction</strong>, so one bad record doesn't roll back the whole batch (configure the template with <code>PROPAGATION_REQUIRES_NEW</code>, or call it outside any transaction).</li>
+<li><strong>Fine-grained control</strong>: a transaction around only part of a method, keeping slow work (like a remote call) outside it.</li>
+</ul>
+<h3 id="tests">Tests<a class="headerlink" href="#tests" title="Permanent link">&para;</a></h3>
+<p><code>@Transactional</code> on a <strong>test</strong> method (or test class) behaves differently from production: Spring's test framework <strong>rolls the transaction back after each test by default</strong>, so tests don't leave data behind and don't affect each other. Use <code>@Commit</code> (or <code>@Rollback(false)</code>) to keep the changes.</p>
+<p>Beware: this can <strong>hide bugs that only appear on flush or commit</strong>. Hibernate delays SQL until it <em>flushes</em> (usually at commit). If the test rolls back without ever flushing, the <code>INSERT</code> is never sent to the database, so constraint violations (unique keys, not-null columns, foreign keys) never fire and the test passes while production fails. Call <code>entityManager.flush()</code> in such tests to force the SQL out and surface the errors. Also, code under test that runs on other threads (or uses REQUIRES_NEW) is <em>not</em> rolled back.</p>
+<h2 id="traps">Traps<a class="headerlink" href="#traps" title="Permanent link">&para;</a></h2>
+<ul>
+<li>"Any exception rolls back." By default only <strong>unchecked exceptions and errors</strong> do; a checked exception leaving the method <strong>commits</strong>. Use <code>rollbackFor</code> to change it.</li>
+<li>"Catching the inner exception saves the outer transaction." Not if the inner call went through a proxy and <strong>joined</strong> the transaction: it's already marked rollback-only, and the commit ends in <code>UnexpectedRollbackException</code>.</li>
+<li>"<code>REQUIRES_NEW</code> is free." It suspends the outer transaction, which still holds its connection, and takes a <strong>second connection</strong> from the pool, which can deadlock a small pool under load.</li>
+<li>"<code>@Async</code> methods share the caller's transaction." Transactions are bound to a thread, and <code>@Async</code> runs on a <strong>different thread</strong>, so it gets no transaction or its own.</li>
+<li>"<code>readOnly = true</code> prevents writes." It is an <strong>optimisation hint</strong> (skip dirty checking and flushing, maybe route to a replica), not an enforced permission.</li>
+<li>"Default isolation is SERIALIZABLE." <code>Isolation.DEFAULT</code> means the <strong>database's</strong> default, usually READ COMMITTED (REPEATABLE READ on MySQL InnoDB).</li>
+</ul>
+<h2 id="say-it-out-loud">Say it out loud<a class="headerlink" href="#say-it-out-loud" title="Permanent link">&para;</a></h2>
+<p><strong>"A @Transactional method threw an IOException but data was saved. Why?"</strong>
+By default, Spring rolls back only on unchecked exceptions and errors. <code>IOException</code> is a checked exception, which Spring treats as an expected business outcome, so the proxy commits the transaction before rethrowing it. I'd add <code>rollbackFor = Exception.class</code>, or wrap it in a runtime exception, and I'd also check that the call actually went through the proxy, because with self-invocation there's no transaction at all and each repository call commits on its own.</p>
+<p><strong>"How do you send an email only if the order commits?"</strong>
+Publish an application event inside the transaction and handle it with <code>@TransactionalEventListener</code>, whose default phase is after commit, so the listener runs only if the commit succeeds and never on rollback. That still loses the email if the process dies right after the commit, so for messages to a broker that must never be lost, I'd write an outbox row in the same transaction as the business data and have a separate relay publish it and mark it sent.</p>
+<h2 id="practice-mcqs">Practice MCQs<a class="headerlink" href="#practice-mcqs" title="Permanent link">&para;</a></h2>
+<p><strong>Q1.</strong> A <code>@Transactional</code> method throws <code>SQLException</code> (checked) with default settings. The transaction:</p>
+<ul>
+<li>A) Rolls back</li>
+<li>B) Commits</li>
+<li>C) Is left open</li>
+<li>D) Is marked rollback-only</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> <code>SQLException</code> is a checked exception, and the default rule rolls back only for <code>RuntimeException</code> and <code>Error</code>, so the proxy commits whatever was done before the exception, then rethrows it. Add <code>rollbackFor = SQLException.class</code> (or <code>Exception.class</code>) to roll back. Note that most Spring data-access code wraps <code>SQLException</code> into an unchecked <code>DataAccessException</code>, which <em>does</em> roll back; the trap only bites when your own code throws the checked exception.</p>
+</details>
+<p><strong>Q2.</strong> <code>outer()</code> (REQUIRED) calls <code>inner()</code> (REQUIRED, another bean), which throws <code>IllegalStateException</code>. <code>outer()</code> catches it and returns normally. Result:</p>
+<ul>
+<li>A) Commit</li>
+<li>B) <code>UnexpectedRollbackException</code> and rollback</li>
+<li>C) Only inner's changes roll back</li>
+<li>D) Deadlock</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> <code>inner()</code> joined the same physical transaction, so when it threw a runtime exception its proxy marked that shared transaction rollback-only. Catching the exception doesn't clear the mark, so when <code>outer()</code>'s proxy tries to commit, the manager rolls back everything and throws <code>UnexpectedRollbackException</code>. C would require <code>REQUIRES_NEW</code> or <code>NESTED</code> on <code>inner()</code>.</p>
+</details>
+<p><strong>Q3.</strong> You want an audit record saved even if the main business transaction rolls back. Use for the audit method:</p>
+<ul>
+<li>A) REQUIRED</li>
+<li>B) SUPPORTS</li>
+<li>C) REQUIRES_NEW</li>
+<li>D) MANDATORY</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> <code>REQUIRES_NEW</code> suspends the business transaction and runs the audit insert in its own independent transaction, which commits when the audit method returns, before the outer transaction decides its fate. A, B and D would all join the business transaction and be rolled back with it. The audit method must be in a separate bean so the call goes through its proxy.</p>
+</details>
+<p><strong>Q4.</strong> Which propagation throws if no transaction exists?</p>
+<ul>
+<li>A) REQUIRED</li>
+<li>B) MANDATORY</li>
+<li>C) NEVER</li>
+<li>D) NOT_SUPPORTED</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> <code>MANDATORY</code> means "I must be called inside an existing transaction", and throws <code>IllegalTransactionStateException</code> otherwise. <code>NEVER</code> (C) is the opposite: it throws if a transaction <strong>does</strong> exist. <code>REQUIRED</code> (A) starts one when there is none; <code>NOT_SUPPORTED</code> (D) just runs without one.</p>
+</details>
+<p><strong>Q5.</strong> Which anomaly does READ_COMMITTED still allow?</p>
+<ul>
+<li>A) Dirty reads</li>
+<li>B) Non-repeatable reads</li>
+<li>C) Both A and B</li>
+<li>D) None</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> READ COMMITTED guarantees you only ever see committed data, so no dirty reads (A is wrong). But each statement sees the latest committed data, so re-reading a row later in the same transaction can return a value another transaction committed in between. Phantom reads and lost updates are also possible at this level.</p>
+</details>
+<p><strong>Q6.</strong> A <code>@Transactional</code> method calls a method annotated <code>@Async</code> on another bean that writes to the database. The async write:</p>
+<ul>
+<li>A) Joins the caller's transaction</li>
+<li>B) Runs on another thread outside the caller's transaction</li>
+<li>C) Throws <code>IllegalTransactionStateException</code></li>
+<li>D) Is queued until commit</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> The caller's transaction and connection are bound to the caller's thread via a <code>ThreadLocal</code>. The <code>@Async</code> method runs on an executor thread that has no transaction bound, so its write runs in no transaction (or its own, if it is itself <code>@Transactional</code>), and it commits independently. It may even run before the caller commits, so it might not see the caller's uncommitted data. Nothing waits for the commit (D) unless you use a <code>@TransactionalEventListener</code>.</p>
+</details>
+<p><strong>Q7.</strong> <code>Isolation.DEFAULT</code> on PostgreSQL means:</p>
+<ul>
+<li>A) SERIALIZABLE</li>
+<li>B) REPEATABLE_READ</li>
+<li>C) READ_COMMITTED</li>
+<li>D) READ_UNCOMMITTED</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> <code>DEFAULT</code> tells Spring not to set an isolation level at all, so the database's own default applies, which for PostgreSQL is READ COMMITTED. (PostgreSQL also treats a request for READ UNCOMMITTED as READ COMMITTED, so dirty reads are never possible there.) On MySQL InnoDB, the same setting would mean REPEATABLE READ.</p>
+</details>
+<p><strong>Q8.</strong> Default phase of <code>@TransactionalEventListener</code>:</p>
+<ul>
+<li>A) BEFORE_COMMIT</li>
+<li>B) AFTER_COMMIT</li>
+<li>C) AFTER_ROLLBACK</li>
+<li>D) AFTER_COMPLETION</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> The default <code>AFTER_COMMIT</code> phase means the listener runs only once the transaction has successfully committed, which is what you want for side effects like emails. The other phases exist and can be selected with <code>phase = ...</code>: <code>BEFORE_COMMIT</code> (still inside the transaction), <code>AFTER_ROLLBACK</code> (only on rollback) and <code>AFTER_COMPLETION</code> (after either outcome).</p>
+</details>
+<h2 id="related">Related<a class="headerlink" href="#related" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../03-proxies-aop/">Proxies &amp; AOP</a>: why <code>@Transactional</code> needs the call to go through a proxy.</li>
+<li><a href="../05-jpa-pitfalls/">JPA pitfalls</a>: flushing, dirty checking, optimistic locking and other things that happen at commit time.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../03-proxies-aop/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Proxies &amp; AOP">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Proxies & AOP
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../05-jpa-pitfalls/" class="md-footer__link md-footer__link--next" aria-label="Next: JPA &amp; Hibernate pitfalls">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                JPA & Hibernate pitfalls
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1651 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A free interview handbook for Java, the JVM and Spring Boot. Every topic starts with the mental model, shows where people get it wrong, and ends with practice MCQs.">
+      
+      
+      
+      
+        <link rel="prev" href="../01-core-language/">
+      
+      
+        <link rel="next" href="../03-concurrency/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.39">
+    
+    
+      
+        <title>Collections internals - Java & Spring Boot, Step by Step</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#collections-internals" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-header__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Java & Spring Boot, Step by Step
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Collections internals
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-nav__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Java & Spring Boot, Step by Step
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../start-here/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Start here
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Java
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Java
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-core-language/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core language traps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Collections internals
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Collections internals
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model-the-collections-family" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model: the collections family
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive-hashmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive: HashMap
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concurrenthashmap-java-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      ConcurrentHashMap (Java 8+)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arraylist-vs-linkedlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      ArrayList vs LinkedList
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ordered-maps-and-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ordered maps and sets
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#queues-and-deques" class="md-nav__link">
+    <span class="md-ellipsis">
+      Queues and deques
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fail-fast-vs-weakly-consistent-vs-snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fail-fast vs weakly consistent vs snapshot
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#immutable-vs-unmodifiable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Immutable vs unmodifiable
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-you-should-be-able-to-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code you should be able to write
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-concurrency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Concurrency
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-streams/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Streams & functional
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-modern-java/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modern Java (8 to 21+)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    JVM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            JVM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/01-memory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Memory & class loading
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/02-garbage-collection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Garbage collection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/03-performance-troubleshooting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JIT, tools & troubleshooting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Spring
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Spring
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/01-ioc-di/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IoC, DI & bean lifecycle
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/02-boot-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Boot internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/03-proxies-aop/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Proxies & AOP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/04-transactions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Transactions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/05-jpa-pitfalls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JPA & Hibernate pitfalls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/06-security/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Security
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/07-web-testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Web, validation & testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Practice
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Practice
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/mock-test/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mixed mock test (40 MCQs)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/cheat-sheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    One-page cheat sheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model-the-collections-family" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model: the collections family
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive-hashmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive: HashMap
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concurrenthashmap-java-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      ConcurrentHashMap (Java 8+)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arraylist-vs-linkedlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      ArrayList vs LinkedList
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ordered-maps-and-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ordered maps and sets
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#queues-and-deques" class="md-nav__link">
+    <span class="md-ellipsis">
+      Queues and deques
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fail-fast-vs-weakly-consistent-vs-snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fail-fast vs weakly consistent vs snapshot
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#immutable-vs-unmodifiable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Immutable vs unmodifiable
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-you-should-be-able-to-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code you should be able to write
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="collections-internals">Collections internals<a class="headerlink" href="#collections-internals" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>TL;DR</strong> <code>HashMap</code> is an array of <strong>buckets</strong>; a key's bucket index is <code>(n - 1) &amp; hash</code>, which is a fast way to compute <code>hash % n</code> when <code>n</code> is a power of two. Each bucket starts as a linked list of entries and is converted to a red-black tree if it gets long, so one bad bucket cannot make lookups linear. <code>ArrayList</code> is a plain array that is replaced by a 1.5× bigger copy when it fills up. Know <strong>five numbers</strong> (16, 0.75, 8, 64, 6) and the difference between <strong>fail-fast</strong> and <strong>weakly consistent</strong> iterators, and you can answer most collections MCQs.</p>
+</blockquote>
+<h2 id="mental-model-the-collections-family">Mental model: the collections family<a class="headerlink" href="#mental-model-the-collections-family" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+    C[Collection] --&gt; L[List]
+    C --&gt; S[Set]
+    C --&gt; Q[Queue]
+    Q --&gt; D[Deque]
+    L --&gt; AL[ArrayList]
+    L --&gt; LL[LinkedList]
+    L --&gt; COW[CopyOnWriteArrayList]
+    S --&gt; HS[HashSet]
+    S --&gt; LHS[LinkedHashSet]
+    S --&gt; TS[TreeSet]
+    Q --&gt; PQ[PriorityQueue]
+    D --&gt; AD[ArrayDeque]
+    D --&gt; LL
+    M[Map - not a Collection] --&gt; HM[HashMap]
+    M --&gt; LHM[LinkedHashMap]
+    M --&gt; TM[TreeMap]
+    M --&gt; CHM[ConcurrentHashMap]</code></pre>
+<p>What each interface promises:</p>
+<ul>
+<li><strong><code>List</code></strong>: ordered by position, duplicates allowed, access by index (<code>get(3)</code>).</li>
+<li><strong><code>Set</code></strong>: no duplicates (as judged by <code>equals</code>, or by <code>compareTo</code> for sorted sets).</li>
+<li><strong><code>Queue</code></strong>: elements are taken from a "head" (<code>poll</code>, <code>peek</code>), usually first-in-first-out, or by priority for <code>PriorityQueue</code>.</li>
+<li><strong><code>Deque</code></strong> ("double-ended queue", pronounced "deck"): add and remove at both ends, so it works as a queue <em>and</em> a stack.</li>
+<li><strong><code>Map</code></strong>: key → value pairs with unique keys.</li>
+</ul>
+<p><code>Map</code> does <strong>not</strong> extend <code>Collection</code>, because a map is a set of <em>pairs</em>, and <code>Collection</code> methods like <code>add(E element)</code> don't make sense for it (add what, a key or a value?). You get collection views instead: <code>keySet()</code>, <code>values()</code>, <code>entrySet()</code>.</p>
+<p><strong><code>HashSet</code> is a <code>HashMap</code> underneath.</strong> A <code>HashSet&lt;E&gt;</code> stores each element as a <em>key</em> in an internal <code>HashMap&lt;E, Object&gt;</code> whose values are all the same shared dummy object (<code>PRESENT</code>). Since map keys are unique, set elements are unique for free. In the same way, <code>TreeSet</code> is backed by a <code>TreeMap</code> and <code>LinkedHashSet</code> by a <code>LinkedHashMap</code>. So everything below about maps also explains sets.</p>
+<h2 id="deep-dive-hashmap">Deep dive: HashMap<a class="headerlink" href="#deep-dive-hashmap" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart LR
+    K["key.hashCode()"] --&gt; SP["spread: h ^ (h &gt;&gt;&gt; 16)"]
+    SP --&gt; IDX["index = (n - 1) &amp; hash"]
+    IDX --&gt; B0["bucket 0: null"]
+    IDX --&gt; B1["bucket 1: A → B → C (linked list)"]
+    IDX --&gt; B2["bucket 2: red-black tree (8+ nodes)"]</code></pre>
+<p>Internally a <code>HashMap</code> is an array called <code>table</code>. Each slot is a <strong>bucket</strong> holding zero or more entries (<code>Node</code> objects with <code>hash</code>, <code>key</code>, <code>value</code>, <code>next</code>). To store a key, the map turns its <code>hashCode()</code> into an array index, and to find it again it computes the same index and searches only that one bucket. That is why average lookups are O(1): you go straight to one small bucket instead of scanning everything.</p>
+<table>
+<thead>
+<tr>
+<th>Fact</th>
+<th>Value</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Default capacity</td>
+<td><strong>16</strong> buckets. The array is not created in the constructor but <strong>lazily on the first <code>put</code></strong>.</td>
+<td>Many maps are created and never used; lazy allocation avoids wasting memory on them.</td>
+</tr>
+<tr>
+<td>Default load factor</td>
+<td><strong>0.75</strong>. The map resizes when <code>size &gt; capacity × 0.75</code>, which is <strong>12</strong> for 16 buckets.</td>
+<td>Load factor is "how full may the table get". Higher means less memory but more collisions; lower means fewer collisions but more wasted slots. 0.75 is the measured sweet spot.</td>
+</tr>
+<tr>
+<td>Capacity</td>
+<td>Always a <strong>power of two</strong> (16, 32, 64, …). Asking for 100 gives 128.</td>
+<td>For a power of two <code>n</code>, <code>hash &amp; (n - 1)</code> gives the same result as <code>hash % n</code> for non-negative hashes, but a bitwise AND is much cheaper than a division, and it never produces a negative index.</td>
+</tr>
+<tr>
+<td>Resize</td>
+<td>Capacity <strong>doubles</strong>, and each node either stays at index <code>i</code> or moves to exactly <code>i + oldCap</code>.</td>
+<td>Doubling adds one more bit to the mask. If that new bit of the node's hash is 0 the index is unchanged; if it is 1 the index grows by <code>oldCap</code>. So the map can split each bucket into two without recomputing anything else.</td>
+</tr>
+<tr>
+<td>Treeify</td>
+<td>A bucket's list is converted into a red-black tree when it grows past <strong>8</strong> nodes (<code>TREEIFY_THRESHOLD</code>) <strong>and</strong> the table has at least <strong>64</strong> buckets (<code>MIN_TREEIFY_CAPACITY</code>).</td>
+<td>Long chains mean many keys collide; a balanced tree makes searching that bucket O(log k) instead of O(k). Tree nodes use about twice the memory, so it is done only when needed.</td>
+</tr>
+<tr>
+<td>If capacity &lt; 64</td>
+<td>The table <strong>resizes</strong> instead of treeifying.</td>
+<td>In a small table, a long bucket is more likely caused by the table being too small than by truly identical hashes. Doubling spreads the keys out, which is cheaper and fixes the real cause.</td>
+</tr>
+<tr>
+<td>Untreeify</td>
+<td>When a resize splits a tree bucket and a half ends up with <strong>6</strong> or fewer nodes, it goes back to a linked list (<code>UNTREEIFY_THRESHOLD</code>).</td>
+<td>The gap between 8 and 6 (<em>hysteresis</em>) stops a bucket hovering around one size from converting back and forth on every insert/remove.</td>
+</tr>
+<tr>
+<td>Null</td>
+<td><strong>One <code>null</code> key</strong> (stored in bucket 0, since <code>null</code> is given hash 0) and any number of <code>null</code> values.</td>
+<td><code>HashMap</code> special-cases <code>null</code> rather than calling <code>hashCode()</code> on it.</td>
+</tr>
+<tr>
+<td>Complexity</td>
+<td><strong>O(1)</strong> average. Worst case per bucket is <strong>O(log n)</strong> since Java 8 (was O(n) before).</td>
+<td>The worst case is many keys in one bucket, which used to be a long list and is now a tree. For the tree to help, keys should implement <code>Comparable</code>; otherwise the map falls back to a slower tie-breaking order.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why spread the hash?</strong> The index uses only the <em>low</em> bits of the hash: with 16 buckets, <code>&amp; 15</code> keeps just the bottom 4 bits. If a class's hash codes differ only in their high bits (common for things like floating-point keys or addresses), every key would land in the same bucket. <code>h ^ (h &gt;&gt;&gt; 16)</code> XORs the top 16 bits into the bottom 16 so the high bits also influence the bucket choice. It costs one shift and one XOR, which is why it was chosen over a heavier mixing function.</p>
+<p><strong>Put, step by step:</strong></p>
+<ol>
+<li>Compute the spread hash of the key (<code>0</code> for a <code>null</code> key).</li>
+<li>If the table hasn't been allocated yet, allocate 16 buckets.</li>
+<li>Find the bucket: <code>index = (n - 1) &amp; hash</code>.</li>
+<li>If the bucket is empty, place a new node there and go to step 7.</li>
+<li>Otherwise walk the bucket. For each node, first compare the stored hash (a cheap <code>int</code> comparison that rules out most non-matches), then compare keys with <code>==</code> or <code>equals</code>. If a node matches, <strong>replace its value</strong>, return the old value and stop (the size doesn't change).</li>
+<li>If no node matched, append a new node at the tail of the list (or insert it into the tree). If the list is now longer than 8, treeify the bucket (or resize, if the table is under 64).</li>
+<li>Increment <code>size</code> and <code>modCount</code> (the structural change counter used by fail-fast iterators). If <code>size</code> now exceeds the threshold (<code>capacity × loadFactor</code>), double the table.</li>
+</ol>
+<p><strong>Not thread-safe.</strong> <code>HashMap</code> has no locking at all. If two threads <code>put</code> at the same time, both can read the same empty bucket and both write a node into it, so one entry is lost; or one thread can resize while another inserts into the old table, so writes vanish; and <code>size</code> can be wrong because <code>size++</code> is not atomic. The famous <strong>infinite loop on resize</strong> came from Java 7 inserting at the <em>head</em> of each list, which could reverse links during a concurrent resize and create a cycle that <code>get</code> would loop around forever. Java 8 inserts at the <em>tail</em> and preserves order on resize, so that particular loop is gone, but lost updates and corruption are still possible. For shared mutable maps use <code>ConcurrentHashMap</code>.</p>
+<h2 id="concurrenthashmap-java-8">ConcurrentHashMap (Java 8+)<a class="headerlink" href="#concurrenthashmap-java-8" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Fine-grained locking.</strong> There is no lock for the whole map. Java 7 split the map into 16 <em>segments</em>, each with its own lock; Java 8 removed segments and goes further:<ul>
+<li><strong>Empty bucket:</strong> the new node is installed with a <strong>CAS</strong> (compare-and-swap, a single CPU instruction that sets a slot only if it still holds the expected value, here <code>null</code>). If another thread got there first, the CAS fails and the thread retries. No lock is taken at all.</li>
+<li><strong>Non-empty bucket:</strong> the thread <strong>synchronizes on the first node of that bucket only</strong>. Threads writing to other buckets are not blocked, so throughput scales with the number of buckets rather than the number of segments.</li>
+</ul>
+</li>
+<li><strong>Reads (<code>get</code>) are lock-free</strong> in almost all cases. The table slots and each node's <code>value</code> and <code>next</code> fields are read with <em>volatile</em> semantics, so a reader always sees a fully published node without taking any lock. Readers never block writers and writers never block readers.</li>
+<li><strong>No <code>null</code> keys or values.</strong> In a single-threaded <code>HashMap</code>, <code>get(k) == null</code> is ambiguous (absent, or present with value <code>null</code>?), but you can resolve it with <code>containsKey(k)</code>. In a concurrent map that two-step check is a race: another thread could change the map between the two calls. Banning <code>null</code> makes <code>get</code> returning <code>null</code> <em>always</em> mean "absent", so a single call gives a reliable answer. Inserting <code>null</code> throws <code>NullPointerException</code>.</li>
+<li><strong><code>size()</code> is an estimate under concurrency.</strong> Keeping one shared counter would make every writer contend on it. Instead the count is spread across several counter cells (the same idea as <code>LongAdder</code>) and <code>size()</code> sums them. While other threads are writing, the sum can be momentarily stale. That is fine for monitoring but should not drive correctness logic. <code>mappingCount()</code> returns the same value as a <code>long</code>.</li>
+<li><strong>Iterators are weakly consistent.</strong> They never throw <code>ConcurrentModificationException</code>, they never return an element twice, and they reflect the state at some point at or after their creation, so they <em>may or may not</em> show changes made during iteration. This lets you iterate while other threads keep writing.</li>
+<li><strong>Use atomic compound operations.</strong> Each single method of <code>ConcurrentHashMap</code> is thread-safe, but a <em>sequence</em> of calls is not. In <code>if (!map.containsKey(k)) map.put(k, v)</code>, two threads can both see "absent" and both <code>put</code>, so one value overwrites the other. Methods like <code>computeIfAbsent</code>, <code>putIfAbsent</code>, <code>compute</code> and <code>merge</code> do the check and the update as one atomic step while holding the bucket's lock.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">ConcurrentHashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">LongAdder</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ConcurrentHashMap</span><span class="o">&lt;&gt;</span><span class="p">();</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">counts</span><span class="p">.</span><span class="na">computeIfAbsent</span><span class="p">(</span><span class="n">word</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">LongAdder</span><span class="p">())</span><span class="w"> </span><span class="c1">// atomically creates the counter once per word, even under races</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">      </span><span class="p">.</span><span class="na">increment</span><span class="p">();</span><span class="w">                                 </span><span class="c1">// LongAdder.increment is itself thread-safe and scales under contention</span>
+</code></pre></div>
+<p>Keep the function passed to <code>computeIfAbsent</code>/<code>compute</code> short, and never modify the same map from inside it: it runs while the bucket is locked, so slow work blocks other writers to that bucket, and recursive updates can throw <code>IllegalStateException</code> or deadlock.</p>
+<p><strong><code>Hashtable</code> and <code>Collections.synchronizedMap</code></strong> make every method <code>synchronized</code> on a single lock, so only one thread can use the map at a time, even for reads. They are correct but scale badly under concurrency, and iterating them still requires you to lock manually (<code>synchronized (map) { for (...) }</code>), or you can get <code>ConcurrentModificationException</code>. They survive only in legacy code.</p>
+<h2 id="arraylist-vs-linkedlist">ArrayList vs LinkedList<a class="headerlink" href="#arraylist-vs-linkedlist" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>ArrayList</th>
+<th>LinkedList</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Backing</td>
+<td>One <code>Object[]</code> array holding references to the elements in order.</td>
+<td>A chain of <code>Node</code> objects, each with <code>item</code>, <code>next</code> and <code>prev</code> references (doubly linked).</td>
+</tr>
+<tr>
+<td><code>get(i)</code></td>
+<td><strong>O(1)</strong>: compute the slot address directly.</td>
+<td><strong>O(n)</strong>: walk node by node from whichever end (head or tail) is closer.</td>
+</tr>
+<tr>
+<td>Add at end</td>
+<td><strong>Amortised O(1)</strong>: usually just writes the next slot; occasionally copies everything into a bigger array, but averaged over all adds that cost is constant.</td>
+<td><strong>O(1)</strong>: link a new node after the tail.</td>
+</tr>
+<tr>
+<td>Insert/remove in middle</td>
+<td><strong>O(n)</strong>: every later element is shifted one slot (<code>System.arraycopy</code>, which is fast in practice).</td>
+<td><strong>O(1) once you are holding the node</strong> (e.g. via a <code>ListIterator</code>), but finding position <code>i</code> first is O(n), so <code>list.add(i, x)</code> is O(n) overall.</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>Compact: one reference per element plus some spare capacity. Elements are referenced from one contiguous block, so the CPU cache prefetches them well.</td>
+<td>Each element costs a separate node object (header + 3 references, about 24 bytes with compressed pointers) scattered across the heap, so every step is a likely cache miss.</td>
+</tr>
+<tr>
+<td>Growth</td>
+<td>Default capacity <strong>10</strong>, allocated on the first <code>add</code> (an empty <code>new ArrayList&lt;&gt;()</code> uses a shared empty array). When full, the capacity grows by <strong>1.5×</strong> (<code>old + old &gt;&gt; 1</code>) and elements are copied over.</td>
+<td>Grows one node at a time; no copying.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>In practice <code>ArrayList</code> wins almost always.</strong> Big-O hides constants: modern CPUs read memory in cache lines and prefetch sequential data, so shifting a contiguous array is often faster than following a few scattered pointers. Use <code>ArrayDeque</code> instead of <code>LinkedList</code> when you need a queue or stack. <code>LinkedList</code> mainly survives because it is the only <code>java.util</code> class that is both a <code>List</code> and a <code>Deque</code>. If you know the size in advance, <code>new ArrayList&lt;&gt;(expectedSize)</code> avoids repeated resizing.</p>
+<h2 id="ordered-maps-and-sets">Ordered maps and sets<a class="headerlink" href="#ordered-maps-and-sets" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong><code>LinkedHashMap</code></strong> is a <code>HashMap</code> whose entries are <em>also</em> threaded onto a doubly linked list, so it can iterate in a predictable order at the cost of two extra references per entry.<ul>
+<li><strong>Insertion order</strong> (default): iteration returns keys in the order they were first put. Re-putting an existing key does not move it.</li>
+<li><strong>Access order</strong>: construct with <code>new LinkedHashMap&lt;&gt;(16, 0.75f, true)</code> (the third argument is <code>accessOrder</code>). Every <code>get</code> or <code>put</code> of a key moves that entry to the end of the list, so the <em>first</em> entry is always the least recently used.</li>
+<li><strong>LRU cache:</strong> after each insert, <code>LinkedHashMap</code> calls <code>removeEldestEntry(eldest)</code>. It returns <code>false</code> by default; override it to return <code>true</code> when the map is over capacity, and the eldest (least recently used) entry is evicted automatically. See the code below.</li>
+</ul>
+</li>
+<li><strong><code>TreeMap</code></strong> stores entries in a <strong>red-black tree</strong>, a self-balancing binary search tree, so <code>get</code>/<code>put</code>/<code>remove</code> are <strong>O(log n)</strong> and keys are always kept in sorted order. The order comes from the keys' <code>Comparable</code> implementation (<em>natural ordering</em>) or from a <code>Comparator</code> passed to the constructor. Because it is sorted, it offers <strong>navigation methods</strong> a hash map cannot: <code>floorKey(k)</code> (greatest key ≤ k), <code>ceilingKey(k)</code> (smallest key ≥ k), <code>firstKey</code>/<code>lastKey</code>, <code>headMap(k)</code> (all keys &lt; k), <code>tailMap(k)</code> (keys ≥ k), <code>subMap(a, b)</code>. These make it the natural choice for time ranges, price levels or "nearest value" lookups. With natural ordering, a <code>null</code> key throws <code>NullPointerException</code>, because inserting it would require calling <code>null.compareTo(...)</code>. A custom comparator that handles <code>null</code> can allow it.</li>
+<li><strong><code>TreeSet</code>/<code>TreeMap</code> use <code>compareTo</code> (or the comparator), not <code>equals</code>, to detect duplicates.</strong> A tree finds a key by asking "is it smaller, larger or the same?" at each node, and "the same" means <code>compare(a, b) == 0</code>. <code>equals</code> is never called. If your comparator returns 0 for two items that are not <code>equals</code> (for example, comparing people only by age), the second one is treated as a duplicate and silently not added. That is why the Javadoc asks for comparators that are <em>consistent with equals</em>. The <code>BigDecimal</code> example from <a href="../01-core-language/">Core language traps</a> is the classic case: <code>2.0</code> and <code>2.00</code> are two elements in a <code>HashSet</code> but one in a <code>TreeSet</code>.</li>
+</ul>
+<h2 id="queues-and-deques">Queues and deques<a class="headerlink" href="#queues-and-deques" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong><code>ArrayDeque</code></strong> is a resizable <strong>circular array</strong>: it keeps <code>head</code> and <code>tail</code> indexes that wrap around the end of the array, so adding or removing at either end is O(1) with no shifting. It is the recommended implementation for both:</p>
+<ul>
+<li><strong>Stack</strong> (last-in-first-out): <code>push</code>, <code>pop</code>, <code>peek</code>. It replaces the legacy <code>Stack</code> class, which extends <code>Vector</code>, so every call pays for <code>synchronized</code>, and it exposes index-based methods that break stack semantics.</li>
+<li><strong>Queue</strong> (first-in-first-out): <code>offer</code>, <code>poll</code>, <code>peek</code>.</li>
+</ul>
+<p>It is faster than <code>LinkedList</code> because there are no per-element node objects. It does <strong>not</strong> allow <code>null</code> elements, because <code>poll()</code> and <code>peek()</code> return <code>null</code> to mean "the deque is empty", and a stored <code>null</code> would be indistinguishable from that.</p>
+</li>
+<li>
+<p><strong><code>PriorityQueue</code></strong> is a <strong>binary min-heap</strong> stored in an array: a tree flattened so the children of slot <code>i</code> sit at <code>2i+1</code> and <code>2i+2</code>, and every parent is ≤ its children. The smallest element (by natural order or a comparator) is always at index 0, so <code>peek</code> is <strong>O(1)</strong>. <code>offer</code> and <code>poll</code> are <strong>O(log n)</strong>, because they move one element up or down the tree to restore the heap rule. For a <em>max</em>-heap pass <code>Comparator.reverseOrder()</code>. The heap rule only orders parents relative to children, not siblings or cousins, so <strong>its iterator (and <code>toString</code>) is not in sorted order</strong>: it simply walks the underlying array. Only repeated <code>poll()</code> returns elements in priority order.</p>
+</li>
+<li>Blocking queues (<code>ArrayBlockingQueue</code>, <code>LinkedBlockingQueue</code>, <code>SynchronousQueue</code>), which make a producer or consumer thread wait when the queue is full or empty, are covered in <a href="../03-concurrency/">Concurrency</a>.</li>
+</ul>
+<h2 id="fail-fast-vs-weakly-consistent-vs-snapshot">Fail-fast vs weakly consistent vs snapshot<a class="headerlink" href="#fail-fast-vs-weakly-consistent-vs-snapshot" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Iterator type</th>
+<th>Collections</th>
+<th>On concurrent modification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Fail-fast</strong></td>
+<td><code>ArrayList</code>, <code>HashMap</code>, most of <code>java.util</code></td>
+<td>Throws <code>ConcurrentModificationException</code>. <strong>Best effort</strong>: it detects the problem via <code>modCount</code>, but is not guaranteed to.</td>
+</tr>
+<tr>
+<td><strong>Weakly consistent</strong></td>
+<td><code>ConcurrentHashMap</code>, <code>ConcurrentLinkedQueue</code>, other <code>java.util.concurrent</code> collections</td>
+<td>No exception; it may or may not see updates made after the iterator was created.</td>
+</tr>
+<tr>
+<td><strong>Snapshot</strong></td>
+<td><code>CopyOnWriteArrayList</code>, <code>CopyOnWriteArraySet</code></td>
+<td>Iterates over the array exactly as it was when the iterator was created; never sees later writes, never throws.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>How fail-fast works.</strong> Each collection keeps an <code>int modCount</code> that is incremented on every <em>structural</em> change (add, remove, clear, resize; but not <code>set</code>, which replaces a value in place). An iterator copies <code>modCount</code> when it is created and checks it on every <code>next()</code>. If the numbers differ, someone changed the collection behind the iterator's back, so its position may now be wrong; it throws <code>ConcurrentModificationException</code> (CME) instead of returning garbage. It is "best effort" because the check is not synchronized: with real multithreading a change can go unnoticed, so CME is a bug detector, not a thread-safety mechanism.</p>
+<p><strong>How snapshot works.</strong> <code>CopyOnWriteArrayList</code> never modifies its array. Every write copies the whole array, applies the change to the copy, and swaps the reference to the new array. An iterator holds on to whichever array was current when it started, which nobody will ever modify, so it needs no locks. The price is an O(n) copy on every write, so it only makes sense when reads vastly outnumber writes.</p>
+<p><strong>CME in one thread.</strong> Despite the name, CME most often happens with <strong>no concurrency at all</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">list</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">          </span><span class="c1">// for-each uses an Iterator under the hood</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="na">isEmpty</span><span class="p">())</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="na">remove</span><span class="p">(</span><span class="n">s</span><span class="p">);</span><span class="w">  </span><span class="c1">// modifies the list directly, bumping modCount</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="p">}</span><span class="w">                                  </span><span class="c1">// the next hidden iterator.next() sees the mismatch and throws CME</span>
+</code></pre></div>
+<p>Fix it with <code>list.removeIf(String::isEmpty)</code>, or use the iterator explicitly and call <code>iterator.remove()</code>, which removes the current element <em>and</em> updates the iterator's expected <code>modCount</code>.</p>
+<h2 id="immutable-vs-unmodifiable">Immutable vs unmodifiable<a class="headerlink" href="#immutable-vs-unmodifiable" title="Permanent link">&para;</a></h2>
+<p>These factories look alike but behave very differently:</p>
+<table>
+<thead>
+<tr>
+<th>Factory</th>
+<th>Mutable?</th>
+<th>Nulls?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List.of(...)</code>, <code>Set.of(...)</code>, <code>Map.of(...)</code> (Java 9+)</td>
+<td><strong>Fully immutable</strong>: every mutator (<code>add</code>, <code>set</code>, <code>remove</code>, <code>put</code>) throws <code>UnsupportedOperationException</code>. Nothing can change it, because nobody else holds a reference to its internal storage. <code>Set.of</code> and <code>Map.of</code> also throw <code>IllegalArgumentException</code> on duplicate elements or keys.</td>
+<td><strong>Throws NPE</strong> on <code>null</code> elements, keys or values (and even <code>contains(null)</code> throws).</td>
+</tr>
+<tr>
+<td><code>Arrays.asList(...)</code></td>
+<td><strong>Fixed-size</strong>: <code>set(i, x)</code> works, but <code>add</code>/<code>remove</code> throw <code>UnsupportedOperationException</code>. It is a thin list wrapper <em>over the original array</em>, not a copy, so changing the list changes the array and vice versa, and an array cannot change length.</td>
+<td>Allowed.</td>
+</tr>
+<tr>
+<td><code>Collections.unmodifiableList(x)</code></td>
+<td>A read-only <strong>view</strong>: you cannot modify it through the view, but it reads straight through to <code>x</code>, so whoever still holds <code>x</code> can change it, and those changes show up in the view.</td>
+<td>Allowed.</td>
+</tr>
+<tr>
+<td><code>List.copyOf(x)</code> (Java 10+)</td>
+<td><strong>Immutable copy</strong> of <code>x</code>; later changes to <code>x</code> don't affect it. If <code>x</code> is already an immutable list from <code>List.of</code>, it may return <code>x</code> itself without copying.</td>
+<td>NPE on <code>null</code>.</td>
+</tr>
+<tr>
+<td><code>stream.toList()</code> (Java 16+)</td>
+<td><strong>Unmodifiable</strong> list.</td>
+<td>Allowed (unlike <code>List.of</code>). <code>collect(Collectors.toList())</code> gives no guarantee and in practice returns a mutable <code>ArrayList</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Rule of thumb: to hand out data that the receiver must not change <em>and</em> that you won't change behind their back, use <code>List.copyOf</code> / <code>List.of</code>. Use <code>unmodifiableList</code> only when you deliberately want a live read-only window onto changing data.</p>
+<h2 id="code-you-should-be-able-to-write">Code you should be able to write<a class="headerlink" href="#code-you-should-be-able-to-write" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">class</span> <span class="nc">LruCache</span><span class="o">&lt;</span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">LinkedHashMap</span><span class="o">&lt;</span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">capacity</span><span class="p">;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="n">LruCache</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">capacity</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="mf">0.75f</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">);</span><span class="w">          </span><span class="c1">// initialCapacity, loadFactor, accessOrder = true:</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">                                         </span><span class="c1">// every get/put moves the entry to the end (most recently used)</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">capacity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">capacity</span><span class="p">;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="nd">@Override</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">removeEldestEntry</span><span class="p">(</span><span class="n">Map</span><span class="p">.</span><span class="na">Entry</span><span class="o">&lt;</span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="o">&gt;</span><span class="w"> </span><span class="n">eldest</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">capacity</span><span class="p">;</span><span class="w">        </span><span class="c1">// called after every put; true = evict the head (least recently used)</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="p">}</span>
+</code></pre></div>
+<p>With <code>accessOrder = true</code> the linked list is always ordered from least to most recently used, so the head (<code>eldest</code>) is exactly the entry an LRU cache should drop. After every insertion <code>LinkedHashMap</code> asks <code>removeEldestEntry</code> whether to evict, and returning <code>true</code> removes the head.</p>
+<p>This class is <strong>not thread-safe</strong>: in access-order mode even <code>get</code> modifies the linked list, so concurrent reads can corrupt it. For concurrent use wrap it in <code>Collections.synchronizedMap</code> (simple, but one lock for everything) or use a caching library such as Caffeine, which is built for concurrent eviction.</p>
+<h2 id="traps">Traps<a class="headerlink" href="#traps" title="Permanent link">&para;</a></h2>
+<ul>
+<li>"HashMap becomes a tree at 8 entries." Only <strong>that one bucket</strong> is converted, only when its chain grows past 8, and only if the table already has at least 64 buckets; otherwise the whole table resizes instead.</li>
+<li>"ConcurrentHashMap allows one null key like HashMap." <strong>No nulls at all</strong>, neither keys nor values, so that <code>get</code> returning <code>null</code> can only mean "absent".</li>
+<li>"Iterating a PriorityQueue gives sorted order." Only <code>poll()</code> does. The iterator walks the heap array, which is only partially ordered.</li>
+<li>"<code>Arrays.asList</code> returns an <code>ArrayList</code>." It returns <code>java.util.Arrays$ArrayList</code>, a private fixed-size wrapper over the array that happens to have the same simple name. It is not <code>java.util.ArrayList</code>, and <code>add</code> throws.</li>
+<li>"<code>Collections.unmodifiableList</code> is immutable." It is only a read-only <strong>view</strong>; the underlying list can still change and the view will show it. Use <code>List.copyOf</code> for a true immutable snapshot.</li>
+</ul>
+<h2 id="say-it-out-loud">Say it out loud<a class="headerlink" href="#say-it-out-loud" title="Permanent link">&para;</a></h2>
+<p><strong>"Walk me through HashMap.put."</strong>
+It takes the key's hash code and XORs the high 16 bits into the low 16 so that all bits affect the bucket, then ANDs it with table length minus one (a fast modulo, because the length is a power of two) to pick a bucket. If the bucket is empty it places a new node. Otherwise it walks the bucket comparing the stored hash first and then <code>equals</code>; a match replaces the value, and no match appends a new node at the tail. If that bucket's chain grows past eight nodes it becomes a red-black tree, but only once the table has at least 64 buckets; before that the map resizes instead. Finally, if size exceeds capacity times load factor, 12 for the default 16 buckets, the table doubles, and each node either keeps its index or moves to its index plus the old capacity, depending on one extra bit of its hash.</p>
+<p><strong>"How is ConcurrentHashMap thread-safe without locking everything?"</strong>
+It locks per bucket instead of per map. An empty bucket is filled with a CAS, so no lock at all; a non-empty bucket is updated while synchronizing only on its first node, so threads writing to different buckets never block each other. Reads are mostly lock-free because the table slots and node fields are read with volatile semantics, which guarantees a reader sees fully constructed nodes. On top of that it offers atomic compound operations like <code>computeIfAbsent</code> and <code>merge</code>, because a check-then-act sequence of separate calls would still be a race.</p>
+<h2 id="practice-mcqs">Practice MCQs<a class="headerlink" href="#practice-mcqs" title="Permanent link">&para;</a></h2>
+<p><strong>Q1.</strong> A <code>HashMap</code> with default settings has 13 entries after a <code>put</code>. What is its capacity?</p>
+<ul>
+<li>A) 16</li>
+<li>B) 24</li>
+<li>C) 32</li>
+<li>D) 64</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> Default capacity is 16 and the resize threshold is 16 × 0.75 = 12. When the 13th entry makes <code>size</code> exceed 12, the table doubles to 32 (the new threshold is 24). B is wrong because capacity is always a power of two; D would need a second resize, after the 25th entry.</p>
+</details>
+<p><strong>Q2.</strong> A bucket in a HashMap with capacity 16 reaches 8 colliding nodes, and another colliding key is added. What happens?</p>
+<ul>
+<li>A) The bucket becomes a red-black tree</li>
+<li>B) The table resizes</li>
+<li>C) An exception is thrown</li>
+<li>D) Nothing until 16 nodes</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Treeification also requires a table capacity of at least 64 (<code>MIN_TREEIFY_CAPACITY</code>). With only 16 buckets, the map assumes the table is simply too small and doubles it instead, which spreads the keys out. A would be correct only if capacity were already 64 or more.</p>
+</details>
+<p><strong>Q3.</strong> Which is true of <code>ConcurrentHashMap</code> in Java 8+?</p>
+<ul>
+<li>A) It locks the whole map on writes</li>
+<li>B) It uses 16 fixed segments</li>
+<li>C) It rejects null keys and null values</li>
+<li>D) Its iterators are fail-fast</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> Inserting a <code>null</code> key or value throws <code>NullPointerException</code>, so <code>get</code> returning <code>null</code> always means "absent". A describes <code>Hashtable</code>. B describes Java 7 (segments were removed in Java 8 in favour of CAS on empty buckets plus locking on a bucket's first node). D is wrong: its iterators are weakly consistent and never throw <code>ConcurrentModificationException</code>.</p>
+</details>
+<p><strong>Q4.</strong> What happens here?
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arrays</span><span class="p">.</span><span class="na">asList</span><span class="p">(</span><span class="s">"a"</span><span class="p">,</span><span class="w"> </span><span class="s">"b"</span><span class="p">);</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">xs</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"z"</span><span class="p">);</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">xs</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="s">"c"</span><span class="p">);</span>
+</code></pre></div></p>
+<ul>
+<li>A) Works; list is <code>[z, b, c]</code></li>
+<li>B) <code>set</code> throws</li>
+<li>C) <code>add</code> throws <code>UnsupportedOperationException</code></li>
+<li>D) Compile error</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> <code>Arrays.asList</code> returns a fixed-size list backed directly by the array. <code>set</code> just writes an array slot, so it works (and also changes the underlying array). <code>add</code> would need the array to grow, which is impossible, so it throws <code>UnsupportedOperationException</code> at runtime. It compiles because the declared type <code>List</code> has an <code>add</code> method.</p>
+</details>
+<p><strong>Q5.</strong> A <code>TreeSet&lt;String&gt;</code> uses <code>String.CASE_INSENSITIVE_ORDER</code>. You add <code>"Java"</code> and <code>"JAVA"</code>. The size is:</p>
+<ul>
+<li>A) 0</li>
+<li>B) 1</li>
+<li>C) 2</li>
+<li>D) Throws</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> A <code>TreeSet</code> decides "duplicate or not" with the comparator, never with <code>equals</code>. The case-insensitive comparator returns 0 for <code>"Java"</code> vs <code>"JAVA"</code>, so the second <code>add</code> is treated as a duplicate and returns <code>false</code>; the set keeps only <code>"Java"</code>. A <code>HashSet</code> would keep both, because <code>"Java".equals("JAVA")</code> is <code>false</code>.</p>
+</details>
+<p><strong>Q6.</strong> Best choice for a list of event listeners that is iterated thousands of times per second and changed rarely, from many threads:</p>
+<ul>
+<li>A) <code>ArrayList</code></li>
+<li>B) <code>Collections.synchronizedList</code></li>
+<li>C) <code>CopyOnWriteArrayList</code></li>
+<li>D) <code>LinkedList</code></li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> Copy-on-write is designed for read-mostly data: each iterator works on an immutable snapshot of the array, so iteration needs no locks and never throws CME, and many threads can iterate at once. Each write copies the whole array, which is expensive but acceptable when writes are rare. A and D are not thread-safe. B is safe for single calls, but iteration must be wrapped in <code>synchronized (list)</code> by hand, which blocks every other thread for the whole loop.</p>
+</details>
+<p><strong>Q7.</strong> Which removal is safe while iterating a single-threaded <code>ArrayList</code>?</p>
+<ul>
+<li>A) <code>for (String s : list) if (cond) list.remove(s);</code></li>
+<li>B) <code>list.removeIf(s -&gt; cond)</code></li>
+<li>C) <code>for (int i = 0; i &lt; list.size(); i++) list.remove(i);</code></li>
+<li>D) All of the above</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> A modifies the list behind the for-each loop's hidden iterator, so the next <code>next()</code> sees a changed <code>modCount</code> and throws <code>ConcurrentModificationException</code>, even with one thread. C does not throw, but after removing index <code>i</code> every later element shifts left by one, and then <code>i++</code> skips the element that moved into position <code>i</code>. <code>removeIf</code> (or explicit <code>Iterator.remove()</code>) handles the bookkeeping correctly.</p>
+</details>
+<p><strong>Q8.</strong> Iterating over a <code>PriorityQueue</code> of <code>[5, 1, 3]</code> with for-each:</p>
+<ul>
+<li>A) Always prints <code>1 3 5</code></li>
+<li>B) Always prints <code>5 3 1</code></li>
+<li>C) Prints in heap array order, not guaranteed sorted</li>
+<li>D) Throws <code>UnsupportedOperationException</code></li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> A <code>PriorityQueue</code> is a binary heap stored in an array, which only guarantees each parent ≤ its children, and the iterator simply walks that array. Here it might print <code>1 5 3</code>. Only <code>poll()</code>/<code>remove()</code> hand out elements in priority order, because each call removes the root and restores the heap. To see the contents sorted, copy them to a list and sort it.</p>
+</details>
+<h2 id="related">Related<a class="headerlink" href="#related" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../01-core-language/">Core language traps</a>: the <code>equals</code>/<code>hashCode</code> contract that makes bucket lookup work, and why collisions are allowed.</li>
+<li><a href="../03-concurrency/">Concurrency</a>: blocking queues, CAS, <code>volatile</code> and atomic map operations.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../01-core-language/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Core language traps">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Core language traps
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../03-concurrency/" class="md-footer__link md-footer__link--next" aria-label="Next: Concurrency">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Concurrency
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+    
+  </body>
+</html>

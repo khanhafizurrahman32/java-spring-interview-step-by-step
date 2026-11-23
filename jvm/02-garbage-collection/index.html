@@ -1,0 +1,1522 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A free interview handbook for Java, the JVM and Spring Boot. Every topic starts with the mental model, shows where people get it wrong, and ends with practice MCQs.">
+      
+      
+      
+      
+        <link rel="prev" href="../01-memory/">
+      
+      
+        <link rel="next" href="../03-performance-troubleshooting/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.39">
+    
+    
+      
+        <title>Garbage collection - Java & Spring Boot, Step by Step</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#garbage-collection" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-header__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Java & Spring Boot, Step by Step
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Garbage collection
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-nav__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Java & Spring Boot, Step by Step
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../start-here/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Start here
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Java
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Java
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/01-core-language/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core language traps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/02-collections-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Collections internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/03-concurrency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Concurrency
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/04-streams/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Streams & functional
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../java/05-modern-java/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modern Java (8 to 21+)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    JVM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            JVM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-memory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Memory & class loading
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Garbage collection
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Garbage collection
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model-reachability" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model: reachability
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generational-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generational collection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-collectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      The collectors
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-g1-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How G1 works
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reference-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reference types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#containers-and-default-sizing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Containers and default sizing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#useful-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      Useful flags
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tuning-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tuning approach
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-performance-troubleshooting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JIT, tools & troubleshooting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Spring
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Spring
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/01-ioc-di/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IoC, DI & bean lifecycle
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/02-boot-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Boot internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/03-proxies-aop/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Proxies & AOP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/04-transactions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Transactions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/05-jpa-pitfalls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JPA & Hibernate pitfalls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/06-security/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Security
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/07-web-testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Web, validation & testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Practice
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Practice
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/mock-test/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mixed mock test (40 MCQs)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/cheat-sheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    One-page cheat sheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model-reachability" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model: reachability
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generational-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generational collection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-collectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      The collectors
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-g1-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How G1 works
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reference-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reference types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#containers-and-default-sizing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Containers and default sizing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#useful-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      Useful flags
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tuning-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tuning approach
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="garbage-collection">Garbage collection<a class="headerlink" href="#garbage-collection" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>TL;DR</strong> The garbage collector (GC) frees objects that are <strong>unreachable from GC roots</strong>: it starts from references the program definitely still holds and marks everything it can reach; whatever it can't reach is garbage. Java does <em>not</em> use reference counting, so objects that only point at each other in a cycle are still collected. Because most objects die young, heaps are split into <strong>young</strong> and <strong>old</strong> generations and the young one is cleaned often and cheaply. <strong>G1</strong> is the default since Java 9 (a balance of throughput and pause time); <strong>ZGC</strong> and <strong>Shenandoah</strong> aim for pauses of about a millisecond; <strong>Parallel</strong> maximises raw throughput. You choose by goal: throughput, latency, or memory footprint.</p>
+</blockquote>
+<h2 id="mental-model-reachability">Mental model: reachability<a class="headerlink" href="#mental-model-reachability" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart LR
+    R1["GC root: local var in a stack frame"] --&gt; A[Order]
+    R2["GC root: static field"] --&gt; B[Cache]
+    B --&gt; C[User]
+    A --&gt; C
+    D[Temp] --&gt; E[Temp2]
+    E --&gt; D
+    style D stroke-dasharray: 5 5
+    style E stroke-dasharray: 5 5</code></pre>
+<p>The GC never asks "is this object still needed?" (it can't know that). It asks "can the program still <em>reach</em> this object by following references from somewhere it is definitely using?" Those starting points are the <strong>GC roots</strong>:</p>
+<ul>
+<li><strong>Local variables and parameters</strong> in the frames of every live thread's stack (the code currently running can use them).</li>
+<li><strong>Static fields</strong> of loaded classes (any code can read them at any time).</li>
+<li><strong>Active threads</strong> themselves, and objects used as locks by <code>synchronized</code> blocks currently running.</li>
+<li><strong>JNI references</strong> held by native code.</li>
+</ul>
+<p>Everything reachable from a root by following references is <em>live</em>: in the diagram, <code>Order</code>, <code>Cache</code> and <code>User</code> (reachable two ways). <code>D</code> and <code>E</code> reference each other but <strong>nothing reachable points to them</strong>, so no code can ever use them again, and both are garbage.</p>
+<p>This is why Java does not need reference counting. A reference-counting system (as in CPython or C++'s <code>shared_ptr</code>) frees an object when its count drops to zero, but <code>D</code> and <code>E</code> each have a count of 1 from the other, so they would leak forever. Tracing from roots handles cycles naturally.</p>
+<h2 id="deep-dive">Deep dive<a class="headerlink" href="#deep-dive" title="Permanent link">&para;</a></h2>
+<h3 id="generational-collection">Generational collection<a class="headerlink" href="#generational-collection" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart LR
+    N[new object] --&gt; E[Eden]
+    E -- "minor GC: survivors copied" --&gt; S[Survivor S0/S1]
+    S -- "age increments each minor GC" --&gt; S
+    S -- "age ≥ tenuring threshold (max 15)" --&gt; O[Old gen]
+    E -- "very large objects may go directly" --&gt; O</code></pre>
+<p>The design rests on the <strong>weak generational hypothesis</strong>: most objects die very soon after they are created (a request's DTOs, temporary strings, iterators), and the few that survive a while tend to live a long time (caches, connection pools, Spring beans). So the GC focuses its effort where the garbage is.</p>
+<ul>
+<li><strong>Minor (young) GC</strong>: collects <strong>Eden</strong> and the in-use <strong>survivor</strong> space. It finds the live objects (usually only a small percentage) and <strong>copies</strong> them into the other, empty survivor space, incrementing each object's <em>age</em>; then the whole of Eden and the old survivor space are simply declared empty. The cost is proportional to the number of <strong>live</strong> objects, not to the size of Eden, so it is fast precisely because most objects are already dead. Objects whose age reaches the <strong>tenuring threshold</strong> (at most 15, because the age is stored in 4 bits of the object header) are <strong>promoted</strong> to the old generation. Very large objects may be allocated directly in the old generation, to avoid copying them repeatedly.</li>
+<li><strong>Major/old GC</strong>: collects the old generation. It is slower, because old regions are full of live objects that must all be traced. A <strong>Full GC</strong> collects the <strong>whole heap</strong> (and usually unloads unused classes from Metaspace too), typically single-pass and stop-the-world, and can take seconds on large heaps. These are the pauses you want to avoid. A Full GC in a G1 log usually means the collector fell behind (it ran out of space before its concurrent work finished).</li>
+<li><strong>The basic algorithms</strong>, which collectors combine:<ul>
+<li><strong>Mark</strong>: trace from the GC roots and flag every reachable object as live.</li>
+<li><strong>Sweep</strong>: walk the heap and add the unmarked (dead) objects' memory to a free list. Fast, but leaves free memory scattered in small gaps (<strong>fragmentation</strong>), so a large allocation might fail even though plenty of total memory is free.</li>
+<li><strong>Compact</strong>: slide live objects together so that free memory becomes one contiguous block. It cures fragmentation, but every reference to a moved object must be updated.</li>
+<li><strong>Copy</strong>: move live objects into a separate empty area, which compacts as a side effect. Fast when few objects survive, but needs spare space to copy into (that is why there are two survivor spaces).</li>
+</ul>
+</li>
+<li><strong>Stop-the-world (STW) pauses</strong> halt all application threads so the GC can work on a heap that isn't changing under it. Pause length is what users feel as latency spikes. Modern collectors do most of the expensive marking (and ZGC/Shenandoah even the compaction) <strong>concurrently</strong>, while the application keeps running, leaving only very short STW phases. The price is extra CPU and some overhead on the application's own reads and writes (<em>barriers</em>) to keep track of changes made during the concurrent phase.</li>
+</ul>
+<h3 id="the-collectors">The collectors<a class="headerlink" href="#the-collectors" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Collector</th>
+<th>Flag</th>
+<th>Goal</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Serial</td>
+<td><code>-XX:+UseSerialGC</code></td>
+<td>Small footprint</td>
+<td>One GC thread, everything stop-the-world. Lowest memory and CPU overhead, fine for small heaps. The JVM picks it <strong>automatically on small machines and containers</strong> (see below).</td>
+</tr>
+<tr>
+<td>Parallel</td>
+<td><code>-XX:+UseParallelGC</code></td>
+<td><strong>Throughput</strong></td>
+<td>Like Serial but with many GC threads, still fully stop-the-world. It maximises the share of time spent running your code, at the cost of longer individual pauses. It was the <strong>default in Java 8</strong>. Good for batch jobs and data processing, where nobody waits on a single request.</td>
+</tr>
+<tr>
+<td><strong>G1</strong> ("Garbage First")</td>
+<td><code>-XX:+UseG1GC</code></td>
+<td>Balanced</td>
+<td><strong>Default since Java 9.</strong> Splits the heap into regions, marks concurrently, and tries to keep each pause under a target set with <code>-XX:MaxGCPauseMillis</code> (<strong>default 200 ms</strong>) by choosing how much to collect per pause.</td>
+</tr>
+<tr>
+<td><strong>ZGC</strong></td>
+<td><code>-XX:+UseZGC</code></td>
+<td><strong>Very low latency</strong></td>
+<td>Does marking <em>and</em> compaction concurrently, so pauses are typically <strong>under a millisecond</strong> and don't grow with heap size (it scales to terabyte heaps). Costs more CPU and memory. Generational mode was added in 21 (<code>-XX:+ZGenerational</code>), became the default mode in 23, and the old non-generational mode was removed in 24.</td>
+</tr>
+<tr>
+<td>Shenandoah</td>
+<td><code>-XX:+UseShenandoahGC</code></td>
+<td>Low latency</td>
+<td>Also concurrent compaction, with goals similar to ZGC; developed by Red Hat and included in many OpenJDK builds (not in Oracle's JDK).</td>
+</tr>
+<tr>
+<td>CMS (Concurrent Mark Sweep)</td>
+<td>(removed)</td>
+<td>Low latency</td>
+<td>The original concurrent collector. It did not compact, so fragmentation eventually forced long Full GCs. <strong>Deprecated in 9, removed in 14.</strong></td>
+</tr>
+<tr>
+<td>Epsilon</td>
+<td><code>-XX:+UseEpsilonGC</code></td>
+<td>None</td>
+<td>Allocates memory but <strong>never collects</strong>; the JVM exits with OOM when the heap is full. Useful for performance testing (to measure an application without GC noise) and very short-lived jobs.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="how-g1-works">How G1 works<a class="headerlink" href="#how-g1-works" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Regions.</strong> Instead of a few large, fixed generations, G1 divides the heap into many equal-sized <strong>regions</strong> (1 to 32 MB, chosen from the heap size, aiming for about 2048 regions). At any moment each region plays one role: <strong>Eden</strong>, <strong>Survivor</strong>, <strong>Old</strong> or <strong>Humongous</strong>. The generations still exist logically, but as <em>sets of regions</em>, so G1 can resize them freely.</li>
+<li><strong>Humongous objects</strong> are objects of at least <strong>half a region</strong> (e.g. ≥ 2 MB with 4 MB regions). They are allocated directly into one or more <strong>contiguous</strong> regions of their own. That is expensive: it needs contiguous free regions (fragmentation can force a Full GC), and the leftover space in their last region is wasted. Large arrays and big byte buffers are the usual cause. If GC logs show many humongous allocations, raise the region size (<code>-XX:G1HeapRegionSize</code>) or avoid allocating such large objects.</li>
+<li><strong>"Garbage First".</strong> G1 periodically runs a <strong>concurrent marking</strong> cycle (mostly while the application runs) to measure how much live data each old region still has. Then, during subsequent pauses, it runs <strong>mixed collections</strong>: all young regions <em>plus</em> the old regions with the most garbage, the ones that give the most free space per millisecond of copying. Collecting the emptiest regions first is what gives the collector its name.</li>
+<li><strong>You set a pause <em>goal</em>, not a guarantee.</strong> G1 uses statistics from previous pauses to decide how many regions it can collect within <code>MaxGCPauseMillis</code>. If the allocation rate is too high or live data too large, it will miss the target, and in the worst case it falls back to a Full GC. Setting the goal very low makes G1 collect less per pause, which means more frequent pauses and lower throughput.</li>
+</ul>
+<h3 id="reference-types">Reference types<a class="headerlink" href="#reference-types" title="Permanent link">&para;</a></h3>
+<p>Normally any reference keeps its target alive. <code>java.lang.ref</code> provides weaker references that let the GC reclaim the target under certain conditions:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Cleared when</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Strong</td>
+<td>Never, while the object is reachable through it.</td>
+<td>All normal references (<code>User u = ...</code>).</td>
+</tr>
+<tr>
+<td><code>SoftReference</code></td>
+<td>Only when memory runs short. The JVM guarantees all softly reachable objects are cleared <strong>before</strong> it throws <code>OutOfMemoryError</code>, and otherwise keeps recently used ones.</td>
+<td>Memory-sensitive caches, in theory. In practice a real cache library with size limits (Caffeine) is more predictable, because soft references give you no control over <em>what</em> gets evicted or <em>when</em>, and can cause GC thrashing.</td>
+</tr>
+<tr>
+<td><code>WeakReference</code></td>
+<td>At the <strong>next GC</strong> after the object becomes reachable only through weak references, regardless of free memory.</td>
+<td><code>WeakHashMap</code> keys (an entry disappears once nobody else holds its key), canonicalising maps, and metadata attached to objects you don't own, without keeping them alive.</td>
+</tr>
+<tr>
+<td><code>PhantomReference</code></td>
+<td>Enqueued after the object has become unreachable (and any finalization has run). Its <code>get()</code> <strong>always returns <code>null</code></strong>, so you can never resurrect the object.</td>
+<td>Post-mortem cleanup: being notified that an object is gone in order to free an associated native resource. <code>java.lang.ref.Cleaner</code> is the friendly API built on it, and the replacement for <code>finalize()</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="containers-and-default-sizing">Containers and default sizing<a class="headerlink" href="#containers-and-default-sizing" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>The JVM is container-aware</strong> (Java 10+, backported to 8u191). It reads the <strong>cgroup</strong> CPU and memory limits that Docker or Kubernetes set, instead of seeing the whole host machine. Before this, a JVM in a 1 GB container on a 64 GB host would size its heap for 64 GB and promptly get OOM-killed.</li>
+<li><strong>The default max heap is 25 % of available memory</strong> (<code>-XX:MaxRAMPercentage=25</code>). In a 1 GB container you get only about <strong>256 MB</strong> of heap unless you change it, which leaves most of the container's memory unused. (For very small memory sizes a different default, <code>MinRAMPercentage</code>, of 50 % applies.) For a container that runs only one JVM, a common setting is <strong><code>-XX:MaxRAMPercentage=70</code> to <code>75</code></strong>, leaving the rest for Metaspace, thread stacks and other native memory (see <a href="../01-memory/">Memory</a>).</li>
+<li><strong>With fewer than 2 CPUs or under about 1792 MB of memory, the JVM picks Serial GC.</strong> The JVM only treats a machine as a <em>server-class machine</em> (and picks G1) if it has at least 2 processors and about 1.8 GB of memory. Many Kubernetes pods are given 1 CPU or 1 GB, so they silently run the single-threaded Serial collector. Check with <code>java -Xlog:gc -version</code> or <code>-XX:+PrintCommandLineFlags</code>, and set the collector explicitly if needed.</li>
+</ul>
+<h3 id="useful-flags">Useful flags<a class="headerlink" href="#useful-flags" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>-Xms2g -Xmx2g                         # initial = maximum heap: no pauses to grow/shrink the heap on servers
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>-XX:+UseG1GC -XX:MaxGCPauseMillis=100 # choose G1 explicitly and aim for 100 ms pauses (a goal, not a guarantee)
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>-XX:MaxRAMPercentage=75               # in containers, size the heap as a % of the memory limit instead of a fixed -Xmx
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/dumps   # write a heap dump at the moment of OOM, for later analysis
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>-Xlog:gc*:file=gc.log:time,uptime     # unified GC logging (Java 9+): every GC event, with wall-clock time and JVM uptime
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>-XX:+ExitOnOutOfMemoryError           # exit on the first OOM so the orchestrator restarts a pod that is now in an unknown state
+</code></pre></div>
+<p>The last flag matters because after an <code>OutOfMemoryError</code>, threads may have died halfway through their work and the application can be half-broken while still answering health checks. Exiting lets Kubernetes replace it with a clean instance.</p>
+<h3 id="tuning-approach">Tuning approach<a class="headerlink" href="#tuning-approach" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Define the goal</strong>: p99 latency (how slow the slowest 1 % of requests are), throughput (work done per second or total batch time), or memory footprint. They trade off against each other, so you can't optimise all three at once.</li>
+<li><strong>Turn on GC logs and measure</strong> under realistic load. Tools such as GCeasy or GCViewer visualise GC logs; Java Flight Recorder (JFR) also shows allocation hot spots. Look at pause times, GC frequency, allocation rate and how full the old generation stays after collections.</li>
+<li><strong>Fix allocation first.</strong> The cheapest garbage is garbage you never create: excessive temporary objects in hot loops, boxing (<code>List&lt;Integer&gt;</code> instead of <code>int[]</code>), huge collections, string concatenation in loops, unbounded caches. Halving the allocation rate roughly halves GC work, no matter which collector you use.</li>
+<li><strong>Only then change the collector or sizes, one knob at a time</strong>, and re-measure after each change, otherwise you can't tell which change helped.</li>
+</ol>
+<p><strong><code>System.gc()</code> is only a hint.</strong> The JVM may run a <strong>Full GC</strong> (a long stop-the-world pause, exactly what you are trying to avoid), or ignore it entirely when started with <code>-XX:+DisableExplicitGC</code>. Libraries sometimes call it (old RMI versions did periodically), which is a common source of mysterious Full GCs in logs.</p>
+<h2 id="traps">Traps<a class="headerlink" href="#traps" title="Permanent link">&para;</a></h2>
+<ul>
+<li>"Java uses reference counting." It uses <strong>reachability tracing</strong> from GC roots, so cycles of objects that only reference each other are collected normally.</li>
+<li>"<code>System.gc()</code> forces collection." It is a <strong>hint</strong> that may be ignored, and when honoured it usually causes an expensive Full GC.</li>
+<li>"G1 guarantees the pause target." It is a <strong>goal</strong> that G1 tries to meet with statistics; high allocation rates or large live sets can exceed it, and a Full GC can far exceed it.</li>
+<li>"CMS is a good low-latency option today." It was deprecated in 9 and <strong>removed in 14</strong>. Use G1, ZGC or Shenandoah.</li>
+<li>"Default heap is whatever the container has." The default maximum is only <strong>25 %</strong> of the container's memory limit; set <code>MaxRAMPercentage</code> explicitly.</li>
+<li>"Soft and weak references are cleared at the same time." <strong>Weak</strong>: at the next GC once only weakly reachable. <strong>Soft</strong>: only when memory runs short, and in any case before an OOM.</li>
+</ul>
+<h2 id="say-it-out-loud">Say it out loud<a class="headerlink" href="#say-it-out-loud" title="Permanent link">&para;</a></h2>
+<p><strong>"How would you choose a GC?"</strong>
+G1 is a sound default for most services, because it balances throughput with pause times of tens to a few hundred milliseconds. If p99 latency matters and the GC logs show pauses are the cause, I'd try ZGC, which keeps pauses around a millisecond even on very large heaps, at the cost of more CPU and memory. For batch jobs where only total throughput matters and nobody waits on individual requests, Parallel GC. Before switching anything, I'd look at the allocation rate, because creating less garbage usually helps more than tuning the collector, and I'd change one setting at a time and measure.</p>
+<h2 id="practice-mcqs">Practice MCQs<a class="headerlink" href="#practice-mcqs" title="Permanent link">&para;</a></h2>
+<p><strong>Q1.</strong> Two objects reference only each other and nothing else references them. They are:</p>
+<ul>
+<li>A) Never collected</li>
+<li>B) Collected, because they are unreachable from GC roots</li>
+<li>C) Collected only by Full GC</li>
+<li>D) Moved to Metaspace</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> The JVM traces from GC roots (stack locals, static fields, threads, JNI handles). The two objects point at each other, but no chain of references from any root reaches them, so they are garbage. A would be true only with reference counting, which Java doesn't use. C is wrong: they are collected in whichever generation they are in, by a young GC if they are young.</p>
+</details>
+<p><strong>Q2.</strong> Default collector in Java 17 on a typical multi-core server:</p>
+<ul>
+<li>A) Parallel</li>
+<li>B) CMS</li>
+<li>C) G1</li>
+<li>D) ZGC</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> G1 has been the default on server-class machines since Java 9. Parallel (A) was the default in Java 8. CMS (B) was removed in Java 14. ZGC (D) must be enabled explicitly with <code>-XX:+UseZGC</code>. (On a machine with fewer than 2 CPUs or less than about 1.8 GB of memory, the default would be Serial.)</p>
+</details>
+<p><strong>Q3.</strong> In G1, a humongous object is one whose size is at least:</p>
+<ul>
+<li>A) 1 MB</li>
+<li>B) Half a region</li>
+<li>C) A full region</li>
+<li>D) 10% of the heap</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Any object of at least 50 % of the region size is humongous and gets its own contiguous region(s). Since region size varies from 1 to 32 MB depending on heap size, a fixed number like A is wrong; with 2 MB regions, a 1 MB array would already be humongous.</p>
+</details>
+<p><strong>Q4.</strong> A JVM in a container with a 2 GB memory limit and no heap flags gets a default max heap of about:</p>
+<ul>
+<li>A) 2 GB</li>
+<li>B) 1.5 GB</li>
+<li>C) 512 MB</li>
+<li>D) 256 MB</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> The container-aware JVM reads the 2 GB cgroup limit and applies the default <code>MaxRAMPercentage</code> of 25 %: 2 GB × 0.25 = 512 MB. A would leave no room for native memory; B is what you'd get after setting <code>-XX:MaxRAMPercentage=75</code>.</p>
+</details>
+<p><strong>Q5.</strong> Which reference type is cleared at the next GC once the object is only reachable through it?</p>
+<ul>
+<li>A) Strong</li>
+<li>B) Soft</li>
+<li>C) Weak</li>
+<li>D) Phantom (it is never cleared)</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> A <code>WeakReference</code> does not keep its target alive at all, so the next GC that finds the object only weakly reachable clears it. Soft references (B) are kept until memory is short. Strong references (A) are never cleared while reachable. D is wrong: phantom references are enqueued once the object is unreachable; their <code>get()</code> simply always returns <code>null</code>.</p>
+</details>
+<p><strong>Q6.</strong> A low-latency trading API sees 400 ms G1 pauses on a 64 GB heap. The best first experiment:</p>
+<ul>
+<li>A) Switch to Serial GC</li>
+<li>B) Try ZGC and compare p99 latency and CPU</li>
+<li>C) Call <code>System.gc()</code> every minute</li>
+<li>D) Remove <code>-Xmx</code></li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> ZGC does its compaction concurrently, so its pauses stay around a millisecond regardless of heap size, which is exactly the property a latency-critical API on a large heap needs. Compare p99 latency <em>and</em> CPU usage, since ZGC trades CPU for lower pauses, and in parallel look at the allocation rate. A would make pauses far longer (single-threaded, fully stop-the-world). C triggers Full GCs, which are even worse. D only changes the heap to the default 25 % of memory.</p>
+</details>
+<p><strong>Q7.</strong> Which collector was removed in Java 14?</p>
+<ul>
+<li>A) G1</li>
+<li>B) Parallel</li>
+<li>C) CMS</li>
+<li>D) Serial</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> CMS (Concurrent Mark Sweep) was deprecated in Java 9 and removed in Java 14 (JEP 363), because it never compacted the old generation and was costly to maintain alongside G1. G1, Parallel and Serial are all still available.</p>
+</details>
+<h2 id="related">Related<a class="headerlink" href="#related" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../01-memory/">JVM memory</a>: heap layout, Metaspace, native memory and the different OutOfMemoryErrors.</li>
+<li><a href="../03-performance-troubleshooting/">JIT &amp; troubleshooting</a>: reading GC logs, heap dumps and JFR recordings.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../01-memory/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Memory &amp; class loading">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Memory & class loading
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../03-performance-troubleshooting/" class="md-footer__link md-footer__link--next" aria-label="Next: JIT, tools &amp; troubleshooting">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                JIT, tools & troubleshooting
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+    
+  </body>
+</html>

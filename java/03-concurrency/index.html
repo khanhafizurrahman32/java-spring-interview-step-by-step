@@ -1,0 +1,1827 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A free interview handbook for Java, the JVM and Spring Boot. Every topic starts with the mental model, shows where people get it wrong, and ends with practice MCQs.">
+      
+      
+      
+      
+        <link rel="prev" href="../02-collections-internals/">
+      
+      
+        <link rel="next" href="../04-streams/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.39">
+    
+    
+      
+        <title>Concurrency - Java & Spring Boot, Step by Step</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#concurrency" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-header__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Java & Spring Boot, Step by Step
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Concurrency
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-nav__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Java & Spring Boot, Step by Step
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../start-here/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Start here
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Java
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Java
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-core-language/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core language traps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-collections-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Collections internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Concurrency
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Concurrency
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model-the-java-memory-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model: the Java Memory Model
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mental model: the Java Memory Model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#happens-before-rules-memorise-these" class="md-nav__link">
+    <span class="md-ellipsis">
+      Happens-before rules (memorise these)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#volatile-vs-synchronized-vs-atomic" class="md-nav__link">
+    <span class="md-ellipsis">
+      volatile vs synchronized vs atomic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#synchronized-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      synchronized details
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reentrantlock-and-friends" class="md-nav__link">
+    <span class="md-ellipsis">
+      ReentrantLock and friends
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cas-and-its-caveats" class="md-nav__link">
+    <span class="md-ellipsis">
+      CAS and its caveats
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thread-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thread states
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thread-pools-how-threadpoolexecutor-decides" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thread pools: how ThreadPoolExecutor decides
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#futures-and-completablefuture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Futures and CompletableFuture
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coordination-utilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coordination utilities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#virtual-threads-java-21" class="md-nav__link">
+    <span class="md-ellipsis">
+      Virtual threads (Java 21)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deadlock" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deadlock
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#threadlocal" class="md-nav__link">
+    <span class="md-ellipsis">
+      ThreadLocal
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-you-should-be-able-to-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code you should be able to write
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-streams/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Streams & functional
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-modern-java/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modern Java (8 to 21+)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    JVM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            JVM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/01-memory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Memory & class loading
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/02-garbage-collection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Garbage collection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/03-performance-troubleshooting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JIT, tools & troubleshooting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Spring
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Spring
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/01-ioc-di/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IoC, DI & bean lifecycle
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/02-boot-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Boot internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/03-proxies-aop/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Proxies & AOP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/04-transactions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Transactions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/05-jpa-pitfalls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JPA & Hibernate pitfalls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/06-security/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Security
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/07-web-testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Web, validation & testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Practice
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Practice
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/mock-test/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mixed mock test (40 MCQs)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/cheat-sheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    One-page cheat sheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model-the-java-memory-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model: the Java Memory Model
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mental model: the Java Memory Model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#happens-before-rules-memorise-these" class="md-nav__link">
+    <span class="md-ellipsis">
+      Happens-before rules (memorise these)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#volatile-vs-synchronized-vs-atomic" class="md-nav__link">
+    <span class="md-ellipsis">
+      volatile vs synchronized vs atomic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#synchronized-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      synchronized details
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reentrantlock-and-friends" class="md-nav__link">
+    <span class="md-ellipsis">
+      ReentrantLock and friends
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cas-and-its-caveats" class="md-nav__link">
+    <span class="md-ellipsis">
+      CAS and its caveats
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thread-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thread states
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thread-pools-how-threadpoolexecutor-decides" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thread pools: how ThreadPoolExecutor decides
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#futures-and-completablefuture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Futures and CompletableFuture
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coordination-utilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coordination utilities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#virtual-threads-java-21" class="md-nav__link">
+    <span class="md-ellipsis">
+      Virtual threads (Java 21)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deadlock" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deadlock
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#threadlocal" class="md-nav__link">
+    <span class="md-ellipsis">
+      ThreadLocal
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-you-should-be-able-to-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code you should be able to write
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="concurrency">Concurrency<a class="headerlink" href="#concurrency" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>TL;DR</strong> Almost every concurrency bug is one of three problems. <strong>Visibility</strong>: one thread writes a value and another thread keeps seeing the old one. <strong>Atomicity</strong>: an operation that looks like one step (<code>count++</code>) is really several steps, and another thread slips in between them. <strong>Ordering</strong>: the compiler or CPU runs your instructions in a different order than you wrote them, which is invisible to a single thread but visible to others. <code>volatile</code> fixes visibility and ordering for one variable; <code>synchronized</code> and locks fix all three for a whole block of code; <strong>atomic classes</strong> fix atomicity for a single variable using a CPU instruction called CAS. The <strong>happens-before</strong> rules are the official way to tell which of these guarantees you actually have.</p>
+</blockquote>
+<h2 id="mental-model-the-java-memory-model">Mental model: the Java Memory Model<a class="headerlink" href="#mental-model-the-java-memory-model" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart LR
+    subgraph T1[Thread 1]
+        C1[CPU cache / registers]
+    end
+    subgraph T2[Thread 2]
+        C2[CPU cache / registers]
+    end
+    MM[(Main memory)]
+    C1 &lt;-- "write may stay here" --&gt; MM
+    C2 &lt;-- "may read stale value" --&gt; MM</code></pre>
+<p>Each CPU core has its own registers and caches, and the JIT compiler is free to keep a variable in a register instead of re-reading memory. So a write made by one thread can sit in that core's cache for a while, and another thread can keep reading an old copy. Both hardware and compiler also <strong>reorder</strong> independent instructions for speed. None of this is visible within a single thread (the result is always as if your code ran in order), but it is visible across threads.</p>
+<p>The <strong>Java Memory Model (JMM)</strong> is the contract that says when one thread is <em>guaranteed</em> to see another thread's writes. The answer is: only when there is a <strong>happens-before</strong> relationship between the write and the read. Without one, Thread 2 is allowed to see a stale value <strong>forever</strong>. The classic example:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kt">boolean</span><span class="w"> </span><span class="n">running</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w">        </span><span class="c1">// NOT volatile</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1">// Thread A: while (running) { }   ← may loop forever</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1">// Thread B: running = false;</span>
+</code></pre></div>
+<p>Thread A never writes <code>running</code> inside the loop, so the JIT may legally read it once, keep it in a register and turn the loop into <code>while (true)</code>. Thread B's write then never reaches Thread A.</p>
+<p>Make <code>running</code> <code>volatile</code> and the loop stops: every read of a volatile field must actually fetch the latest written value, and the compiler is not allowed to hoist it out of the loop.</p>
+<h3 id="happens-before-rules-memorise-these">Happens-before rules (memorise these)<a class="headerlink" href="#happens-before-rules-memorise-these" title="Permanent link">&para;</a></h3>
+<p>"A happens-before B" means: everything A did (including all writes before A) is visible to B, and A is ordered before B. These are the rules that create such edges:</p>
+<ol>
+<li><strong>Program order</strong>: within one thread, each action happens-before every later action in that same thread. (This is why single-threaded code behaves as written.)</li>
+<li><strong>Monitor lock</strong>: releasing a lock (leaving a <code>synchronized</code> block) happens-before every later acquisition of the <em>same</em> lock. So whatever a thread wrote inside or before a <code>synchronized</code> block is visible to the next thread that enters a block on the same object.</li>
+<li><strong>Volatile</strong>: a write to a volatile field happens-before every later read of that same field.</li>
+<li><strong>Thread start</strong>: <code>t.start()</code> happens-before any action in thread <code>t</code>. So values set before starting a thread are visible inside it.</li>
+<li><strong>Thread join</strong>: all actions in thread <code>t</code> happen-before <code>t.join()</code> returns in the waiting thread. So after <code>join()</code>, you see everything <code>t</code> wrote.</li>
+<li><strong>Transitivity</strong>: if A happens-before B and B happens-before C, then A happens-before C.</li>
+</ol>
+<p>Rules 1, 3 and 6 combine into the most useful trick: <strong>writes made before a volatile write become visible to any thread that later reads that volatile and sees the new value.</strong> That is why a volatile "ready" flag can safely publish other, non-volatile data:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w">                 </span><span class="c1">// plain field</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">volatile</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="n">ready</span><span class="p">;</span><span class="w">   </span><span class="c1">// the "publication" flag</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1">// Writer: data = 42; ready = true;     (data write → program order → volatile write)</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1">// Reader: if (ready) use(data);        (volatile read → program order → data read) — guaranteed to see 42</span>
+</code></pre></div>
+<p>Other common sources of happens-before you get for free: <code>final</code> fields are safely visible once the constructor finishes, and putting an object into a concurrent collection (or <code>BlockingQueue</code>) happens-before another thread takes it out.</p>
+<h2 id="deep-dive">Deep dive<a class="headerlink" href="#deep-dive" title="Permanent link">&para;</a></h2>
+<h3 id="volatile-vs-synchronized-vs-atomic">volatile vs synchronized vs atomic<a class="headerlink" href="#volatile-vs-synchronized-vs-atomic" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Visibility</th>
+<th>Atomic compound ops</th>
+<th>Blocking</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>volatile</code></td>
+<td>Yes</td>
+<td><strong>No</strong>: <code>count++</code> is still unsafe.</td>
+<td>No</td>
+<td>Stop flags, publishing a fully built object, the double-checked locking field.</td>
+</tr>
+<tr>
+<td><code>synchronized</code></td>
+<td>Yes</td>
+<td>Yes, for everything inside the block.</td>
+<td>Yes: other threads wait for the lock.</td>
+<td>Critical sections, especially when an invariant spans <strong>several fields</strong> (e.g. <code>balance</code> and <code>history</code> must change together).</td>
+</tr>
+<tr>
+<td><code>AtomicInteger</code>, <code>AtomicLong</code>, <code>AtomicReference</code></td>
+<td>Yes</td>
+<td>Yes, but only for <strong>one variable</strong>, via CAS.</td>
+<td>No: a failed update just retries.</td>
+<td>Counters, ID sequences, swapping a single reference.</td>
+</tr>
+<tr>
+<td><code>LongAdder</code></td>
+<td>Yes</td>
+<td>Increments/adds only.</td>
+<td>No</td>
+<td><strong>High-contention</strong> counters: spreads updates across several internal cells, summed on read.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why <code>count++</code> is unsafe with only <code>volatile</code>.</strong> It is three separate steps: read the current value, add one, write it back. Suppose <code>count</code> is 5. Thread A reads 5; Thread B reads 5; A writes 6; B writes 6. Two increments happened, but the value only went up by one, so an update was <em>lost</em>. <code>volatile</code> makes each individual read and write visible, but cannot stop another thread from running between them. Atomicity needs a lock or CAS.</p>
+<h3 id="synchronized-details">synchronized details<a class="headerlink" href="#synchronized-details" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>What gets locked.</strong> Every Java object has a built-in lock called its <strong>monitor</strong>. A <code>synchronized</code> instance method locks <code>this</code>; a <code>static synchronized</code> method locks the class's <code>Class</code> object (e.g. <code>Counter.class</code>); a <code>synchronized (obj) { ... }</code> block locks <code>obj</code>. Instance and static methods use <strong>different</strong> locks, so a <code>synchronized</code> instance method and a <code>static synchronized</code> method of the same class can run at the same time, and they do <em>not</em> protect shared static data from each other.</li>
+<li><strong>Reentrant.</strong> A thread that already holds a lock can acquire it again without deadlocking itself; the JVM keeps a hold count and releases the lock when it drops to zero. That is what lets one <code>synchronized</code> method call another <code>synchronized</code> method on the same object.</li>
+<li>
+<p><strong><code>wait()</code>/<code>notify()</code></strong> are how threads wait for a condition protected by a monitor. A thread calls <code>obj.wait()</code> to release <code>obj</code>'s lock and sleep until another thread calls <code>obj.notify()</code> or <code>notifyAll()</code>.</p>
+<ul>
+<li>They must be called while <strong>holding</strong> that object's monitor (inside <code>synchronized (obj)</code>), otherwise they throw <code>IllegalMonitorStateException</code>. This rule exists because checking the condition and starting to wait must be atomic; otherwise a <code>notify</code> could arrive in the gap between your check and your <code>wait</code> and be lost forever.</li>
+<li>Always call <code>wait()</code> in a <strong><code>while</code> loop that re-checks the condition</strong>, never in an <code>if</code>. Two reasons: the JVM may wake a thread for no reason at all (<strong>spurious wakeup</strong>, allowed by the spec), and even after a genuine <code>notify</code>, another thread may grab the lock first and change the condition before you get the lock back.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">synchronized</span><span class="w"> </span><span class="p">(</span><span class="n">lock</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">queue</span><span class="p">.</span><span class="na">isEmpty</span><span class="p">())</span><span class="w"> </span><span class="n">lock</span><span class="p">.</span><span class="na">wait</span><span class="p">();</span><span class="w">   </span><span class="c1">// re-check after every wakeup</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">queue</span><span class="p">.</span><span class="na">remove</span><span class="p">();</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">}</span>
+</code></pre></div>
+</li>
+<li>
+<p><strong><code>sleep()</code> keeps the lock, <code>wait()</code> releases it.</strong> <code>Thread.sleep</code> just pauses the current thread and knows nothing about monitors, so any locks you hold stay held, and every other thread that needs them stays blocked. <code>wait()</code> exists specifically to give the lock up while waiting and take it back before returning.</p>
+</li>
+</ul>
+<h3 id="reentrantlock-and-friends">ReentrantLock and friends<a class="headerlink" href="#reentrantlock-and-friends" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong><code>ReentrantLock</code></strong> (in <code>java.util.concurrent.locks</code>) does what <code>synchronized</code> does, plus things <code>synchronized</code> cannot:</p>
+<ul>
+<li><code>tryLock()</code> / <code>tryLock(timeout)</code>: try to get the lock and give up instead of waiting forever. This is a way to avoid deadlock.</li>
+<li><code>lockInterruptibly()</code>: wait for the lock but respond to <code>Thread.interrupt()</code> (a thread blocked on <code>synchronized</code> cannot be interrupted).</li>
+<li><strong>Fairness</strong>: <code>new ReentrantLock(true)</code> hands the lock out in roughly arrival order so no thread starves. It is slower, which is why the default is unfair.</li>
+<li>Multiple <strong><code>Condition</code></strong> objects per lock (<code>lock.newCondition()</code>), e.g. separate <code>notFull</code> and <code>notEmpty</code> conditions in a bounded buffer, instead of one shared <code>wait</code>/<code>notifyAll</code>.</li>
+</ul>
+<p>Unlike <code>synchronized</code>, nothing releases it automatically, so <strong>always <code>unlock()</code> in <code>finally</code></strong>. Otherwise an exception leaves the lock held forever:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">lock</span><span class="p">.</span><span class="na">lock</span><span class="p">();</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* critical section */</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">lock</span><span class="p">.</span><span class="na">unlock</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+</li>
+<li>
+<p><strong><code>ReadWriteLock</code></strong> (<code>ReentrantReadWriteLock</code>): either <strong>many readers at once</strong> or <strong>one writer alone</strong>. Good when reads are frequent, writes are rare and the critical section is long enough for the extra bookkeeping to pay off.</p>
+</li>
+<li><strong><code>StampedLock</code></strong> (Java 8): adds <strong>optimistic reads</strong>. <code>tryOptimisticRead()</code> takes no lock at all and returns a stamp; you read the fields, then call <code>validate(stamp)</code>. If no write happened in between, you are done without ever blocking; if one did, you fall back to a real read lock. It is very fast for read-mostly data, but it is <strong>not reentrant</strong> (re-acquiring it in the same thread deadlocks) and has no <code>Condition</code>s.</li>
+</ul>
+<h3 id="cas-and-its-caveats">CAS and its caveats<a class="headerlink" href="#cas-and-its-caveats" title="Permanent link">&para;</a></h3>
+<p><strong>Compare-and-swap (CAS)</strong> is a single atomic CPU instruction: "if this memory location still holds the value I expect, replace it with my new value; otherwise change nothing and tell me I failed". Atomic classes build updates as a retry loop on top of it:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// What AtomicInteger.incrementAndGet() does, conceptually</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kt">int</span><span class="w"> </span><span class="n">current</span><span class="p">,</span><span class="w"> </span><span class="n">next</span><span class="p">;</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">do</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="n">current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w">          </span><span class="c1">// read</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="n">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">             </span><span class="c1">// compute</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">}</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">value</span><span class="p">.</span><span class="na">compareAndSet</span><span class="p">(</span><span class="n">current</span><span class="p">,</span><span class="w"> </span><span class="n">next</span><span class="p">));</span><span class="w"> </span><span class="c1">// write only if nobody changed it meanwhile; otherwise retry</span>
+</code></pre></div>
+<p>No thread ever blocks: a thread that loses the race simply re-reads and tries again. This is called <strong>lock-free</strong>.</p>
+<ul>
+<li><strong>ABA problem.</strong> CAS only checks the <em>value</em>, not whether it changed in between. If a value goes A → B → A while your thread is between its read and its CAS, the CAS succeeds as if nothing happened. For a counter that is harmless, but for a lock-free linked structure "A" may now be a reused node with different neighbours, which corrupts the structure. The fix is to attach a version number that increases on every change: <code>AtomicStampedReference</code> compares value <em>and</em> stamp, so A(v1) → B(v2) → A(v3) no longer matches A(v1).</li>
+<li><strong>Contention.</strong> When many threads hammer the same atomic variable, most CAS attempts fail and retry, burning CPU and bouncing the cache line between cores. <code>LongAdder</code> avoids this by giving threads separate cells to increment (so they rarely collide) and adding the cells together only when you call <code>sum()</code>. That makes writes very cheap and reads slightly more expensive, plus the sum is not an atomic snapshot.</li>
+</ul>
+<h3 id="thread-states">Thread states<a class="headerlink" href="#thread-states" title="Permanent link">&para;</a></h3>
+<p><code>NEW → RUNNABLE ⇄ BLOCKED / WAITING / TIMED_WAITING → TERMINATED</code></p>
+<ul>
+<li><strong>NEW</strong>: the <code>Thread</code> object exists but <code>start()</code> has not been called.</li>
+<li><strong>RUNNABLE</strong>: running, or ready to run and waiting for a CPU. A thread blocked in native socket I/O also shows as <code>RUNNABLE</code> in thread dumps, which surprises people.</li>
+<li><strong>BLOCKED</strong>: waiting to enter a <code>synchronized</code> block or method because another thread holds that monitor.</li>
+<li><strong>WAITING</strong>: waiting with no time limit for another thread to do something: <code>Object.wait()</code>, <code>Thread.join()</code>, <code>LockSupport.park()</code> (which is what <code>ReentrantLock</code>, <code>Condition</code> and blocking queues use, so a thread waiting on a <code>ReentrantLock</code> shows as WAITING, not BLOCKED).</li>
+<li><strong>TIMED_WAITING</strong>: the same but with a timeout: <code>Thread.sleep(ms)</code>, <code>wait(ms)</code>, <code>join(ms)</code>, <code>parkNanos</code>.</li>
+<li><strong>TERMINATED</strong>: <code>run()</code> has finished, normally or by exception.</li>
+</ul>
+<p>Calling <code>start()</code> twice throws <code>IllegalThreadStateException</code>, because a thread can only go from NEW to RUNNABLE once and cannot be restarted. Calling <code>run()</code> directly is just an ordinary method call: the code executes on the <strong>current</strong> thread and no new thread is created.</p>
+<h3 id="thread-pools-how-threadpoolexecutor-decides">Thread pools: how ThreadPoolExecutor decides<a class="headerlink" href="#thread-pools-how-threadpoolexecutor-decides" title="Permanent link">&para;</a></h3>
+<p>Creating a thread is expensive (it reserves a stack, typically ~1 MB, and makes an OS call), so servers reuse a fixed set of threads from a <strong>pool</strong>. <code>ThreadPoolExecutor</code> decides what to do with each submitted task like this:</p>
+<pre class="mermaid"><code>flowchart TD
+    T[New task] --&gt; A{running threads &lt; corePoolSize?}
+    A -- yes --&gt; N1[Start a new core thread]
+    A -- no --&gt; B{queue accepts task?}
+    B -- yes --&gt; Q[Task waits in queue]
+    B -- no --&gt; C{threads &lt; maximumPoolSize?}
+    C -- yes --&gt; N2[Start a non-core thread]
+    C -- no --&gt; R[RejectedExecutionHandler]</code></pre>
+<ul>
+<li><strong><code>corePoolSize</code></strong>: threads kept alive even when idle.</li>
+<li><strong><code>maximumPoolSize</code></strong>: hard upper limit on threads. Extra (non-core) threads die after <code>keepAliveTime</code> idle.</li>
+<li><strong>Work queue</strong>: where tasks wait when all core threads are busy.</li>
+</ul>
+<p>The surprising part: <strong>the queue fills before extra threads are created.</strong> The executor prefers queueing over growing. So with an <strong>unbounded</strong> queue (one that never says "full"), the "queue accepts task?" step always answers yes, and <code>maximumPoolSize</code> is never reached: you get exactly <code>corePoolSize</code> threads, no matter how high <code>max</code> is set.</p>
+<table>
+<thead>
+<tr>
+<th>Factory</th>
+<th>Hidden danger</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Executors.newFixedThreadPool(n)</code></td>
+<td>Uses an unbounded <code>LinkedBlockingQueue</code>. If tasks arrive faster than <code>n</code> threads finish them, the queue grows without limit until the heap runs out (<strong>OOM</strong>), and latency grows with it.</td>
+</tr>
+<tr>
+<td><code>Executors.newCachedThreadPool()</code></td>
+<td>No queue capacity (a <code>SynchronousQueue</code>) and max threads = <code>Integer.MAX_VALUE</code>. Under load it creates a new thread for every waiting task: thousands of threads, each with its own stack, until the OS or memory gives out.</td>
+</tr>
+<tr>
+<td><code>Executors.newSingleThreadExecutor()</code></td>
+<td>One thread with an unbounded queue: the same OOM risk as the fixed pool.</td>
+</tr>
+</tbody>
+</table>
+<p>In production, build <code>ThreadPoolExecutor</code> yourself with a <strong>bounded</strong> queue (e.g. <code>new ArrayBlockingQueue&lt;&gt;(1000)</code>) and an explicit <strong>rejection policy</strong>, which decides what happens when both the queue and the threads are full:</p>
+<ul>
+<li><code>AbortPolicy</code> (the default): throw <code>RejectedExecutionException</code>, so the caller can fail fast or return "503 busy".</li>
+<li><code>CallerRunsPolicy</code>: the thread that submitted the task runs it itself. That slows the submitter down, so it automatically produces less work: natural <strong>back-pressure</strong>.</li>
+<li><code>DiscardPolicy</code> / <code>DiscardOldestPolicy</code>: silently drop the new task or the oldest queued one. Only for work that is safe to lose.</li>
+</ul>
+<p><strong>Sizing rule of thumb.</strong></p>
+<ul>
+<li><strong>CPU-bound work</strong> (computation, no waiting): about the <strong>number of cores</strong> (+1 to cover the occasional pause). More threads than cores just adds context-switching.</li>
+<li><strong>I/O-bound work</strong> (mostly waiting for databases or HTTP calls): <strong>cores × (1 + wait time / compute time)</strong>. If each task waits 90 ms and computes 10 ms, on 8 cores that is 8 × (1 + 9) = 80 threads, because each thread is idle 90 % of the time and other threads can use the CPU meanwhile.</li>
+</ul>
+<p>Treat these as starting points and measure, because the real limit is often the downstream system (a 20-connection database pool makes 200 threads pointless).</p>
+<p><strong>Always shut executors down.</strong> Pool threads are by default non-daemon, so a forgotten executor keeps the JVM from exiting, and in tests and app restarts it leaks threads. Call <code>shutdown()</code> (finish queued tasks, accept no new ones) and <code>awaitTermination(...)</code>, or, since Java 19, use try-with-resources: <code>ExecutorService</code> is <code>AutoCloseable</code> and <code>close()</code> shuts down and waits.</p>
+<h3 id="futures-and-completablefuture">Futures and CompletableFuture<a class="headerlink" href="#futures-and-completablefuture" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong><code>Future</code></strong> represents a result that will be available later. Its only way to get the value is <code>get()</code>, which <strong>blocks</strong> the calling thread until the task completes, so you cannot say "when it's done, do X" without tying up a thread. <strong><code>CompletableFuture</code></strong> lets you attach the next step as a callback and <strong>compose</strong> steps into a pipeline without blocking.</li>
+<li><strong>Composition methods</strong>, using stream vocabulary:<ul>
+<li><code>thenApply(f)</code>: like <code>map</code>. Transform the result with a plain function <code>T -&gt; U</code>.</li>
+<li><code>thenCompose(f)</code>: like <code>flatMap</code>. Use it when <code>f</code> itself returns a <code>CompletableFuture</code> (e.g. "after loading the user, call another async service"). With <code>thenApply</code> you would end up with a nested <code>CompletableFuture&lt;CompletableFuture&lt;U&gt;&gt;</code>.</li>
+<li><code>thenCombine(other, f)</code>: wait for <strong>two independent</strong> futures running in parallel and merge their results.</li>
+<li><code>allOf(...)</code> completes when all given futures complete; <code>anyOf(...)</code> when the first one does.</li>
+</ul>
+</li>
+<li><strong>Error handling</strong>: an exception in any stage skips the following "normal" stages until one of these handles it:<ul>
+<li><code>exceptionally(ex -&gt; fallback)</code>: runs <strong>only on failure</strong> and replaces the error with a recovery value.</li>
+<li><code>handle((result, ex) -&gt; ...)</code>: runs <strong>always</strong>, receives either the result or the exception, and returns a new value. Good for "map success and failure into one response".</li>
+<li><code>whenComplete((result, ex) -&gt; ...)</code>: runs always, for <strong>side effects</strong> like logging or metrics. It does <strong>not</strong> change the result: an exception passes through unchanged.</li>
+</ul>
+</li>
+<li><strong>Where async stages run.</strong> <code>*Async</code> methods called without an executor (<code>supplyAsync(task)</code>, <code>thenApplyAsync(f)</code>) run on <strong><code>ForkJoinPool.commonPool()</code></strong>, a JVM-wide shared pool sized to about <em>(cores − 1)</em> threads. It is meant for short CPU work. If you put blocking I/O there, a handful of slow HTTP calls can occupy every thread in it, and everything else that uses the common pool, including <strong>parallel streams</strong> anywhere in the application, stalls. Pass your own executor for anything that blocks.</li>
+<li><strong><code>join()</code> vs <code>get()</code>.</strong> Both wait for the result. <code>get()</code> throws checked exceptions (<code>ExecutionException</code>, <code>InterruptedException</code>), so it needs <code>try/catch</code>. <code>join()</code> wraps failures in the unchecked <code>CompletionException</code>, which is more convenient inside lambdas and streams. In both cases the original exception is available via <code>getCause()</code>.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CompletableFuture</span><span class="p">.</span><span class="na">supplyAsync</span><span class="p">(()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">userClient</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="w"> </span><span class="n">ioPool</span><span class="p">);</span><span class="w">           </span><span class="c1">// starts now, on ioPool</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">orders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CompletableFuture</span><span class="p">.</span><span class="na">supplyAsync</span><span class="p">(()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">orderClient</span><span class="p">.</span><span class="na">list</span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="w"> </span><span class="n">ioPool</span><span class="p">);</span><span class="w"> </span><span class="c1">// runs in parallel with the user call</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">Profile</span><span class="o">&gt;</span><span class="w"> </span><span class="n">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="na">thenCombine</span><span class="p">(</span><span class="n">orders</span><span class="p">,</span><span class="w"> </span><span class="n">Profile</span><span class="p">::</span><span class="k">new</span><span class="p">)</span><span class="w"> </span><span class="c1">// when BOTH finish, build the Profile</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">        </span><span class="p">.</span><span class="na">orTimeout</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">TimeUnit</span><span class="p">.</span><span class="na">SECONDS</span><span class="p">)</span><span class="w">                                     </span><span class="c1">// Java 9+: fail with TimeoutException if not done in 2 s</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">        </span><span class="p">.</span><span class="na">exceptionally</span><span class="p">(</span><span class="n">ex</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Profile</span><span class="p">.</span><span class="na">empty</span><span class="p">());</span><span class="w">                              </span><span class="c1">// on any failure (including timeout), return a fallback</span>
+</code></pre></div>
+<p>The two remote calls run concurrently, so the total latency is roughly the slower of the two rather than their sum.</p>
+<h3 id="coordination-utilities">Coordination utilities<a class="headerlink" href="#coordination-utilities" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Utility</th>
+<th>What it does</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CountDownLatch(n)</code></td>
+<td>A counter starting at <code>n</code>. Threads call <code>countDown()</code>; threads calling <code>await()</code> block until it reaches 0. It is <strong>one-shot</strong>: once at zero it stays open and cannot be reset.</td>
+<td>The main thread waits until 5 services have finished starting.</td>
+</tr>
+<tr>
+<td><code>CyclicBarrier(n)</code></td>
+<td><code>n</code> threads each call <code>await()</code> and all block until the last one arrives; then all are released together and the barrier <strong>resets automatically</strong> for the next round. It can run an optional action each time it trips.</td>
+<td>Simulation workers that must all finish step <em>k</em> before anyone starts step <em>k+1</em>.</td>
+</tr>
+<tr>
+<td><code>Semaphore(n)</code></td>
+<td>A pool of <code>n</code> <strong>permits</strong>. <code>acquire()</code> takes one (waiting if none are left) and <code>release()</code> returns it. It limits how many threads do something at the same time.</td>
+<td>Allow at most 10 concurrent calls to a fragile downstream API.</td>
+</tr>
+<tr>
+<td><code>Phaser</code></td>
+<td>A reusable barrier where the number of participating threads can change between phases (<code>register</code>/<code>arriveAndDeregister</code>).</td>
+<td>Multi-stage jobs where workers join or leave mid-way.</td>
+</tr>
+<tr>
+<td><code>BlockingQueue</code></td>
+<td>A thread-safe queue whose <code>put</code> waits when full and <code>take</code> waits when empty. That waiting is the <strong>back-pressure</strong>: fast producers are slowed down to the speed of the consumers instead of exhausting memory.</td>
+<td>Producer/consumer hand-off, the buffer below.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="virtual-threads-java-21">Virtual threads (Java 21)<a class="headerlink" href="#virtual-threads-java-21" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>What they are.</strong> A normal (<em>platform</em>) thread is a thin wrapper around an OS thread: expensive to create, with a big fixed stack, so you can only have a few thousand. A <strong>virtual thread</strong> is a lightweight thread managed by the JVM: its stack lives on the heap and grows as needed, so you can have millions. The JVM runs virtual threads on a small pool of platform threads called <strong>carriers</strong> (by default one per core). When a virtual thread makes a blocking call such as a socket read, the JVM <strong>unmounts</strong> it: it saves its stack and frees the carrier to run another virtual thread. When the data arrives, the virtual thread is mounted again, possibly on a different carrier.</li>
+<li><strong>Great for I/O-bound, thread-per-request code.</strong> A service that spends most of its time waiting on databases and HTTP calls can use one simple, blocking-style thread per request and still handle huge concurrency, without callbacks or reactive code. They do <strong>not</strong> make CPU-bound code faster: computation still needs a real core, and there are no more cores than before.</li>
+<li><strong>Don't pool them.</strong> Pools exist because platform threads are expensive; virtual threads are cheap, so a pool only adds limits and overhead. Create one per task with <code>Executors.newVirtualThreadPerTaskExecutor()</code> or <code>Thread.ofVirtual().start(...)</code>.</li>
+<li><strong>Pinning.</strong> In JDK 21–23, if a virtual thread blocks while inside a <code>synchronized</code> block or method, the JVM cannot unmount it (the monitor implementation is tied to the carrier thread), so it <strong>pins</strong> the carrier: that platform thread is stuck doing nothing until the blocking call returns. With few carriers, a few pinned threads can stall the whole application. JDK 24 (JEP 491) removed this limitation for <code>synchronized</code>. On 21, use <code>ReentrantLock</code> around blocking calls (it is built on <code>LockSupport.park</code>, which unmounts correctly) and diagnose with <code>-Djdk.tracePinnedThreads=full</code>.</li>
+<li><strong>Be careful with large <code>ThreadLocal</code> values.</strong> Every thread gets its own copy of a <code>ThreadLocal</code> value. With 200 platform threads, a 1 MB per-thread cache costs 200 MB; with a million virtual threads it costs a terabyte. Keep thread-locals small, or use <code>ScopedValue</code> where available.</li>
+<li><strong>Limit scarce resources with a <code>Semaphore</code>, not with pool size.</strong> With platform threads, a 50-thread pool implicitly limited you to 50 concurrent database calls. With unlimited virtual threads that implicit limit disappears, so 10,000 requests would all try to grab one of your 20 database connections. Guard the resource explicitly: <code>semaphore.acquire()</code> before the call, <code>release()</code> in <code>finally</code>.</li>
+<li><strong>Spring Boot 3.2+</strong>: set <code>spring.threads.virtual.enabled=true</code> and Tomcat request handling, <code>@Async</code> and other executors switch to virtual threads.</li>
+</ul>
+<h3 id="deadlock">Deadlock<a class="headerlink" href="#deadlock" title="Permanent link">&para;</a></h3>
+<p>A <strong>deadlock</strong> happens when threads wait for each other in a cycle, so none can ever proceed: Thread 1 holds lock A and waits for B, while Thread 2 holds B and waits for A. Four conditions must <strong>all</strong> hold for a deadlock (the Coffman conditions):</p>
+<ol>
+<li><strong>Mutual exclusion</strong>: a resource can be held by only one thread at a time.</li>
+<li><strong>Hold and wait</strong>: a thread holds one resource while waiting for another.</li>
+<li><strong>No preemption</strong>: a resource cannot be taken away from a thread; it must be released voluntarily.</li>
+<li><strong>Circular wait</strong>: there is a cycle of threads each waiting for the next one's resource.</li>
+</ol>
+<p>Break any one condition and deadlock becomes impossible. The most practical fixes:</p>
+<ul>
+<li><strong>Always acquire locks in one global order</strong> (e.g. by account ID: always lock the lower ID first). With a consistent order, a cycle cannot form, which breaks condition 4.</li>
+<li><strong>Use <code>tryLock</code> with a timeout</strong>: if you can't get the second lock, release the first and retry later, which breaks condition 2.</li>
+</ul>
+<p>To detect one, take a thread dump with <code>jstack &lt;pid&gt;</code> (or <code>jcmd &lt;pid&gt; Thread.print</code>). The JVM checks for monitor and <code>ReentrantLock</code> cycles and prints "Found one Java-level deadlock", listing which thread holds which lock.</p>
+<h3 id="threadlocal">ThreadLocal<a class="headerlink" href="#threadlocal" title="Permanent link">&para;</a></h3>
+<p><code>ThreadLocal&lt;T&gt;</code> gives <strong>each thread its own independent copy</strong> of a value. Typical uses: request-scoped context (the current user, a trace ID, Spring's transaction and security context), or reusing an object that is not thread-safe, such as <code>SimpleDateFormat</code>, without locking.</p>
+<p>The trap is <strong>thread pools</strong>: pool threads are reused for many tasks and never die, so a value set during one request is still there when the same thread picks up the next request. That causes two problems. <strong>Memory leaks</strong>: the values are never collected (and in app servers they can pin a whole old class loader after a redeploy). <strong>Data leaks</strong>: request B can see request A's user ID. Always clear it in <code>finally</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">CURRENT_USER</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">user</span><span class="p">);</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">handle</span><span class="p">(</span><span class="n">request</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CURRENT_USER</span><span class="p">.</span><span class="na">remove</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<h2 id="code-you-should-be-able-to-write">Code you should be able to write<a class="headerlink" href="#code-you-should-be-able-to-write" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kd">class</span> <span class="nc">BoundedBuffer</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">BlockingQueue</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayBlockingQueue</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span><span class="w">  </span><span class="c1">// fixed capacity = built-in back-pressure</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">produce</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">item</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">InterruptedException</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">item</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w">   </span><span class="c1">// waits while the queue is full</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="n">T</span><span class="w"> </span><span class="nf">consume</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">InterruptedException</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="na">take</span><span class="p">();</span><span class="w"> </span><span class="p">}</span><span class="w">        </span><span class="c1">// waits while the queue is empty</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">}</span>
+</code></pre></div>
+<p>All the locking and <code>wait</code>/<code>notify</code> logic lives inside <code>ArrayBlockingQueue</code> (a <code>ReentrantLock</code> with <code>notFull</code>/<code>notEmpty</code> conditions), so the class has no locking code of its own. The methods declare <code>InterruptedException</code> so a waiting thread can be cancelled cleanly.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kd">class</span> <span class="nc">Singleton</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">volatile</span><span class="w"> </span><span class="n">Singleton</span><span class="w"> </span><span class="n">instance</span><span class="p">;</span><span class="w">      </span><span class="c1">// volatile is required (see below)</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="kd">static</span><span class="w"> </span><span class="n">Singleton</span><span class="w"> </span><span class="nf">get</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">        </span><span class="n">Singleton</span><span class="w"> </span><span class="n">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">instance</span><span class="p">;</span><span class="w">                  </span><span class="c1">// read the volatile once into a local (faster on the common path)</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">local</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">                         </span><span class="c1">// 1st check, no lock: after initialization, every call returns here</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">            </span><span class="kd">synchronized</span><span class="w"> </span><span class="p">(</span><span class="n">Singleton</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">         </span><span class="c1">// only the first few callers ever reach the lock</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">                </span><span class="n">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">instance</span><span class="p">;</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">local</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w">                   </span><span class="c1">// 2nd check, inside the lock: another thread may have created it while we waited</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">                    </span><span class="n">instance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Singleton</span><span class="p">();</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">            </span><span class="p">}</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">local</span><span class="p">;</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="p">}</span>
+</code></pre></div>
+<p>This is <strong>double-checked locking (DCL)</strong>. Why <code>volatile</code> is required: <code>instance = new Singleton()</code> is really three steps: (1) allocate memory, (2) run the constructor, (3) store the reference in <code>instance</code>. Without <code>volatile</code> the compiler or CPU may reorder (3) before (2). Another thread doing the unlocked first check could then see a non-null <code>instance</code> and use it before the constructor has finished, reading default values like <code>null</code> or <code>0</code> from its fields. The volatile write forbids that reordering and creates a happens-before edge to the reader.</p>
+<p>Simpler alternatives that are correct with no <code>volatile</code> at all:</p>
+<ul>
+<li><strong>Holder-class idiom</strong>: <code>private static class Holder { static final Singleton I = new Singleton(); }</code> and return <code>Holder.I</code>. The JVM loads and initializes <code>Holder</code> only on first use, and class initialization is guaranteed thread-safe.</li>
+<li><strong>Enum singleton</strong>: <code>enum Singleton { INSTANCE; }</code>, which is also safe against serialization and reflection creating a second instance.</li>
+</ul>
+<h2 id="traps">Traps<a class="headerlink" href="#traps" title="Permanent link">&para;</a></h2>
+<ul>
+<li>"<code>volatile</code> makes <code>count++</code> thread-safe." <strong>No.</strong> <code>volatile</code> makes each read and write visible, but <code>count++</code> is read-add-write, and another thread can run between those steps. Use <code>AtomicInteger</code> / <code>LongAdder</code> or a lock.</li>
+<li>"<code>sleep()</code> releases the lock." <strong>No.</strong> <code>sleep</code> keeps every lock the thread holds; only <code>wait()</code> releases the monitor it is called on.</li>
+<li>"<code>newFixedThreadPool</code> protects you from overload." It caps threads, but its queue is <strong>unbounded</strong>, so excess tasks pile up in memory until <code>OutOfMemoryError</code>.</li>
+<li>"<code>maximumPoolSize</code> threads are created when core threads are busy." Extra threads are created only after the <strong>queue is full</strong>. With an unbounded queue that never happens.</li>
+<li>"Virtual threads speed up CPU-heavy work." <strong>No.</strong> They let you have many more threads <em>waiting</em> cheaply on I/O; the number of cores doing actual computation is unchanged.</li>
+<li>"<code>ConcurrentHashMap</code> makes check-then-act safe." Each call is atomic, but <code>containsKey</code> followed by <code>put</code> is two calls with a gap between them. Use <code>computeIfAbsent</code>, <code>putIfAbsent</code> or <code>merge</code>, which do both steps atomically.</li>
+</ul>
+<h2 id="say-it-out-loud">Say it out loud<a class="headerlink" href="#say-it-out-loud" title="Permanent link">&para;</a></h2>
+<p><strong>"volatile vs synchronized?"</strong>
+<code>volatile</code> guarantees that a write to that one variable is visible to all other threads and stops the compiler and CPU from reordering memory operations around it, but it does not make compound actions like increment or check-then-set atomic. <code>synchronized</code> gives mutual exclusion, so only one thread runs the block at a time, plus the same visibility guarantee, because releasing a monitor happens-before the next acquisition of it. I use volatile for flags and safe publication, atomics for single counters or references, and locks when an invariant spans several fields that must change together.</p>
+<p><strong>"How would you size a thread pool for an I/O-heavy service?"</strong>
+I start from cores × (1 + wait time / compute time), then measure under load, and I check the downstream limits, because a small database connection pool caps useful concurrency regardless of thread count. I always use a bounded queue with an explicit rejection policy, so overload turns into fast rejections or back-pressure instead of an ever-growing queue and an OutOfMemoryError. On Java 21 I would consider virtual threads for thread-per-request I/O instead, and then cap access to the scarce downstream resource with a semaphore.</p>
+<h2 id="practice-mcqs">Practice MCQs<a class="headerlink" href="#practice-mcqs" title="Permanent link">&para;</a></h2>
+<p><strong>Q1.</strong> Two threads each run <code>counter++</code> 1000 times on a <code>volatile int counter = 0</code>. The final value is:</p>
+<ul>
+<li>A) Always 2000</li>
+<li>B) Always 1000</li>
+<li>C) Anything up to 2000</li>
+<li>D) Compile error</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> <code>volatile</code> guarantees each read and write is visible, but <code>counter++</code> is read-add-write, and when both threads read the same value and write the same incremented value, one increment is lost. How many are lost depends on timing, so you get some value up to 2000 (in theory it can be as low as 2). It compiles fine. Use <code>AtomicInteger.incrementAndGet()</code> or <code>LongAdder</code> for a correct 2000.</p>
+</details>
+<p><strong>Q2.</strong> A <code>ThreadPoolExecutor</code> has core 2, max 10 and an unbounded <code>LinkedBlockingQueue</code>. Under heavy load, how many threads run?</p>
+<ul>
+<li>A) 10</li>
+<li>B) 2</li>
+<li>C) Grows without limit</li>
+<li>D) Depends on the CPU</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Once 2 core threads exist, each new task is offered to the queue first, and extra threads are created only if the queue <em>rejects</em> the task. An unbounded queue never rejects, so the pool stays at 2 threads while the queue grows. A would need a bounded queue that fills up. C describes the queue length, not the thread count.</p>
+</details>
+<p><strong>Q3.</strong> Which method releases the monitor?</p>
+<ul>
+<li>A) <code>Thread.sleep()</code></li>
+<li>B) <code>Thread.yield()</code></li>
+<li>C) <code>Object.wait()</code></li>
+<li>D) <code>Thread.join()</code> on another thread while holding a lock</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> <code>wait()</code> releases the monitor of the object it is called on, waits, and then reacquires that monitor before returning. <code>sleep</code> and <code>yield</code> keep every lock the thread holds. <code>join()</code> is implemented with <code>wait()</code> on the <em>target thread object</em>, so it releases only that thread object's monitor, not any other lock you hold, which is why joining while holding a lock can deadlock.</p>
+</details>
+<p><strong>Q4.</strong> In the double-checked locking singleton, why is <code>volatile</code> needed?</p>
+<ul>
+<li>A) To make the <code>synchronized</code> block faster</li>
+<li>B) To prevent another thread from seeing a partially constructed object</li>
+<li>C) To make the field static</li>
+<li>D) It is not needed</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> <code>instance = new Singleton()</code> is allocate, construct, assign, and without <code>volatile</code> the assignment may be reordered before the constructor finishes. A thread doing the unlocked first check could then see a non-null reference to an object whose fields are not yet set. A volatile write forbids that reordering and creates a happens-before edge to the reading thread. It does not make anything faster (A) and has nothing to do with <code>static</code> (C).</p>
+</details>
+<p><strong>Q5.</strong> <code>CompletableFuture.supplyAsync(task)</code> without an executor runs on:</p>
+<ul>
+<li>A) A new platform thread per task</li>
+<li>B) The caller's thread</li>
+<li>C) <code>ForkJoinPool.commonPool()</code></li>
+<li>D) A virtual thread</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> The no-executor overloads use the JVM-wide common pool, which has only about cores − 1 threads and is shared with parallel streams. Blocking I/O there can occupy every thread and stall unrelated code, which is why blocking work should pass a dedicated executor: <code>supplyAsync(task, ioPool)</code>. (On a machine with a single core it falls back to a new thread per task, but that is an edge case.)</p>
+</details>
+<p><strong>Q6.</strong> You need 5 worker threads to all reach a checkpoint before any continues, then repeat for the next batch. Use:</p>
+<ul>
+<li>A) <code>CountDownLatch</code></li>
+<li>B) <code>CyclicBarrier</code></li>
+<li>C) <code>Semaphore</code></li>
+<li>D) <code>Exchanger</code></li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> A <code>CyclicBarrier(5)</code> blocks each worker in <code>await()</code> until all 5 arrive, releases them together, and resets itself for the next batch. A <code>CountDownLatch</code> would work for one round but cannot be reset. A <code>Semaphore</code> limits concurrency rather than making threads wait for each other. An <code>Exchanger</code> swaps data between exactly two threads.</p>
+</details>
+<p><strong>Q7.</strong> On Java 21, a virtual thread performs a blocking socket read inside a <code>synchronized</code> block. What happens?</p>
+<ul>
+<li>A) The virtual thread unmounts normally</li>
+<li>B) The carrier thread is pinned until the read finishes</li>
+<li>C) <code>IllegalStateException</code></li>
+<li>D) The JVM creates a new carrier per call</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> In JDK 21–23 a virtual thread holding a monitor cannot be unmounted, so it <em>pins</em> its carrier platform thread, and that carrier can't run other virtual threads until the read returns. It still works (no exception), but with few carriers it can cause throughput collapse. Use <code>ReentrantLock</code> around blocking calls; JDK 24 (JEP 491) removed this limitation for <code>synchronized</code>.</p>
+</details>
+<p><strong>Q8.</strong> Which is the best fix for a counter updated by hundreds of threads where reads are rare?</p>
+<ul>
+<li>A) <code>synchronized</code> method</li>
+<li>B) <code>volatile long</code></li>
+<li>C) <code>AtomicLong</code></li>
+<li>D) <code>LongAdder</code></li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>D.</strong> <code>LongAdder</code> gives contending threads separate internal cells to increment, so they rarely fight over the same memory, and <code>sum()</code> adds the cells together when you read. C is correct but slows down under heavy contention because most CAS attempts fail and retry. A is correct but serializes every update through one lock. B is not even correct, since increments can be lost.</p>
+</details>
+<p><strong>Q9.</strong> What does calling <code>t.run()</code> instead of <code>t.start()</code> do?</p>
+<ul>
+<li>A) Starts a new thread</li>
+<li>B) Runs the code on the current thread</li>
+<li>C) Throws <code>IllegalThreadStateException</code></li>
+<li>D) Schedules the thread for later</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> <code>run()</code> is an ordinary method call: the body executes immediately on the calling thread, and <code>t</code> stays in the NEW state. Only <code>start()</code> asks the JVM to create a new thread, which then calls <code>run()</code>. <code>IllegalThreadStateException</code> (C) comes from calling <code>start()</code> a second time.</p>
+</details>
+<h2 id="related">Related<a class="headerlink" href="#related" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../02-collections-internals/">Collections internals</a>: how <code>ConcurrentHashMap</code> uses CAS and per-bucket locks, and fail-fast vs weakly consistent iterators.</li>
+<li><a href="../04-streams/">Streams</a>: parallel streams run on the same common pool as <code>CompletableFuture</code>'s default async methods.</li>
+<li><a href="../../jvm/03-performance-troubleshooting/">JIT &amp; troubleshooting</a>: reading thread dumps and finding deadlocks.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../02-collections-internals/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Collections internals">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Collections internals
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../04-streams/" class="md-footer__link md-footer__link--next" aria-label="Next: Streams &amp; functional">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Streams & functional
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+    
+  </body>
+</html>

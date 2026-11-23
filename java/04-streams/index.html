@@ -1,0 +1,1600 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A free interview handbook for Java, the JVM and Spring Boot. Every topic starts with the mental model, shows where people get it wrong, and ends with practice MCQs.">
+      
+      
+      
+      
+        <link rel="prev" href="../03-concurrency/">
+      
+      
+        <link rel="next" href="../05-modern-java/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.39">
+    
+    
+      
+        <title>Streams & functional - Java & Spring Boot, Step by Step</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#streams-functional-java" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-header__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Java & Spring Boot, Step by Step
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Streams & functional
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Java &amp; Spring Boot, Step by Step" class="md-nav__button md-logo" aria-label="Java & Spring Boot, Step by Step" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Java & Spring Boot, Step by Step
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/khanhafizurrahman32/java-spring-interview-step-by-step" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    java-spring-interview-step-by-step
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../start-here/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Start here
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Java
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Java
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-core-language/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core language traps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-collections-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Collections internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-concurrency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Concurrency
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Streams & functional
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Streams & functional
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#operation-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Operation types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collectors-you-must-know" class="md-nav__link">
+    <span class="md-ellipsis">
+      Collectors you must know
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-tomap-traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      The toMap traps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tolist-variants" class="md-nav__link">
+    <span class="md-ellipsis">
+      toList() variants
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reduce" class="md-nav__link">
+    <span class="md-ellipsis">
+      reduce
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      Optional
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallel-streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel streams
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#functional-interfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      Functional interfaces
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-you-should-be-able-to-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code you should be able to write
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-modern-java/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modern Java (8 to 21+)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    JVM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            JVM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/01-memory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Memory & class loading
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/02-garbage-collection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Garbage collection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jvm/03-performance-troubleshooting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JIT, tools & troubleshooting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Spring
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Spring
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/01-ioc-di/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IoC, DI & bean lifecycle
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/02-boot-internals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Boot internals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/03-proxies-aop/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Proxies & AOP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/04-transactions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Transactions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/05-jpa-pitfalls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JPA & Hibernate pitfalls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/06-security/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spring Security
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../spring/07-web-testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Web, validation & testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Practice
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Practice
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/mock-test/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mixed mock test (40 MCQs)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practice/cheat-sheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    One-page cheat sheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental model
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep dive
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deep dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#operation-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Operation types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collectors-you-must-know" class="md-nav__link">
+    <span class="md-ellipsis">
+      Collectors you must know
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-tomap-traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      The toMap traps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tolist-variants" class="md-nav__link">
+    <span class="md-ellipsis">
+      toList() variants
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reduce" class="md-nav__link">
+    <span class="md-ellipsis">
+      reduce
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      Optional
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallel-streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel streams
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#functional-interfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      Functional interfaces
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-you-should-be-able-to-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code you should be able to write
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#say-it-out-loud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Say it out loud
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-mcqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practice MCQs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="streams-functional-java">Streams &amp; functional Java<a class="headerlink" href="#streams-functional-java" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>TL;DR</strong> A stream is a <strong>lazy pipeline</strong>: calling <code>filter</code> or <code>map</code> only <em>describes</em> work, and nothing runs until you call a <strong>terminal</strong> operation such as <code>collect</code> or <code>findFirst</code>. When it does run, elements flow through the whole pipeline <strong>one at a time</strong> (element 1 goes through every stage, then element 2, and so on), not stage by stage. A stream can be consumed <strong>once</strong>. Most stream MCQs test laziness, <code>toMap</code> with duplicate keys, <code>Optional.orElse</code> vs <code>orElseGet</code>, and parallel stream pitfalls.</p>
+</blockquote>
+<h2 id="mental-model">Mental model<a class="headerlink" href="#mental-model" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart LR
+    S[Source: list, array, generator] --&gt; I1["filter (stateless)"]
+    I1 --&gt; I2["map (stateless)"]
+    I2 --&gt; I3["sorted (stateful)"]
+    I3 --&gt; T["collect / forEach / count (terminal)"]</code></pre>
+<p>A stream has three parts: a <strong>source</strong> that supplies elements (a collection, an array, <code>Stream.iterate</code>, a file's lines), zero or more <strong>intermediate operations</strong> that each return a new stream, and exactly one <strong>terminal operation</strong> that produces a result or side effect. Intermediate operations just build up a recipe; the terminal operation runs the recipe by pulling elements from the source one by one.</p>
+<p>A stream is not a data structure: it stores nothing and never modifies its source. <code>list.stream().map(...)</code> leaves <code>list</code> unchanged.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">Stream</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="s">"a"</span><span class="p">,</span><span class="w"> </span><span class="s">"bb"</span><span class="p">,</span><span class="w"> </span><span class="s">"ccc"</span><span class="p">)</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">      </span><span class="p">.</span><span class="na">filter</span><span class="p">(</span><span class="n">s</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">"filter "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s</span><span class="p">);</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="na">length</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="p">})</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">      </span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">s</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">"map "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s</span><span class="p">);</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="na">toUpperCase</span><span class="p">();</span><span class="w"> </span><span class="p">})</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">      </span><span class="p">.</span><span class="na">findFirst</span><span class="p">();</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1">// filter a        ← "a" fails the filter, so it never reaches map</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1">// filter bb</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1">// map bb          ← "bb" passes, is mapped, and findFirst has its answer: stop</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1">//                   "ccc" is never touched (findFirst short-circuits)</span>
+</code></pre></div>
+<p>Notice the order: it is <em>not</em> "filter everything, then map everything". Each element travels down the pipeline before the next one starts, which is what makes short-circuiting possible and why streams can even work on infinite sources.</p>
+<p>Without the terminal <code>findFirst</code>, <strong>nothing</strong> prints, because no one ever asks the pipeline for an element.</p>
+<h2 id="deep-dive">Deep dive<a class="headerlink" href="#deep-dive" title="Permanent link">&para;</a></h2>
+<h3 id="operation-types">Operation types<a class="headerlink" href="#operation-types" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Examples</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Intermediate, stateless</td>
+<td><code>filter</code>, <code>map</code>, <code>flatMap</code>, <code>peek</code></td>
+<td>Each element is handled on its own, with no memory of other elements, so these stream elements through with no buffering.</td>
+</tr>
+<tr>
+<td>Intermediate, stateful</td>
+<td><code>sorted</code>, <code>distinct</code>, <code>limit</code>, <code>skip</code></td>
+<td>They need information about other elements. <code>distinct</code> remembers every element seen so far; <code>sorted</code> must <strong>buffer the entire stream</strong> before it can emit even the first element (the smallest might be the last one), so it never finishes on an infinite stream.</td>
+</tr>
+<tr>
+<td>Terminal</td>
+<td><code>collect</code>, <code>forEach</code>, <code>reduce</code>, <code>count</code>, <code>toList</code>, <code>min</code>, <code>findFirst</code></td>
+<td>Triggers execution and consumes the stream. Returns a non-stream result (or <code>void</code>).</td>
+</tr>
+<tr>
+<td>Short-circuiting</td>
+<td><code>limit</code>, <code>findFirst</code>, <code>findAny</code>, <code>anyMatch</code>, <code>allMatch</code>, <code>noneMatch</code></td>
+<td>They can stop before seeing every element: <code>anyMatch</code> stops at the first <code>true</code>, <code>allMatch</code> at the first <code>false</code>, <code>limit(n)</code> after <code>n</code> elements. That lets them finish even on infinite streams: <code>Stream.iterate(1, x -&gt; x + 1).filter(x -&gt; x % 7 == 0).findFirst()</code> returns 7.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Streams are single-use.</strong> A stream is an iterator-like pipeline over its source, not a reusable collection. After a terminal operation it is marked consumed, and any further operation throws <code>IllegalStateException: stream has already been operated upon or closed</code>. If you need to traverse twice, call <code>list.stream()</code> again, or keep a <code>Supplier&lt;Stream&lt;T&gt;&gt;</code>.</li>
+<li><strong><code>peek</code> is for debugging only</strong>: it lets you see elements passing through without changing them. Don't put real logic in it, because the stream is allowed to skip stages whose results can't affect the answer. Since Java 9, <code>count()</code> may compute the size directly from the source when it is known (a <code>List</code> knows its <code>size()</code>) and the pipeline can't change the count, so <code>list.stream().peek(System.out::println).count()</code> may print <strong>nothing</strong>. Add a <code>filter</code> and the pipeline has to run again, because the count is no longer known up front.</li>
+<li><strong><code>map</code> vs <code>flatMap</code>.</strong> <code>map</code> turns each element into exactly <strong>one</strong> new element (<code>String → Integer</code> via <code>String::length</code>). <code>flatMap</code> turns each element into a <strong>stream of zero or more</strong> elements and then <em>flattens</em> all those streams into one. Use it when each element contains a collection: <code>orders.stream().flatMap(o -&gt; o.lines().stream())</code> gives a single <code>Stream&lt;Line&gt;</code> instead of a <code>Stream&lt;List&lt;Line&gt;&gt;</code>.</li>
+<li><strong>Use primitive streams to avoid boxing.</strong> A <code>Stream&lt;Integer&gt;</code> holds <code>Integer</code> objects, and arithmetic on them unboxes and reboxes repeatedly, creating garbage. <code>IntStream</code>, <code>LongStream</code> and <code>DoubleStream</code> work on raw primitives and add numeric operations that <code>Stream&lt;T&gt;</code> lacks: <code>sum()</code>, <code>average()</code> (returns <code>OptionalDouble</code>), <code>max()</code>, and <code>summaryStatistics()</code> (count, sum, min, average and max in one pass). Convert with <code>mapToInt(Emp::age)</code> and go back with <code>boxed()</code>.</li>
+</ul>
+<h3 id="collectors-you-must-know">Collectors you must know<a class="headerlink" href="#collectors-you-must-know" title="Permanent link">&para;</a></h3>
+<p><code>collect(...)</code> is the terminal operation that gathers elements into a result, and a <code>Collector</code> describes <em>how</em>. The static methods in <code>java.util.stream.Collectors</code> (usually statically imported, as below) cover almost every need:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// Group employees by department: Dept -&gt; list of its employees</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">Map</span><span class="o">&lt;</span><span class="n">Dept</span><span class="p">,</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Emp</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">byDept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">emps</span><span class="p">.</span><span class="na">stream</span><span class="p">().</span><span class="na">collect</span><span class="p">(</span><span class="n">groupingBy</span><span class="p">(</span><span class="n">Emp</span><span class="p">::</span><span class="n">dept</span><span class="p">));</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1">// The second argument is a "downstream" collector applied to each group: here, count the group</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">Map</span><span class="o">&lt;</span><span class="n">Dept</span><span class="p">,</span><span class="w"> </span><span class="n">Long</span><span class="o">&gt;</span><span class="w"> </span><span class="n">countByDept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">emps</span><span class="p">.</span><span class="na">stream</span><span class="p">().</span><span class="na">collect</span><span class="p">(</span><span class="n">groupingBy</span><span class="p">(</span><span class="n">Emp</span><span class="p">::</span><span class="n">dept</span><span class="p">,</span><span class="w"> </span><span class="n">counting</span><span class="p">()));</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1">// Average salary per department</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">Map</span><span class="o">&lt;</span><span class="n">Dept</span><span class="p">,</span><span class="w"> </span><span class="n">Double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">avgSalary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">emps</span><span class="p">.</span><span class="na">stream</span><span class="p">().</span><span class="na">collect</span><span class="p">(</span><span class="n">groupingBy</span><span class="p">(</span><span class="n">Emp</span><span class="p">::</span><span class="n">dept</span><span class="p">,</span><span class="w"> </span><span class="n">averagingDouble</span><span class="p">(</span><span class="n">Emp</span><span class="p">::</span><span class="n">salary</span><span class="p">)));</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1">// Highest-paid employee per department (Optional, because maxBy works on possibly-empty input)</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">Map</span><span class="o">&lt;</span><span class="n">Dept</span><span class="p">,</span><span class="w"> </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Emp</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">topPaid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">emps</span><span class="p">.</span><span class="na">stream</span><span class="p">().</span><span class="na">collect</span><span class="p">(</span><span class="n">groupingBy</span><span class="p">(</span><span class="n">Emp</span><span class="p">::</span><span class="n">dept</span><span class="p">,</span><span class="w"> </span><span class="n">maxBy</span><span class="p">(</span><span class="n">comparing</span><span class="p">(</span><span class="n">Emp</span><span class="p">::</span><span class="n">salary</span><span class="p">))));</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1">// Split into exactly two groups by a yes/no condition</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="n">Map</span><span class="o">&lt;</span><span class="n">Boolean</span><span class="p">,</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Emp</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">seniorSplit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">emps</span><span class="p">.</span><span class="na">stream</span><span class="p">().</span><span class="na">collect</span><span class="p">(</span><span class="n">partitioningBy</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="na">years</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">5</span><span class="p">));</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="c1">// Join strings with a separator, prefix and suffix: "[Ana, Bo, Cy]"</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="n">String</span><span class="w"> </span><span class="n">csv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">names</span><span class="p">.</span><span class="na">stream</span><span class="p">().</span><span class="na">collect</span><span class="p">(</span><span class="n">joining</span><span class="p">(</span><span class="s">", "</span><span class="p">,</span><span class="w"> </span><span class="s">"["</span><span class="p">,</span><span class="w"> </span><span class="s">"]"</span><span class="p">));</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="c1">// Three-argument groupingBy: key function, map factory (sorted TreeMap), downstream collector.</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="c1">// mapping() transforms each employee to its name before collecting the names into a sorted TreeSet.</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="n">Map</span><span class="o">&lt;</span><span class="n">Dept</span><span class="p">,</span><span class="w"> </span><span class="n">TreeSet</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">sortedNames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">emps</span><span class="p">.</span><span class="na">stream</span><span class="p">()</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">        </span><span class="p">.</span><span class="na">collect</span><span class="p">(</span><span class="n">groupingBy</span><span class="p">(</span><span class="n">Emp</span><span class="p">::</span><span class="n">dept</span><span class="p">,</span><span class="w"> </span><span class="n">TreeMap</span><span class="p">::</span><span class="k">new</span><span class="p">,</span><span class="w"> </span><span class="n">mapping</span><span class="p">(</span><span class="n">Emp</span><span class="p">::</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">toCollection</span><span class="p">(</span><span class="n">TreeSet</span><span class="p">::</span><span class="k">new</span><span class="p">))));</span>
+</code></pre></div>
+<ul>
+<li><strong><code>partitioningBy</code> always returns both <code>true</code> and <code>false</code> keys</strong>, even if one list is empty, because there are always exactly two partitions and callers can rely on <code>map.get(true)</code> never being <code>null</code>. <strong><code>groupingBy</code> only creates keys that actually occur</strong> in the data; a department with no employees simply isn't in the map.</li>
+<li><strong><code>groupingBy</code> returns a <code>HashMap</code> by default</strong>, so iteration order of the keys is unspecified. If you need sorted keys, pass <code>TreeMap::new</code> as the map factory; for first-seen order, pass <code>LinkedHashMap::new</code>.</li>
+</ul>
+<h3 id="the-tomap-traps">The <code>toMap</code> traps<a class="headerlink" href="#the-tomap-traps" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Emp</span><span class="o">&gt;</span><span class="w"> </span><span class="n">byName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">emps</span><span class="p">.</span><span class="na">stream</span><span class="p">().</span><span class="na">collect</span><span class="p">(</span><span class="n">toMap</span><span class="p">(</span><span class="n">Emp</span><span class="p">::</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">));</span><span class="w"> </span><span class="c1">// key function, value function</span>
+</code></pre></div>
+<ul>
+<li><strong>Duplicate key → <code>IllegalStateException</code></strong> ("Duplicate key Ana"). The collector refuses to silently pick a winner, because quietly losing data is a worse bug than failing loudly. If duplicates are expected, pass a <strong>merge function</strong> that decides which value to keep: <code>toMap(Emp::name, e -&gt; e, (a, b) -&gt; a)</code> keeps the first; <code>(a, b) -&gt; b</code> keeps the last; <code>(a, b) -&gt; a.salary() &gt; b.salary() ? a : b</code> keeps the higher-paid. If you actually want <em>all</em> values per key, you want <code>groupingBy</code> instead.</li>
+<li><strong>A null value → <code>NullPointerException</code>.</strong> <code>toMap</code> builds the map with <code>HashMap.merge</code>, and <code>merge</code> treats a <code>null</code> value as "remove this key", so it rejects <code>null</code> outright, even though a <code>HashMap</code> can normally store <code>null</code> values. Filter out nulls first, or replace them with a default in the value function.</li>
+<li><strong>Want a specific map type?</strong> The three-argument version returns a <code>HashMap</code>. Use the four-argument version, <code>toMap(keyFn, valueFn, mergeFn, LinkedHashMap::new)</code>, to keep encounter order (or <code>TreeMap::new</code> to sort by key).</li>
+</ul>
+<h3 id="tolist-variants"><code>toList()</code> variants<a class="headerlink" href="#tolist-variants" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Call</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>collect(Collectors.toList())</code></td>
+<td>In practice an <code>ArrayList</code> you can modify, but the Javadoc <strong>guarantees neither the type nor mutability</strong>, so code that modifies it depends on an implementation detail. If you need a mutable list, say so: <code>toCollection(ArrayList::new)</code>.</td>
+</tr>
+<tr>
+<td><code>collect(Collectors.toUnmodifiableList())</code> (Java 10+)</td>
+<td>Unmodifiable (any <code>add</code>/<code>set</code> throws <code>UnsupportedOperationException</code>), and <strong>rejects nulls</strong> with <code>NullPointerException</code>, like <code>List.of</code>.</td>
+</tr>
+<tr>
+<td><code>stream.toList()</code> (Java 16+)</td>
+<td>Unmodifiable, but <strong>allows nulls</strong>. The shortest and usually the right default for results.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="reduce">reduce<a class="headerlink" href="#reduce" title="Permanent link">&para;</a></h3>
+<p><code>reduce</code> combines all elements into one value by repeatedly applying a function: <code>Stream.of(1, 2, 3).reduce(0, Integer::sum)</code> computes <code>((0 + 1) + 2) + 3 = 6</code>. The three-argument form is <code>reduce(identity, accumulator, combiner)</code>. For parallel streams it is used like this: each thread reduces its own chunk starting from the <code>identity</code>, then the <code>combiner</code> merges the partial results.</p>
+<p>That is why <strong>the identity must be a true identity</strong> for the operation: a value that changes nothing when combined, <code>0</code> for addition and <code>1</code> for multiplication (<code>x + 0 == x</code>, <code>x * 1 == x</code>). With a wrong identity such as <code>10</code>, a sequential stream adds 10 once, but a <strong>parallel</strong> stream adds 10 once <strong>per chunk</strong>, so the answer changes depending on how many chunks were created. The accumulator must also be <strong>associative</strong> (<code>(a+b)+c == a+(b+c)</code>), because parallel execution groups elements differently. Subtraction is not associative, so <code>reduce(0, (a, b) -&gt; a - b)</code> gives inconsistent results in parallel.</p>
+<h3 id="optional">Optional<a class="headerlink" href="#optional" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>What it is for.</strong> <code>Optional&lt;T&gt;</code> is a container that holds either one value or nothing. It is meant as a <strong>return type</strong> for methods that might legitimately find nothing (<code>findById</code>, <code>findFirst</code>, <code>max</code>), so the type signature forces the caller to deal with absence instead of forgetting a <code>null</code> check. Don't use it for <strong>fields</strong> (it isn't <code>Serializable</code> and adds an object per field), for <strong>parameters</strong> (callers then pass <code>Optional</code>, <code>null</code>, <em>or</em> empty, which makes things worse), or to wrap <strong>collections</strong> (just return an empty list; "no results" is already representable).</li>
+<li><strong><code>Optional.of(null)</code> throws NPE</strong>, because <code>of</code> promises the value is present. Use <code>Optional.ofNullable(x)</code> when <code>x</code> might be <code>null</code>, and <code>Optional.empty()</code> to say "nothing" explicitly.</li>
+<li><strong><code>orElse</code> vs <code>orElseGet</code>.</strong> <code>orElse(x)</code> takes a ready-made value, and Java evaluates method arguments <em>before</em> calling the method, so <code>x</code> is <strong>always computed</strong>, even when the optional has a value and <code>x</code> is thrown away. <code>orElseGet(supplier)</code> takes a function and calls it <strong>only when empty</strong>. It matters when the fallback is expensive or has side effects: <code>findCached(id).orElse(loadFromDatabase(id))</code> hits the database on <em>every</em> call, cache hit or not; <code>orElseGet(() -&gt; loadFromDatabase(id))</code> hits it only on a miss. For cheap constants (<code>orElse("unknown")</code>), <code>orElse</code> is fine.</li>
+<li><strong>Prefer <code>map</code>, <code>filter</code>, <code>orElseThrow</code> over <code>isPresent()</code> + <code>get()</code>.</strong> <code>if (opt.isPresent()) return opt.get();</code> is just a <code>null</code> check with extra steps, and calling <code>get()</code> without checking throws <code>NoSuchElementException</code>. Chaining keeps the "maybe absent" logic in one expression where each step only runs if a value is present:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">String</span><span class="w"> </span><span class="n">city</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">userRepo</span><span class="p">.</span><span class="na">findById</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="w">   </span><span class="c1">// Optional&lt;User&gt;</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">        </span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">User</span><span class="p">::</span><span class="n">address</span><span class="p">)</span><span class="w">           </span><span class="c1">// Optional&lt;Address&gt;; empty if the user is absent OR address() returns null</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">        </span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">Address</span><span class="p">::</span><span class="n">city</span><span class="p">)</span><span class="w">           </span><span class="c1">// Optional&lt;String&gt;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">        </span><span class="p">.</span><span class="na">orElse</span><span class="p">(</span><span class="s">"unknown"</span><span class="p">);</span><span class="w">           </span><span class="c1">// fallback if any step came up empty</span>
+</code></pre></div>
+<p>Note that <code>map</code> wraps the function's result with <code>ofNullable</code>, so a <code>null</code> returned midway simply turns the chain empty instead of throwing.</p>
+<h3 id="parallel-streams">Parallel streams<a class="headerlink" href="#parallel-streams" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Where they run.</strong> <code>.parallel()</code> or <code>parallelStream()</code> splits the source into chunks and processes them on <strong><code>ForkJoinPool.commonPool()</code></strong>, a single JVM-wide pool with about <em>cores − 1</em> threads (plus the calling thread, which also does work). Because that pool is shared, <strong>blocking calls inside a parallel stream</strong> (HTTP, JDBC, <code>sleep</code>) tie up its few threads and <strong>starve everything else</strong> that uses the pool, including every <code>CompletableFuture.supplyAsync(...)</code> without an explicit executor, anywhere in the application.</li>
+<li><strong>When they pay off.</strong> Splitting the work, scheduling it on threads and merging the results has a fixed cost. It is only worth it for <strong>large</strong> inputs (typically tens of thousands of elements or more), <strong>CPU-bound</strong> work per element, and <strong>easily splittable</strong> sources. Arrays, <code>ArrayList</code> and <code>IntStream.range</code> can be cut in half instantly by index. A <code>LinkedList</code> must be walked to find its middle, and <code>Stream.iterate</code> is inherently sequential (each element depends on the previous one), so they split badly and parallelism gains little or nothing. Measure before adopting it.</li>
+<li><strong>Order.</strong> In parallel, <code>forEach</code> runs the action on whichever thread finishes a chunk first, so output order is <strong>unpredictable</strong>. <code>forEachOrdered</code> preserves the source's <em>encounter order</em>, at the cost of making threads wait for each other. Collecting with <code>toList()</code> keeps encounter order automatically.</li>
+<li><strong>Never mutate shared state in lambdas.</strong> <code>parallelStream().forEach(x -&gt; results.add(x))</code> with a plain <code>ArrayList</code> has several threads calling <code>add</code> at once on a non-thread-safe list: elements get lost, <code>null</code>s appear, or <code>ArrayIndexOutOfBoundsException</code> is thrown. Let the stream build the result for you with <code>collect</code>/<code>toList()</code>, which gives each thread its own container and merges them safely.</li>
+<li><strong><code>findAny</code> is faster than <code>findFirst</code> in parallel.</strong> <code>findFirst</code> must return the element that comes first <em>in encounter order</em>, so threads that find a match early may have to wait for earlier chunks to finish. <code>findAny</code> can return whichever match any thread finds first. Use it when you don't care which matching element you get.</li>
+</ul>
+<h3 id="functional-interfaces">Functional interfaces<a class="headerlink" href="#functional-interfaces" title="Permanent link">&para;</a></h3>
+<p>A <strong>functional interface</strong> has exactly one abstract method, and a lambda or method reference is simply a compact implementation of that method. These are the ones in <code>java.util.function</code> you must recognise:</p>
+<table>
+<thead>
+<tr>
+<th>Interface</th>
+<th>Signature</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Supplier&lt;T&gt;</code></td>
+<td><code>() -&gt; T</code></td>
+<td>Produce a value lazily: <code>orElseGet</code>, <code>Collectors.toCollection(ArrayList::new)</code>.</td>
+</tr>
+<tr>
+<td><code>Consumer&lt;T&gt;</code></td>
+<td><code>T -&gt; void</code></td>
+<td>Do something with a value: <code>forEach(System.out::println)</code>.</td>
+</tr>
+<tr>
+<td><code>Function&lt;T,R&gt;</code></td>
+<td><code>T -&gt; R</code></td>
+<td>Transform: <code>map(String::length)</code>.</td>
+</tr>
+<tr>
+<td><code>Predicate&lt;T&gt;</code></td>
+<td><code>T -&gt; boolean</code></td>
+<td>Test: <code>filter(s -&gt; !s.isBlank())</code>. Combine with <code>and</code>, <code>or</code>, <code>negate</code>.</td>
+</tr>
+<tr>
+<td><code>BiFunction&lt;T,U,R&gt;</code></td>
+<td><code>(T,U) -&gt; R</code></td>
+<td>Two inputs, one result: <code>map.merge(k, v, Integer::sum)</code>.</td>
+</tr>
+<tr>
+<td><code>UnaryOperator&lt;T&gt;</code> / <code>BinaryOperator&lt;T&gt;</code></td>
+<td><code>T -&gt; T</code> / <code>(T,T) -&gt; T</code></td>
+<td>Special cases of <code>Function</code>/<code>BiFunction</code> where all types are the same: <code>replaceAll(String::trim)</code>, <code>reduce(0, Integer::sum)</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Lambdas can only capture <em>effectively final</em> local variables</strong>, meaning locals that are never reassigned after initialization (you don't have to write <code>final</code>; the compiler checks). The lambda receives a <em>copy</em> of the variable's value and may run later, even on another thread. If the variable could still change, the lambda's copy and the real variable could disagree, and reading a mutable local from another thread would be a data race. Forbidding reassignment avoids both problems. Fields and the <em>contents</em> of objects are not restricted, which is exactly why mutating shared objects from lambdas (previous section) is dangerous.</p>
+<h2 id="code-you-should-be-able-to-write">Code you should be able to write<a class="headerlink" href="#code-you-should-be-able-to-write" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// Top 3 most frequent words, ties broken alphabetically</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">top3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arrays</span><span class="p">.</span><span class="na">stream</span><span class="p">(</span><span class="n">text</span><span class="p">.</span><span class="na">toLowerCase</span><span class="p">().</span><span class="na">split</span><span class="p">(</span><span class="s">"\\W+"</span><span class="p">))</span><span class="w"> </span><span class="c1">// lowercase, then split on runs of non-word characters</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">        </span><span class="p">.</span><span class="na">filter</span><span class="p">(</span><span class="n">w</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">w</span><span class="p">.</span><span class="na">isBlank</span><span class="p">())</span><span class="w">                                    </span><span class="c1">// a leading separator produces one empty string; drop it</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">        </span><span class="p">.</span><span class="na">collect</span><span class="p">(</span><span class="n">groupingBy</span><span class="p">(</span><span class="n">w</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">counting</span><span class="p">()))</span><span class="w">                      </span><span class="c1">// Map&lt;String, Long&gt;: word -&gt; number of occurrences</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">        </span><span class="p">.</span><span class="na">entrySet</span><span class="p">().</span><span class="na">stream</span><span class="p">()</span><span class="w">                                          </span><span class="c1">// start a second stream over the (word, count) pairs</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">        </span><span class="p">.</span><span class="na">sorted</span><span class="p">(</span><span class="n">Map</span><span class="p">.</span><span class="na">Entry</span><span class="p">.</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Long</span><span class="o">&gt;</span><span class="n">comparingByValue</span><span class="p">().</span><span class="na">reversed</span><span class="p">()</span><span class="w"> </span><span class="c1">// highest count first</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">                </span><span class="p">.</span><span class="na">thenComparing</span><span class="p">(</span><span class="n">Map</span><span class="p">.</span><span class="na">Entry</span><span class="p">.</span><span class="na">comparingByKey</span><span class="p">()))</span><span class="w">           </span><span class="c1">// equal counts: alphabetical order</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">        </span><span class="p">.</span><span class="na">limit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w">                                                     </span><span class="c1">// keep the top three</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">        </span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">Map</span><span class="p">.</span><span class="na">Entry</span><span class="p">::</span><span class="n">getKey</span><span class="p">)</span><span class="w">                                       </span><span class="c1">// just the words</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">        </span><span class="p">.</span><span class="na">toList</span><span class="p">();</span>
+</code></pre></div>
+<p>The explicit type witness <code>Map.Entry.&lt;String, Long&gt;comparingByValue()</code> is needed because calling <code>.reversed()</code> on the result leaves the compiler without enough context to infer the generic types by itself.</p>
+<h2 id="traps">Traps<a class="headerlink" href="#traps" title="Permanent link">&para;</a></h2>
+<ul>
+<li>"Intermediate operations run when called." They only build the pipeline. Nothing runs until the <strong>terminal</strong> operation, and then each element flows through all stages in turn.</li>
+<li>"<code>toMap</code> keeps the last value on duplicates." It <strong>throws <code>IllegalStateException</code></strong> unless you pass a merge function saying which value to keep.</li>
+<li>"<code>orElse</code> is lazy." <strong>No</strong>: its argument is evaluated before the call, every time. <code>orElseGet</code> takes a supplier and is the lazy one.</li>
+<li>"Parallel is always faster." Often slower for small inputs, cheap per-element work, badly splitting sources, or I/O-bound work, and it competes for the shared common pool.</li>
+<li>"<code>peek</code> always runs." Not if the stream can compute the result without running the pipeline, as <code>count()</code> on a sized source does since Java 9.</li>
+</ul>
+<h2 id="say-it-out-loud">Say it out loud<a class="headerlink" href="#say-it-out-loud" title="Permanent link">&para;</a></h2>
+<p><strong>"When would you avoid a parallel stream?"</strong>
+When the data is small, because splitting and merging costs more than it saves; when the work is I/O-bound or blocking; when the source splits badly, like a <code>LinkedList</code> or <code>Stream.iterate</code>; or when the lambdas touch shared mutable state. And in a server application in general, because parallel streams all share the JVM-wide common ForkJoinPool with only about cores minus one threads, so one blocking pipeline can stall unrelated async work across the whole application. If I need parallel I/O, I use an executor sized for it instead.</p>
+<h2 id="practice-mcqs">Practice MCQs<a class="headerlink" href="#practice-mcqs" title="Permanent link">&para;</a></h2>
+<p><strong>Q1.</strong> What prints?
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">Stream</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">).</span><span class="na">map</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">print</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div></p>
+<ul>
+<li>A) <code>123</code></li>
+<li>B) <code>246</code></li>
+<li>C) Nothing</li>
+<li>D) Compile error</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> <code>map</code> is intermediate: it only records the step and returns a new stream. Without a terminal operation (like <code>toList()</code> or <code>forEach</code>), no element is ever pulled through, so the lambda never runs. It compiles fine: an unused stream is legal. Adding <code>.toList()</code> would print <code>123</code>.</p>
+</details>
+<p><strong>Q2.</strong> <code>toMap(Emp::name, e -&gt; e)</code> on a list with two employees named "Ana" results in:</p>
+<ul>
+<li>A) The first Ana is kept</li>
+<li>B) The last Ana is kept</li>
+<li>C) <code>IllegalStateException</code></li>
+<li>D) A <code>Map&lt;String, List&lt;Emp&gt;&gt;</code></li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> The two-argument <code>toMap</code> has no rule for resolving a duplicate key, so it throws <code>IllegalStateException: Duplicate key Ana</code> rather than silently dropping data. Passing a merge function gives A (<code>(a, b) -&gt; a</code>) or B (<code>(a, b) -&gt; b</code>). D is what <code>groupingBy(Emp::name)</code> returns.</p>
+</details>
+<p><strong>Q3.</strong> Which is evaluated even when the Optional has a value?</p>
+<ul>
+<li>A) <code>orElseGet(() -&gt; load())</code></li>
+<li>B) <code>orElse(load())</code></li>
+<li>C) <code>orElseThrow()</code></li>
+<li>D) <code>map(x -&gt; load())</code></li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Java evaluates method arguments before calling the method, so <code>load()</code> runs to produce the argument for <code>orElse</code>, whether or not it will be used. In A, the lambda is passed <em>unevaluated</em> and called only when the optional is empty. C never calls <code>load()</code>. In D, <code>load()</code> runs only when a value is <em>present</em>, which is the opposite case.</p>
+</details>
+<p><strong>Q4.</strong> <code>partitioningBy(x -&gt; x &gt; 100)</code> on <code>[1, 2, 3]</code> returns:</p>
+<ul>
+<li>A) <code>{false=[1, 2, 3]}</code></li>
+<li>B) <code>{false=[1, 2, 3], true=[]}</code></li>
+<li>C) <code>{true=[]}</code></li>
+<li>D) An empty map</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> <code>partitioningBy</code> always creates both partitions, so the <code>true</code> key is present with an empty list even though no element matched. A is what <code>groupingBy(x -&gt; x &gt; 100)</code> would return, since <code>groupingBy</code> only creates keys that occur.</p>
+</details>
+<p><strong>Q5.</strong> <code>IntStream.range(0, 4).parallel().reduce(10, Integer::sum)</code> might return:</p>
+<ul>
+<li>A) Always 16</li>
+<li>B) Possibly more than 16</li>
+<li>C) Always 6</li>
+<li>D) Throws</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>B.</strong> Sequentially it would be 10 + 0 + 1 + 2 + 3 = 16. In parallel, each chunk starts its own partial sum from the identity, so 10 is added once <em>per chunk</em>: with 4 chunks you get 40 + 6 = 46. The result depends on how the stream was split. The fix is to use a real identity, <code>reduce(0, Integer::sum)</code>, and add 10 afterwards.</p>
+</details>
+<p><strong>Q6.</strong> What happens when you call a terminal operation twice on the same stream object?</p>
+<ul>
+<li>A) It reruns the pipeline</li>
+<li>B) Returns cached results</li>
+<li>C) <code>IllegalStateException</code></li>
+<li>D) Returns an empty result</li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> A stream is marked as consumed when its terminal operation starts, and any further use throws <code>IllegalStateException: stream has already been operated upon or closed</code>. Streams hold no data, so there is nothing to cache or rerun. Create a new stream from the source instead.</p>
+</details>
+<p><strong>Q7.</strong> Which returns an unmodifiable list that may contain nulls?</p>
+<ul>
+<li>A) <code>Collectors.toList()</code></li>
+<li>B) <code>Collectors.toUnmodifiableList()</code></li>
+<li>C) <code>Stream.toList()</code></li>
+<li>D) <code>Arrays.asList()</code></li>
+</ul>
+<details>
+<summary>Answer</summary>
+<p><strong>C.</strong> <code>Stream.toList()</code> (Java 16+) returns an unmodifiable list and accepts <code>null</code> elements. B is unmodifiable but throws on <code>null</code>. A guarantees nothing about mutability and in practice returns a mutable <code>ArrayList</code>. D is not a stream collector and is fixed-size rather than unmodifiable: <code>set</code> works.</p>
+</details>
+<h2 id="related">Related<a class="headerlink" href="#related" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../03-concurrency/">Concurrency</a>: the common ForkJoinPool shared by parallel streams and <code>CompletableFuture</code>.</li>
+<li><a href="../05-modern-java/">Modern Java</a>: records make concise, correct stream DTOs and grouping keys.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../03-concurrency/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Concurrency">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Concurrency
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../05-modern-java/" class="md-footer__link md-footer__link--next" aria-label="Next: Modern Java (8 to 21+)">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Modern Java (8 to 21+)
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+    
+  </body>
+</html>
