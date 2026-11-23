@@ -145,51 +145,90 @@ A) Faster CPU-bound computation B) Cheap blocking for many concurrent I/O-bound 
 
 ## Answer key
 
+Each explanation says why the correct answer is right **and** why the tempting wrong answers are wrong, then links to the page that covers the topic.
+
 <details markdown="1"><summary>Show answers and explanations</summary>
 
-| # | Ans | Why |
-|---|---|---|
-| 1 | B | `"ja" + "va"` is folded at compile time; `c + "va"` builds a new string at runtime. |
-| 2 | B | The lookup searches the bucket for the new hash; the entry sits in the old bucket. |
-| 3 | C | HashMap allows one null key; CHM and Hashtable reject nulls; TreeMap natural ordering throws NPE. |
-| 4 | B | Capacity 10 grows by 1.5x to 15. |
-| 5 | B | `remove(int)` removes by **index**; use `remove(Integer.valueOf(1))` to remove by value. |
-| 6 | C | Copy-on-write iterators work on a snapshot. CHM views are weakly consistent (may see updates). |
-| 7 | B | Instance methods lock `this`; static methods lock the `Class` object. |
-| 8 | C | `AbortPolicy` is the default. |
-| 9 | B | `thenCompose` flattens a nested future (like `flatMap`). |
-| 10 | B | Latches are one-shot; permits are `Semaphore`. |
-| 11 | B | 1 + 2 + 4 + 8 + 16 = 31. `limit` short-circuits the infinite stream. |
-| 12 | C | `map` on an empty Optional stays empty. |
-| 13 | B | Pass a map factory (e.g., `TreeMap::new`) for ordering. |
-| 14 | C | Moved to the heap in Java 7. |
-| 15 | B | |
-| 16 | B | Check thread leaks, `ulimit -u`, container PID limits. |
-| 17 | C | G1 has been the default since Java 9. |
-| 18 | C | ZGC targets sub-millisecond pauses on very large heaps. CMS was removed. |
-| 19 | B | Weak keys are cleared once only weakly reachable. |
-| 20 | B | Records can't add instance fields or extend classes. |
-| 21 | B | Singleton beans are shared; use `AtomicInteger`/`LongAdder` or a metrics library. |
-| 22 | B | `@PostConstruct` runs on the target before the proxy exists, and it's self-invocation anyway. |
-| 23 | B | `BeanPostProcessor` works on instances. |
-| 24 | B | Profile-specific files override the default file. |
-| 25 | A | Auto-configuration backs off when you define your own bean. |
-| 26 | B | Private methods aren't proxied; the call runs in whatever transaction the caller has. |
-| 27 | B | NESTED is the savepoint one. |
-| 28 | B | It's an optimisation hint. |
-| 29 | B | Fetch exactly the columns needed in one query. |
-| 30 | B | Many teams set it to `false`. |
-| 31 | A | |
-| 32 | B | `@Lock` is for pessimistic (or explicit) locking on queries. |
-| 33 | B | Browsers don't attach bearer headers automatically, so CSRF doesn't apply. |
-| 34 | A | Authentication failed; 403 is for authenticated-but-not-allowed. |
-| 35 | C | Slow, salted, adaptive hashing. |
-| 36 | B | Services must be mocked. |
-| 37 | B | Handles warm-up, dead-code elimination and forking. |
-| 38 | B | Reduce critical sections, use concurrent structures or finer-grained locks. |
-| 39 | B | Its `LinkedBlockingQueue` is unbounded. |
-| 40 | B | Blocking I/O unmounts the virtual thread from its carrier. |
+**1. B.** `"ja" + "va"` consists only of literals, so the compiler joins it into the literal `"java"`, which is the same pooled object as `a`: `a == b` is `true`. `c` is a normal (non-`final`) variable, so `c + "va"` is computed at runtime and creates a new, unpooled `String`: `a == d` is `false`, even though `a.equals(d)` is `true`. Had `c` been declared `final`, `d` would also be a compile-time constant and the answer would be A. ([Read more](../java/01-core-language.md))
+
+**2. B.** `HashMap` stored the entry in the bucket chosen by the key's hash *at insertion time* and never moves it. After the mutation, `get` computes the new hash, looks in a different bucket and finds nothing, so it returns `null`. The entry is still in the map (iteration shows it), but it is stranded. No exception is thrown (C and D): CME is only about iterating during structural changes. This is why map keys should be immutable. ([Read more](../java/01-core-language.md))
+
+**3. C.** `HashMap` special-cases `null` (hash 0, bucket 0) and allows exactly one `null` key. `ConcurrentHashMap` (B) and `Hashtable` (D) reject `null` keys and values with `NullPointerException`, so that `get` returning `null` unambiguously means "absent". `TreeMap` with natural ordering (A) must call `compareTo` on the key, which throws NPE for `null`. ([Read more](../java/02-collections-internals.md))
+
+**4. B.** `new ArrayList<>()` starts with an empty shared array and allocates capacity 10 on the first `add`. When the 11th element doesn't fit, it grows to `old + old/2` = 10 + 5 = **15** and copies the elements over. Growing by just 1 (A) would make every add O(n); doubling (C) is what `HashMap` does, not `ArrayList`. ([Read more](../java/02-collections-internals.md))
+
+**5. B.** `List<Integer>` has two `remove` overloads: `remove(int index)` and `remove(Object o)`. The argument `1` is an `int`, which matches `remove(int)` exactly without boxing, so the compiler picks it and the element at **index 1** (the value `2`) is removed, leaving `[1, 3]`. To remove the value 1, call `xs.remove(Integer.valueOf(1))`. ([Read more](../java/01-core-language.md))
+
+**6. C.** A `CopyOnWriteArrayList` iterator works on the array snapshot that existed when the iterator was created; writes replace the array with a new copy, so the iterator never sees them and never throws. `ConcurrentHashMap` views (B) also never throw, but they are *weakly consistent* and *may* reflect later writes, so they fail the second condition. `ArrayList` (A) and `Vector` (D) iterators are fail-fast and throw CME. ([Read more](../java/02-collections-internals.md))
+
+**7. B.** A `synchronized` instance method locks the instance (`this`), while a `static synchronized` method locks the `Class` object. They are two different monitors, so the two methods don't exclude each other and can run concurrently. That also means they don't protect shared static state from each other. ([Read more](../java/03-concurrency.md))
+
+**8. C.** The default `RejectedExecutionHandler` is `AbortPolicy`, which throws `RejectedExecutionException` when both the queue and the maximum thread count are full. B describes `CallerRunsPolicy` and D `DiscardPolicy`, both of which must be chosen explicitly. No built-in policy blocks the caller (A). ([Read more](../java/03-concurrency.md))
+
+**9. B.** `g` returns a `CompletableFuture<…>`, so `thenApply(g)` (A) would produce a nested `CompletableFuture<CompletableFuture<…>>`. `thenCompose` is the flatMap of futures: it waits for the inner future and gives you a flat `CompletableFuture<…>`. `thenAccept` (C) and `thenRun` (D) produce no result value. ([Read more](../java/03-concurrency.md))
+
+**10. B.** Threads calling `await()` block until other threads have called `countDown()` enough times to bring the count to zero; then all waiters are released. The latch is one-shot and cannot be reset (A describes `CyclicBarrier`). Permits (C) are `Semaphore`. Any number of threads may call `await()` (D); the count is decremented by `countDown()`, not by `await()`. ([Read more](../java/03-concurrency.md))
+
+**11. B.** `IntStream.iterate(1, i -> i * 2)` is infinite (1, 2, 4, 8, 16, …), but streams are lazy and `limit(5)` is short-circuiting, so only five elements are ever generated: 1 + 2 + 4 + 8 + 16 = **31**. Without `limit`, `sum()` would loop forever (D). ([Read more](../java/04-streams.md))
+
+**12. C.** `Optional.ofNullable(null)` is an empty Optional. `map` on an empty Optional does not call the function at all and stays empty, so `orElse("x")` returns `"x"`. `String.valueOf(null)` would return `"null"` (A), but it is never called. No NPE (D), because `ofNullable` (unlike `of`) accepts `null`. ([Read more](../java/04-streams.md))
+
+**13. B.** `groupingBy(f)` collects into a `HashMap` by default, so key order is unspecified and the map is mutable. For sorted keys pass a map factory, `groupingBy(f, TreeMap::new, toList())`; for encounter order use `LinkedHashMap::new`. ([Read more](../java/04-streams.md))
+
+**14. C.** The string pool was moved from PermGen to the regular heap in Java 7, so in Java 8+ it is on the heap, sized by `-Xmx` and garbage-collected. PermGen (A) no longer exists in Java 8. Metaspace (B) holds class metadata, not string objects. ([Read more](../jvm/01-memory.md))
+
+**15. B.** `-Xss` sets the stack size of each thread (about 1 MB by default on 64-bit Linux). A larger value allows deeper recursion before `StackOverflowError`, but costs more memory per thread. Max heap is `-Xmx` (A), and Metaspace is `-XX:MaxMetaspaceSize` (C). ([Read more](../jvm/01-memory.md))
+
+**16. B.** This error comes from the operating system refusing to create another thread, not from the heap. Typical causes: a thread leak (executors never shut down, unbounded pools), the per-user process limit (`ulimit -u`), the container's PID limit, or too little native memory for another thread stack. Take a thread dump and count the threads. ([Read more](../jvm/01-memory.md))
+
+**17. C.** G1 has been the default on server-class machines (≥ 2 CPUs and ≥ ~1792 MB of memory) since Java 9, including Java 21. ZGC (B) must be enabled with `-XX:+UseZGC`. Parallel (A) was the Java 8 default. Serial (D) is only chosen automatically on small machines and containers. ([Read more](../jvm/02-garbage-collection.md))
+
+**18. C.** ZGC does marking and compaction concurrently with the application, so its pauses are typically under a millisecond and don't grow with heap size, even at 100 GB+. Serial (A) and Parallel (B) are fully stop-the-world, and a full collection of a 100 GB heap would take many seconds. CMS (D) was removed in Java 14. ([Read more](../jvm/02-garbage-collection.md))
+
+**19. B.** `WeakHashMap` holds its *keys* through weak references. Once nothing else references a key strongly, the next GC clears the weak reference, and the map drops the entry the next time you use it. There is no size limit or timer (A, C), and the value (D) has nothing to do with it. Note: a value that references its own key keeps the key strongly reachable, so the entry is never removed. ([Read more](../jvm/02-garbage-collection.md))
+
+**20. B.** A compact constructor has no parameter list, runs before the fields are assigned, and is the place to validate (`requireNonNull`, range checks) or normalise (reassign a parameter, e.g. trim a string or set a `BigDecimal` scale). Records can't declare extra instance fields (A), are shallowly immutable (C), and can't extend a class (D), because they already extend `java.lang.Record`. ([Read more](../java/05-modern-java.md))
+
+**21. B.** There is one instance of a singleton bean, shared by every request thread. `requestCount++` is a non-atomic read-add-write, so concurrent requests lose increments, a race condition. Singletons are not thread-safe automatically (A), and Spring neither creates a bean per request (C) nor resets fields (D). Use an `AtomicLong`/`LongAdder` or, better, a Micrometer counter. ([Read more](../spring/01-ioc-di.md))
+
+**22. B.** Two independent reasons. `@PostConstruct` runs on the raw target object *before* the post-processor wraps it in a transactional proxy, and calling one of your own methods is self-invocation (`this.method()`), which never goes through a proxy anyway. So the method runs without a transaction and no error is raised (C). Use an `ApplicationReadyEvent` listener or call the method through another bean. ([Read more](../spring/01-ioc-di.md))
+
+**23. B.** A `BeanFactoryPostProcessor` runs after all bean *definitions* are loaded but before any bean is created, and can change those definitions (resolving `${…}` placeholders is the classic example). A `BeanPostProcessor` (A) works on bean *instances* after they are created. `@PostConstruct` (C) and `ApplicationRunner` (D) run much later. ([Read more](../spring/01-ioc-di.md))
+
+**24. B.** When a profile is active, `application-{profile}.yml` is loaded on top of `application.yml`, and its values override the base file's for the same keys. So `app.mode` is `full`. Keys only in the base file remain available. There is no conflict error (C); a property has a single value (D). ([Read more](../spring/02-boot-internals.md))
+
+**25. A.** `@ConditionalOnMissingBean` makes the auto-configured bean conditional on there being *no* bean of that type yet. User configuration is processed before auto-configuration, so if you defined your own bean, Boot's version backs off. It never overrides your bean (B), and it has nothing to do with laziness (C) or tests (D). ([Read more](../spring/02-boot-internals.md))
+
+**26. B.** A `private` method can't be overridden by the CGLIB subclass or declared on an interface, so no proxy can intercept it, and its `@Transactional` is ignored. It is also called through `this`, which bypasses the proxy regardless. It simply runs inside whatever transaction the calling public method has (or none). Spring doesn't fail at startup (C). ([Read more](../spring/03-proxies-aop.md))
+
+**27. B.** `REQUIRES_NEW` parks (suspends) the current transaction, which keeps its connection, opens a completely independent transaction on a second connection, commits or rolls back that one when the method ends, and then resumes the outer one. A describes REQUIRED, C describes NESTED, and D describes NEVER. ([Read more](../spring/04-transactions.md))
+
+**28. B.** Spring puts the Hibernate session into manual flush mode and read-only mode, so Hibernate skips dirty-checking snapshots and doesn't flush at commit, which saves memory and CPU on reads. It is an optimisation hint: it doesn't reliably block writes at the database (A), doesn't change isolation (C), and the first-level cache still works (D). ([Read more](../spring/04-transactions.md))
+
+**29. B.** A DTO projection (`select new OrderView(o.id, c.name) from Order o join o.customer c`) fetches exactly the needed columns in a single query, creates no managed entities, and does no dirty checking: ideal for a read-only list. EAGER (A) affects every query that loads orders and still causes N+1 queries for queries that don't join. Open-in-view (C) only lets lazy loading happen later, and a bigger pool (D) just runs the 500 extra queries faster. ([Read more](../spring/05-jpa-pitfalls.md))
+
+**30. B.** Spring Boot sets `spring.jpa.open-in-view=true` by default and logs a warning at startup saying so, because it keeps a persistence context, and a database connection, open for the whole web request. Many teams set it to `false` explicitly and fetch what they need in the service layer. ([Read more](../spring/05-jpa-pitfalls.md))
+
+**31. A.** With `orphanRemoval = true`, removing a child from the parent's collection (`order.getItems().remove(item)`) makes Hibernate issue a `DELETE` for that child at flush, because a child without its parent shouldn't exist. Deleting the parent also deletes its children. It never deletes the parent (B), and it has nothing to do with fetch type (D). ([Read more](../spring/05-jpa-pitfalls.md))
+
+**32. B.** Adding a `@Version` field (numeric or timestamp) makes Hibernate include `AND version = ?` in every update and increment the version. If another transaction changed the row first, the update matches 0 rows and an optimistic-locking exception is thrown. `@Lock` (A) is for requesting explicit (usually pessimistic) locks on queries. SERIALIZABLE (C) is an isolation level, not entity versioning. `@OptimisticLock` (D) is a Hibernate annotation for *excluding* a field from version increments. ([Read more](../spring/05-jpa-pitfalls.md))
+
+**33. B.** CSRF works because browsers automatically attach cookies to cross-site requests. A stateless API that authenticates only with an `Authorization: Bearer` header is not exposed, because the browser never adds that header by itself, and a malicious page can't read the token. Cookie sessions (A) and form login (C) rely on cookies, so they need CSRF protection. ([Read more](../spring/06-security.md))
+
+**34. A.** An expired token means the request is not (validly) authenticated, so it gets 401 Unauthorized, with a `WWW-Authenticate: Bearer error="invalid_token"` header telling the client to obtain a new token. 403 (B) is for an authenticated user lacking permission. 400 (C) is for malformed requests. ([Read more](../spring/06-security.md))
+
+**35. C.** BCrypt (or Argon2/SCrypt/PBKDF2) is deliberately slow, uses a random salt per password and has a tunable cost, so stolen hashes are expensive to crack. AES (A) is reversible: one leaked key exposes every password. SHA-256 (B) is designed to be fast, so GPUs can try billions of guesses per second. Base64 (D) is just an encoding, not protection at all. ([Read more](../spring/06-security.md))
+
+**36. B.** `@WebMvcTest` is a test slice that loads only web-layer components: controllers, `@ControllerAdvice`, filters, converters, Jackson and security configuration. Services and repositories are not created, so you provide them with `@MockitoBean`. The full context (A) is `@SpringBootTest`; repositories only (C) is `@DataJpaTest`. ([Read more](../spring/07-web-testing.md))
+
+**37. B.** JMH (Java Microbenchmark Harness) runs warm-up iterations so the JIT has compiled the code, prevents dead-code elimination (via `Blackhole`), forks fresh JVMs and reports statistics. A timing loop (A) mostly measures the interpreter or code the JIT optimised away. A debugger (C) distorts timing completely. `jstat` (D) shows GC statistics. ([Read more](../jvm/03-performance-troubleshooting.md))
+
+**38. B.** `BLOCKED` means waiting to enter a `synchronized` block. 150 threads waiting on the same lock address means one thread holds the monitor and everyone else is queueing: lock contention. Find the thread with `- locked <same address>` to see what it is doing, then shrink the critical section, use a concurrent data structure, or use finer-grained locks. GC pressure (A) would show busy GC threads. ([Read more](../jvm/03-performance-troubleshooting.md))
+
+**39. B.** `newFixedThreadPool` caps the threads at 10 but uses an unbounded `LinkedBlockingQueue`. In a burst, the excess tasks pile up in the queue without limit, using more and more heap (and latency grows with the queue) until `OutOfMemoryError`. Tasks are never rejected (D), and thread explosion (A) is the `newCachedThreadPool` risk. ([Read more](../java/03-concurrency.md))
+
+**40. B.** A virtual thread that blocks on I/O is unmounted from its carrier platform thread, which is then free to run other virtual threads, so you can have huge numbers of cheap, simple blocking threads. They don't add CPU capacity (A), don't prevent deadlocks (C), and shared mutable state still needs synchronization (D). ([Read more](../java/03-concurrency.md))
 
 </details>
 
-For every wrong answer, reread the related page and write one sentence: *"I picked X because I believed Y. Actually Z."*
+For every wrong answer, reread the related page and write one sentence: *"I picked X because I believed Y. Actually Z."* Writing down the false belief is what stops you from falling for the same distractor twice.

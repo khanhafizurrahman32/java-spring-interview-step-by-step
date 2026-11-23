@@ -53,7 +53,9 @@ flowchart LR
 4. **Code you should be able to write** without an IDE.
 5. **Traps**: the exact misconceptions distractor answers are built from.
 6. **Say it out loud**: short spoken answers to common interview questions.
-7. **Practice MCQs**: with hidden answers and explanations.
+7. **Practice MCQs**: with hidden answers that explain why the right option is right *and* why each tempting wrong option is wrong.
+
+Every rule on a page comes with its **reason** (not just "the reverse is not required", but *why* it isn't), plus a concrete example, so you can work the answer out again under pressure instead of having to look it up.
 
 ## Versions
 
